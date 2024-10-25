@@ -11,12 +11,12 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 
     }
 
-    public DbSet<Post> Posts { get; set; } // For managing posts
-    public DbSet<Comment> Comments { get; set; } // For managing comments
-    public DbSet<Reaction> Reactions { get; set; } // For managing likes/dislikes
-    public DbSet<Notification> Notifications { get; set; } // For managing notifications
-    public DbSet<Category> Categories { get; set; } // For managing post categories
-    public DbSet<UserFollow> UserFollows { get; set; } // For managing user follow relationships
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Reaction> Reactions { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<UserFollow> UserFollows { get; set; }
 
     public static void SeedData(TownTalkDbContext context, UserManager<ApplicationUser> userManager)
     {
@@ -203,13 +203,13 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 
         //Configure Post
         modelBuilder.Entity<Post>()
-            .HasOne(p => p.User)  // Post's creator
+            .HasOne(p => p.User)
             .WithMany(u => u.Posts)
             .HasForeignKey(p => p.UserId)
             .OnDelete(DeleteBehavior.Restrict); // If user is deleted, their posts are deleted
 
         modelBuilder.Entity<Post>()
-            .HasOne(p => p.Category)  // Post's category
+            .HasOne(p => p.Category)
             .WithMany(c => c.Posts)
             .HasForeignKey(p => p.CategoryId)
             .OnDelete(DeleteBehavior.SetNull); // Set category to null if the category is deleted
@@ -217,13 +217,13 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 
         // Comment Configuration
         modelBuilder.Entity<Comment>()
-            .HasOne(c => c.Post)  // Comment is related to a specific post
+            .HasOne(c => c.Post)
             .WithMany(p => p.Comments)
             .HasForeignKey(c => c.PostId)
             .OnDelete(DeleteBehavior.Cascade); // If a post is deleted, all related comments are deleted
 
         modelBuilder.Entity<Comment>()
-            .HasOne(c => c.User)  // Comment is created by a user
+            .HasOne(c => c.User)
             .WithMany(u => u.Comments)
             .HasForeignKey(c => c.UserId)
             .OnDelete(DeleteBehavior.Restrict); // Prevent deletion of a user if they have comments
@@ -243,7 +243,7 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 
         // Reaction Configuration
         modelBuilder.Entity<Reaction>()
-            .HasOne(r => r.Post)  // Reaction is related to a specific post
+            .HasOne(r => r.Post)
             .WithMany(p => p.Reactions)
             .HasForeignKey(r => r.PostId)
             .OnDelete(DeleteBehavior.Cascade); // If post is deleted, reactions are deleted

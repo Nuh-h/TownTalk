@@ -1,0 +1,103 @@
+@using System.Security.Claims
+@using TownTalk.ViewModels
+@model TownTalk.ViewModels.PostViewModel
+
+@{
+    int activeReactionIndex = Model.ActiveUserReaction.HasValue ? (int)Model.ActiveUserReaction : -1;
+}
+
+<div class="reaction-container d-flex align-items-center" data-post-id="@Model.Id" data-active-reaction="@activeReactionIndex">
+    <div class="position-relative">
+        <button class="reaction-btn btn w-small p-1 rounded"
+            aria-haspopup="true"
+            aria-expanded="false"
+            data-bs-toggle="popover"
+            style="margin-right: 0.5em;">
+            ➕
+        </button>
+
+        <div class="reactionPopoverContent" style="display: none;">
+            <div data-post-id="@Model.Id" class="reaction-list bg-black p-1 rounded" style="background: black; text-align: center; color: #fff;">
+                @foreach (var reactionType in Model.AvailableReactions)
+                {
+                    <button class="reaction btn" data-reaction-type="@((int)reactionType)" tabindex="0" role="menuitem">
+                        @(new ReactionViewModel { Type = reactionType }.GetEmoji())
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    @{
+        // Group reactions by their type
+        var groupedReactions = Model.Reactions
+        .GroupBy(r => r.Type)
+        .Select(g => new
+        {
+            Type = g.Key,
+            Count = g.Sum(r => r.Count), // Total count for this reaction type
+            IsUserOwner = g.First().IsUserOwner // Check if the current user owns this reaction type
+        });
+    }
+
+    @foreach (var group in groupedReactions)
+    {
+        var isActiveUserReaction = group.Type == Model.ActiveUserReaction;
+        var currentUserReactionStyles = isActiveUserReaction ? "background: #ffffff24; border-radius: 12px; color: #fff;" :
+        "";
+
+        // Only display count if more than one user has reacted
+        var reactionCountDisplay = group.Count >= 1 ? $"{group.Count}" : "";
+
+        <button class="mr-2 reaction btn" data-reaction-type="@((int)group.Type)" data-post-id="@Model.Id"
+            style="cursor: pointer; color: #fff; border-radius: 12px; border: 1px solid #ffffff24; @currentUserReactionStyles">
+            @(new ReactionViewModel { Type = group.Type }.GetEmoji())
+            <span class="reaction-count">@reactionCountDisplay</span>
+        </button>
+    }
+
+</div>
+
+
+
+<style>
+    .popover {
+        background-color: #333;
+        /* Dark background */
+        color: #fff;
+        /* White text */
+        border: 1px solid #555;
+        /* Border color */
+        border-radius: 0.5rem;
+        /* Rounded corners */
+    }
+
+    .popover .reaction-list {
+        padding: 0.5rem;
+        /* Padding for the content */
+    }
+
+    .popover .reaction {
+        display: inline-block;
+        /* Make reactions inline */
+        padding: 0.5rem;
+        /* Padding around reaction buttons */
+        border: 1px solid transparent;
+        /* Initial border */
+        border-radius: 1em;
+        /* Rounded edges */
+        cursor: pointer;
+        /* Pointer cursor */
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        /* Smooth transitions */
+    }
+
+    .popover .reaction:hover,
+    .popover .reaction:active {
+        background-color: rgba(255, 255, 255, 0.1);
+        /* Slightly transparent white on hover */
+        border-color: rgba(255, 255, 255, 0.2);
+        /* Light border on hover */
+        color: #fff;
+    }
+</style>

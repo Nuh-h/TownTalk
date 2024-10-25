@@ -1,0 +1,50 @@
+@model TownTalk.ViewModels.CommentViewModel;
+@using System.Security.Claims;
+
+<div class="mb-2 comment-item" data-comment-id="@Model.Id">
+    <div style="background: #00000059; padding: 1rem; border-radius: 0.3em;">
+        <strong>@Model.UserDisplayName</strong>
+        <p class="text-muted">
+            <small>Posted on @Model.CreatedAt.ToShortDateString()</small>
+        </p>
+        <p>@Model.Content</p>
+
+        <button class="btn btn-link btn-sm text-muted mx-0 p-0 reply-button" data-parent-comment-id="@Model.Id"
+            data-reply-form-id="@Model.Id">
+            Reply
+        </button>
+
+        @if (Model.IsUserOwner)
+        {
+            <button class="btn btn-link btn-sm text-muted mx-0 p-0 delete-comment"
+                data-comment-id="@Model.Id">Delete</button>
+        }
+
+        <!-- Reply form hidden by default -->
+        <div class="reply-form" style="display:none;" id="@Model.Id">
+            <form class="comment-form" method="post" action="/Comments/Create">
+                <input type="hidden" name="PostId" value="@Model.PostId" />
+                <input type="hidden" name="ParentCommentId" value="@Model.Id" />
+                <div class="input-group mt-2">
+                    <input type="text" class="form-control" name="Content" placeholder="Add a reply..." required />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Reply</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- This div will hold the replies -->
+    <div class="replies-list mt-2 ml-3">
+        @if (Model.Replies != null && Model.Replies.Any())
+        {
+            <div class="ms-4">
+                @foreach (var reply in Model.Replies)
+                {
+                    await Html.RenderPartialAsync(partialViewName: "_Comment.cshtml", model: reply);
+                }
+            </div>
+        }
+    </div>
+</div>

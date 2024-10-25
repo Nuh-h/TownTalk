@@ -1,0 +1,8 @@
+{
+    "workbench.activityBar.visible": true,
+    "workbench.iconTheme": "vs-seti",
+    "workbench.sideBar.location": "right",
+    "workbench.statusBar.visible": false,
+    "workbench.view.alwaysShowHeaderActions": false,
+    "breadcrumbs.enabled": true
+}

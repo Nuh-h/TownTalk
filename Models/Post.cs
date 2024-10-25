@@ -9,7 +9,7 @@ public class Post
     public string Title { get; set; }
     [Required]
     public string Content { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Automatically set the creation date
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
     public string UserId { get; set; } // Foreign key for User
     public ApplicationUser User { get; set; } // Navigation property for User
     public ICollection<Comment> Comments { get; set; } = [];

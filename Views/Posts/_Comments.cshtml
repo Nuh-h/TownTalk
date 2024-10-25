@@ -1,0 +1,30 @@
+@using TownTalk.ViewModels
+@model TownTalk.ViewModels.PostViewModel
+
+<div class="collapse mt-2" id="comments-@Model.Id">
+    <div class="card card-body mt-2" style="background-color: rgba(255, 255, 255, 0.05);">
+        <h6>Comments</h6>
+        <form class="comment-form" method="post" action="/Comments/Create">
+            <input type="hidden" name="PostId" value="@Model.Id" />
+            <div class="input-group mt-2">
+                <input type="text" class="form-control" name="Content" placeholder="Add a comment..." required />
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Comment</button>
+                </div>
+            </div>
+        </form>
+        <div id="commentList-@Model.Id" class="comment-list">
+            @if (Model.Comments != null && Model.Comments.Any(c => c.ParentCommentId == null))
+            {
+                foreach (CommentViewModel comment in Model.Comments.Where(c => c.ParentCommentId == null))
+                {
+                    await Html.RenderPartialAsync(partialViewName: "~/Views/Shared/_Comment.cshtml", model: comment);
+                }
+            }
+            else
+            {
+                <p>No comments yet. Be the first to comment!</p>
+            }
+        </div>
+    </div>
+</div>

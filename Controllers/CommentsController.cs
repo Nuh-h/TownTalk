@@ -37,8 +37,6 @@ namespace TownTalk.Controllers
             if (post != null)
             {
                 comment.Post = post;
-
-                // Manually clear any ModelState errors for UserId if it's invalid after assigning
                 ModelState.Remove("Post");
             }
 
@@ -53,14 +51,14 @@ namespace TownTalk.Controllers
                     success = true,
                     id = comment.Id,
                     content = comment.Content,
-                    userDisplayName = comment.User.DisplayName, // Assuming you have this property
-                    createdAt = comment.CreatedAt.ToString("g"), // Format date as needed
+                    userDisplayName = comment.User.DisplayName,
+                    createdAt = comment.CreatedAt.ToString("g"),
                     ParentCommentId = comment.ParentCommentId,
                     PostId = comment.PostId
                 });
             }
 
-            return Json(new { success = false, errors = ModelState }); // Return errors if invalid
+            return Json(new { success = false, errors = ModelState });
         }
 
         // POST: Comments/Delete/5
@@ -68,7 +66,7 @@ namespace TownTalk.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var comment = await _context.Comments
-                .Include(c => c.Replies) // Include replies if necessary
+                .Include(c => c.Replies)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (comment != null)
@@ -79,10 +77,10 @@ namespace TownTalk.Controllers
                 _context.Comments.Remove(comment);
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true, id = comment.Id }); // Return JSON on success
+                return Json(new { success = true, id = comment.Id });
             }
 
-            return Json(new { success = false }); // Return failure if comment not found
+            return Json(new { success = false });
         }
     }
 }

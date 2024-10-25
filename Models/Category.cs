@@ -6,6 +6,6 @@ public class Category
 {
     public int Id { get; set; }
     [Required]
-    public string Name { get; set; } // Name of the category
-    public ICollection<Post> Posts { get; set; } = []; // Navigation property for posts
+    public string Name { get; set; }
+    public ICollection<Post> Posts { get; set; } = [];
 }

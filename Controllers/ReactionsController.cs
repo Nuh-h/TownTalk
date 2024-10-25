@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 using TownTalk.Models;
 
 namespace TownTalk.Controllers
@@ -19,7 +20,7 @@ namespace TownTalk.Controllers
         }
 
         // POST: Reactions/Create
-        [HttpPost]
+        [HttpPost("Reactions/Create")]
         public async Task<IActionResult> Create([FromBody] Reaction reaction)
         {
             ApplicationUser? user = await _userManager.GetUserAsync(User);
@@ -42,19 +43,20 @@ namespace TownTalk.Controllers
 
             if (ModelState.IsValid)
             {
-                // Check if the user already reacted to this post
                 var existingReaction = await _context.Reactions
                     .FirstOrDefaultAsync(r => r.PostId == reaction.PostId && r.UserId == user.Id);
 
-                if (existingReaction != null)
+                if (existingReaction != null && existingReaction.Type == reaction.Type)
                 {
-                    // If exists, update the reaction type
+                    _context.Reactions.Remove(existingReaction);
+                }
+                else if (existingReaction != null)
+                {
                     existingReaction.Type = reaction.Type;
                     _context.Reactions.Update(existingReaction);
                 }
                 else
                 {
-                    // Otherwise, add new reaction
                     _context.Reactions.Add(reaction);
                 }
 
@@ -69,30 +71,32 @@ namespace TownTalk.Controllers
                 });
             }
 
-            return Json(new { success = false, errors = ModelState }); // Return errors if invalid
+            return Json(new { success = false, errors = ModelState });
         }
 
-        // POST: Reactions/Delete/5
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        // DELETE: Reactions/Delete
+        [HttpDelete("Reactions/Delete")]
+        public async Task<IActionResult> Delete([FromBody] Reaction reaction)
         {
-            var reaction = await _context.Reactions.FindAsync(id);
+            ApplicationUser? user = await _userManager.GetUserAsync(User);
 
-            if (reaction != null)
+            if (user == null || reaction == null || reaction.PostId == null || reaction.Type == null)
             {
-                // Check if the user is the owner of the reaction
-                var user = await _userManager.GetUserAsync(User);
-                if (reaction.UserId == user.Id)
-                {
-                    _context.Reactions.Remove(reaction);
-                    await _context.SaveChangesAsync();
-
-                    return Json(new { success = true, id = reaction.Id }); // Return JSON on success
-                }
-                return Json(new { success = false, message = "You do not have permission to delete this reaction." });
+                return Json(new { success = false, message = "Invalid request." });
             }
 
-            return Json(new { success = false, message = "Reaction not found." }); // Return failure if reaction not found
+            var existingReaction = await _context.Reactions
+                .FirstOrDefaultAsync(r => r.PostId == reaction.PostId && r.UserId == user.Id && r.Type == reaction.Type);
+
+            if (existingReaction != null)
+            {
+                _context.Reactions.Remove(existingReaction);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, id = existingReaction.Id });
+            }
+
+            return Json(new { success = false, message = "Reaction not found or you do not have permission to delete this reaction." });
         }
     }
 }

@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TownTalk.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<TownTalkDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TownTalkDbContext>();
 
@@ -25,9 +27,9 @@ var app = builder.Build();
 // Apply migrations and seed data
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<TownTalkDbContext>();
-    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    IServiceProvider? services = scope.ServiceProvider;
+    TownTalkDbContext? context = services.GetRequiredService<TownTalkDbContext>();
+    UserManager<ApplicationUser>? userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
     // Apply any pending migrations
     context.Database.Migrate();
@@ -40,22 +42,22 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error"); // Handle errors for non-dev environment
-    app.UseHsts(); // Use HTTP Strict Transport Security in production
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
 // Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
 
 // Serve static files (images, CSS, JS, etc.)
-app.UseStaticFiles(); // Serves static files like CSS/JS/images
+app.UseStaticFiles();
 
 // Route requests
 app.UseRouting();
 
 // Enable authentication and authorization
-app.UseAuthentication(); // This was missing
-app.UseAuthorization();  // Authorization middleware
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Map default route for MVC
 app.MapControllerRoute(

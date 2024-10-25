@@ -1,0 +1,43 @@
+@model TownTalk.ViewModels.PostViewModel
+@using System.Security.Claims
+@using TownTalk.ViewModels
+
+@{
+    string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
+
+<div class="card mb-3" style="background-color: rgba(255, 255, 255, 0.05);">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h5 class="card-title">@Model.Title</h5>
+                <p class="card-text">@Model.Content</p>
+            </div>
+
+            @if (Model.IsUserOwner)
+            {
+                <div style="flex-shrink: 0;">
+                    <a href="@Url.Action("Edit", "Posts", new { id = Model.Id })"
+                        class="btn btn-warning btn-sm me-1">Edit</a>
+                    <a href="@Url.Action("Delete", "Posts", new { id = Model.Id })" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            }
+        </div>
+
+        <p class="card-text text-muted">
+            <small>Posted by @Model.UserDisplayName in @Model.CategoryName on
+                @Model.CreatedAt.ToShortDateString()</small>
+        </p>
+
+        <div class="reaction-containers d-flex justify-content-between align-items-center" data-post-id="@Model.Id">
+            <button class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-@Model.Id">
+                Show Comments (@Model.CommentCount)
+            </button>
+            <div class="ml-auto">
+                @await Html.PartialAsync(partialViewName: "~/Views/Shared/_Reactions.cshtml", model: Model) <!-- Render the reactions partial -->
+            </div>
+        </div>
+
+        @await Html.PartialAsync(partialViewName: "_Comments", model: Model) <!-- Render the comments section -->
+    </div>
+</div>

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using TownTalk.Models;
 
 namespace TownTalk.ViewModels
@@ -12,5 +8,22 @@ namespace TownTalk.ViewModels
         public string Content { get; set; }
         public string UserDisplayName { get; set; }
         public DateTime CreatedAt { get; set; }
+        public List<CommentViewModel> Replies { get; set; }
+        public int PostId { get; set; }
+        public bool IsUserOwner { get; set; }
+        public int? ParentCommentId { get; set; }
+
+        public CommentViewModel(Comment comment, string? userId = "")
+        {
+            Id = comment.Id;
+            Content = comment.Content;
+            UserDisplayName = comment.User.DisplayName;
+            CreatedAt = comment.CreatedAt;
+            PostId = comment.PostId;
+            Replies = comment.Replies.Select(r => new CommentViewModel(r, userId)).ToList();
+            IsUserOwner = comment.UserId == userId;
+            ParentCommentId = comment.ParentCommentId ?? null;
+        }
+
     }
 }
