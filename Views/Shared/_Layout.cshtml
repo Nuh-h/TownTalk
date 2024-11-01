@@ -1,62 +1,35 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - TownTalk</title>
-        <script type="importmap"></script>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-        <link rel="stylesheet" href="~/TownTalk.styles.css" asp-append-version="true" />
-        <link rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@@picocss/pico@2/css/pico.fluid.classless.cyan.min.css" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TownTalk</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TownTalk.styles.css" asp-append-version="true" />
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@@picocss/pico@2/css/pico.fluid.classless.cyan.min.css" />
 
-             <style>
-        .dropdown-menu {
-            max-height: 600px;
-            overflow-y: auto;
-        }
-        .popover {
-            max-width: 600px;
-            background: #0000003b;
-            backdrop-filter: blur(2em);
-            box-shadow: inset 0px 0px 20px 0px blue;
-        }
+    @await Html.PartialAsync("_Favicons")
+</head>
 
-        .popover-body {
-            color: white;
-        }
+<body style="background-color: transparent; color: inherit;">
+    <header>
+        <nav class="navbar navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <!-- Logo on the left -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TownTalk
 
-        #notificationContent {
-            display: flex;
-            flex-direction: column;
-            gap: 0.7em;
-        }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        string currentUserName = User?.Identity?.Name?.Split("@")?.First();
 
-        .notification-item {
-            padding: 10px;
-            background: #00000073;
-    border-radius: 1em;
-    padding: 1em;
-    box-shadow: 2px 1px 0px 1px #0e5bbb;
-}
-        }
-
-        .notification-item:last-child {
-            border-bottom: none;
-        }
-
-    </style>
-                @await Html.PartialAsync("_Favicons")
-    </head>
-
-    <body style="background-color: transparent; color: inherit;">
-        <header>
-            <nav class="navbar navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container-fluid d-flex justify-content-between align-items-center">
-                    <!-- Logo on the left -->
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TownTalk</a>
+                        <span class="badge bg-success text-white fw-bold rounded-pill"
+                        style="box-shadow: 0 0 10px rgba(0, 128, 0, 0.5); filter:hue-rotate(45deg)">@currentUserName</span>
+                    }
+                    </a>
                     <!-- Right-aligned navigation and buttons -->
                     <div class="d-flex align-items-center w-auto">
                         <ul class="navbar-nav d-flex flex-row" style="gap: 1rem;">
@@ -70,30 +43,28 @@
                             </li>
                             <li class="nav-item">
                                <!-- Notification Bell -->
-<div class="popover-wrapper p-0 m-0">
-    <button class="btn bg-transparent text-dark m-0" type="button" id="notificationPopover" data-bs-toggle="popover" data-bs-placement="bottom" aria-expanded="false">
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-bell"
-        >
-            <path d="M18 8c0-5-3-8-6-8S6 3 6 8c0 5-3 8-3 8h18s-3-3-3-8z"></path>
-            <path d="M13 21h-2c0 1.1.9 2 2 2s2-.9 2-2h-2z"></path>
-            <!-- Notification Count Circle -->
-            <circle cx="18" cy="6" r="6" fill="red" stroke="none" />
-        </svg>
-    </button>
-    <div id="notificationContent" style="display: none;"></div>
-</div>
+                                <div class="popoverwrapper p-0 m-0">
+                                    <button type="button" class="btn bg-transparent text-dark m-0 js-notification-bell" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                                        <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="24"
+                                                    height="24"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    class="feather feather-bell"
+                                                >
+                                            <path d="M18 8c0-5-3-8-6-8S6 3 6 8c0 5-3 8-3 8h18s-3-3-3-8z"></path>
+                                            <path d="M13 21h-2c0 1.1.9 2 2 2s2-.9 2-2h-2z"></path>
+                                            <circle id="notification-indicator" cx="18" cy="6" r="6" fill="transparent" stroke="none" />
+                                        </svg>
+                                    </button>
+                                    <div id="notificationContent" style="display: none;"></div>
+                                </div>
 
-                            </li>
                         @if (User.Identity.IsAuthenticated)
                         {
                                 <li class="nav-item">
@@ -117,12 +88,11 @@
         </header>
 
         <div class="container">
-            <main role="main" class="pb-3">
-                <form method="post" asp-action="CreateTestNotification" asp-controller="Notifications">
-    <button type="submit" class="btn btn-primary">Create Test Notification</button>
-</form>
-            @RenderBody()
+            <main role="main" class="pb-3" style="min-height: 77vh;">
+                @RenderBody()
             </main>
+            @await Html.PartialAsync("_NotificationsModal")
+            @await Html.PartialAsync("_ScrollTop")
         </div>
 
         <footer class="border-top footer text-muted">
@@ -130,19 +100,19 @@
                 &copy; 2024 - TownTalk - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
         </footer>
-    @* <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> *@
-        @* <script src="https://code.jquery.com/jquery-3.7.1.min.js" *@
-            @* integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> *@
-                    @* <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.10.2/dist/umd/popper.min.js"></script> *@
-@* <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script> *@
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js" type="module"></script>
+
+
         @await RenderSectionAsync("Scripts", required: false)
 
         <script src="~/js/site.js" asp-append-version="true"></script>
          <script src="~/js/comments.js" asp-append-version="true"></script>
-            <script src="~/js/notifications.js" asp-append-version="true"></script>
+            <script src="~/js/notifications.js" asp-append-version="true" defer></script>
             <script src="~/js/reactions.js" asp-append-version="true"></script>
     </body>
 

@@ -17,7 +17,8 @@
         </button>
 
         <div class="reactionPopoverContent" style="display: none;">
-            <div data-post-id="@Model.Id" class="reaction-list bg-black p-1 rounded" style="background: black; text-align: center; color: #fff;">
+            <div data-post-id="@Model.Id" class="reaction-container bg-black p-1 rounded"
+                style="background: black; text-align: center; color: #fff;">
                 @foreach (var reactionType in Model.AvailableReactions)
                 {
                     <button class="reaction btn" data-reaction-type="@((int)reactionType)" tabindex="0" role="menuitem">
@@ -35,7 +36,7 @@
         .Select(g => new
         {
             Type = g.Key,
-            Count = g.Sum(r => r.Count), // Total count for this reaction type
+            Count = g.Sum(r => 1), // Total count for this reaction type
             IsUserOwner = g.First().IsUserOwner // Check if the current user owns this reaction type
         });
     }
@@ -72,7 +73,7 @@
         /* Rounded corners */
     }
 
-    .popover .reaction-list {
+    .popover .reaction-container {
         padding: 0.5rem;
         /* Padding for the content */
     }

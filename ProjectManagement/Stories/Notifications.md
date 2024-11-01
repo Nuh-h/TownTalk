@@ -57,3 +57,15 @@ As a **user**, I want to **receive notifications for new comments on my posts** 
 - **Testing**: Ensure you allocate time for testing both the backend logic and frontend display.
 - **Documentation**: Maintain clear documentation for future reference on how the notification system works.
 - **User Feedback**: Consider gathering user feedback on the notification system after implementation to make improvements.
+
+
+## Notification types and recipients
+
+| Notification Type      | Triggering Event                  | Recipients                            |
+|------------------------|-----------------------------------|---------------------------------------|
+| **Comment**            | A comment is added to a post      | Original poster, commentors          |
+| **Reaction**           | A reaction is added to a post     | Original poster                       |
+| **New Post**           | A new post is created             | Followers of the user                 |
+| **Tag**                | A user is tagged                  | Tagged user                           |
+| **Direct Message**     | A new direct message is sent      | Message recipient                     |
+| **Follow**             | A user follows another user       | Followed user                         |

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TownTalk.Models;
+using TownTalk.Repositories.Interfaces;
 
 namespace TownTalk.Repositories;
 public class PostRepository : IPostRepository
@@ -20,22 +21,15 @@ public class PostRepository : IPostRepository
             .Include(p => p.Comments)
                 .ThenInclude(c => c.User)
             .Include(p => p.Comments)
-                .ThenInclude(c => c.Replies)
+                .ThenInclude(navigationPropertyPath: c => c.Replies)
             .ToListAsync();
     }
 
-    public async Task<Post> GetPostByIdAsync(int id)
-    {
-        return await _context.Posts
-            .Include(p => p.Category)
-            .FirstOrDefaultAsync(p => p.Id == id);
-    }
-
-    public async Task<Post> GetPostByIdAsync(int id, bool includeReactions = false)
+    public async Task<Post> GetPostByIdAsync(int id, bool? includeReactions)
     {
         IQueryable<Post> query = _context.Posts.Include(p => p.Category);
 
-        if (includeReactions)
+        if (includeReactions.Value)
         {
             query = query.Include(p => p.Reactions);
         }

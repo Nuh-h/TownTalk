@@ -19,18 +19,18 @@ As a **logged-in user**, I want to **create a new post** so that **I can share n
 ---
 
 # Tasks for Create Post
-- [ ] **Create Post Creation View**
+- [x] **Create Post Creation View**
   - **Considerations**: Consider using a WYSIWYG editor for rich content.
   - **Cross-Functional**: Work with frontend and design teams for UI consistency.
   - **Estimate**: 3 hours
   - **Definition of Done**: The view is functional and visually appealing.
 
-- [ ] **Implement Client-Side Validation**
+- [x] **Implement Client-Side Validation**
   - **Considerations**: Validate title and content length.
   - **Estimate**: 2 hours
   - **Definition of Done**: Errors display correctly without submission.
 
-- [ ] **Set Up Server-Side Validation**
+- [x] **Set Up Server-Side Validation**
   - **Considerations**: Align validations with business rules.
   - **Cross-Functional**: Collaborate with backend developers on validation logic.
   - **Estimate**: 2 hours
@@ -42,13 +42,13 @@ As a **logged-in user**, I want to **create a new post** so that **I can share n
   - **Estimate**: 4 hours
   - **Definition of Done**: Users can upload multimedia without issues.
 
-- [ ] **Implement Logic to Save Posts**
+- [x] **Implement Logic to Save Posts**
   - **Considerations**: Ensure proper database handling.
   - **Cross-Functional**: Work with backend team on database interactions.
   - **Estimate**: 3 hours
   - **Definition of Done**: Posts are saved and retrievable from the database.
 
-- [ ] **Redirect After Post Creation**
+- [x] **Redirect After Post Creation**
   - **Considerations**: Ensure seamless navigation.
   - **Estimate**: 1 hour
   - **Definition of Done**: Users are redirected to the correct post page.

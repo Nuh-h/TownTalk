@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TownTalk.Migrations
 {
     [DbContext(typeof(TownTalkDbContext))]
-    partial class TownTalkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241025225504_AddNotifications")]
+    partial class AddNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -309,10 +312,10 @@ namespace TownTalk.Migrations
 
                     b.Property<string>("SenderId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TaggedUserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("TaggedUserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -323,14 +326,6 @@ namespace TownTalk.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("PostId");
-
-                    b.HasIndex("SenderId");
-
-                    b.HasIndex("TaggedUserId");
 
                     b.HasIndex("UserId");
 
@@ -498,36 +493,11 @@ namespace TownTalk.Migrations
 
             modelBuilder.Entity("TownTalk.Models.Notification", b =>
                 {
-                    b.HasOne("TownTalk.Models.Comment", null)
-                        .WithMany()
-                        .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("TownTalk.Models.Post", null)
-                        .WithMany()
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ApplicationUser", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ApplicationUser", "TaggedUser")
-                        .WithMany()
-                        .HasForeignKey("TaggedUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Notifications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Sender");
-
-                    b.Navigation("TaggedUser");
 
                     b.Navigation("User");
                 });
@@ -595,6 +565,8 @@ namespace TownTalk.Migrations
                     b.Navigation("Followers");
 
                     b.Navigation("Following");
+
+                    b.Navigation("Notifications");
 
                     b.Navigation("Posts");
 

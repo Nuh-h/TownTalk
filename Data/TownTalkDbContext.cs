@@ -184,7 +184,7 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configure UserFollow relationships
+        #region // Configure UserFollow relationships
         modelBuilder.Entity<UserFollow>()
             .HasKey(keyExpression: uf => new { uf.FollowerId, uf.FollowedId });
 
@@ -200,8 +200,9 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(uf => uf.FollowedId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        #endregion
 
-        //Configure Post
+        #region //Configure Post
         modelBuilder.Entity<Post>()
             .HasOne(p => p.User)
             .WithMany(u => u.Posts)
@@ -213,9 +214,9 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
             .WithMany(c => c.Posts)
             .HasForeignKey(p => p.CategoryId)
             .OnDelete(DeleteBehavior.SetNull); // Set category to null if the category is deleted
+        #endregion
 
-
-        // Comment Configuration
+        #region // Comment Configuration
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.Post)
             .WithMany(p => p.Comments)
@@ -235,8 +236,9 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(c => c.ParentCommentId)
             .OnDelete(DeleteBehavior.Restrict); // If a parent comment is deleted, its replies are also deleted
 
+        #endregion
 
-        // Configure Reaction Type to be stored as an integer
+        #region// Configure Reaction Type to be stored as an integer
         modelBuilder.Entity<Reaction>()
             .Property(r => r.Type)
             .HasConversion<int>(); // Store as integer
@@ -248,14 +250,53 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(r => r.PostId)
             .OnDelete(DeleteBehavior.Cascade); // If post is deleted, reactions are deleted
 
-        // Category
+        #endregion
+
+        #region // Category
         modelBuilder.Entity<Category>()
             .HasMany(c => c.Posts)
             .WithOne(p => p.Category)
             .HasForeignKey(p => p.CategoryId)
             .OnDelete(DeleteBehavior.SetNull); // Set CategoryId to null if category is deleted
 
+        #endregion
 
+        #region Notifications
+        // Configure Notification relationships
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.User) // Recipient of the notification
+            .WithMany() // Assuming User can have many notifications
+            .HasForeignKey(n => n.UserId)
+            .OnDelete(DeleteBehavior.Restrict); // Prevent deletion if notifications exist
+
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.Sender) // Sender of the notification
+            .WithMany() // Assuming Sender can have many notifications
+            .HasForeignKey(n => n.SenderId)
+            .OnDelete(DeleteBehavior.Restrict); // Prevent deletion if notifications exist
+
+        modelBuilder.Entity<Notification>()
+            .HasOne(n => n.TaggedUser) // Tagged user
+            .WithMany() // Assuming TaggedUser can have many notifications
+            .HasForeignKey(n => n.TaggedUserId)
+            .OnDelete(DeleteBehavior.Restrict); // Prevent deletion if notifications exist
+
+        // Configure Post relationship
+        modelBuilder.Entity<Notification>()
+            .HasOne<Post>() // If you want to configure the relationship explicitly
+            .WithMany() // Assuming a Post can have many notifications
+            .HasForeignKey(n => n.PostId)
+            .OnDelete(DeleteBehavior.Restrict); // Prevent deletion if notifications exist
+
+        // Configure Comment relationship
+        modelBuilder.Entity<Notification>()
+            .HasOne<Comment>() // If you want to configure the relationship explicitly
+            .WithMany() // Assuming a Comment can have many notifications
+            .HasForeignKey(n => n.CommentId)
+            .OnDelete(DeleteBehavior.Restrict); // Prevent deletion if notifications exist
+        #endregion
+
+        #region
         //Indexing
         modelBuilder.Entity<Post>()
             .HasIndex(p => p.UserId);  // Indexing the UserId in posts for faster queries by author
@@ -269,7 +310,7 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<UserFollow>()
             .HasIndex(uf => uf.FollowerId);  // Indexing the FollowerId for quicker follower lookups
 
-
+        #endregion
 
     }
 }

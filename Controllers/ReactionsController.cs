@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Versioning;
 using TownTalk.Models;
+using TownTalk.Services.Interfaces;
 
 namespace TownTalk.Controllers
 {
@@ -12,15 +12,17 @@ namespace TownTalk.Controllers
     {
         private readonly TownTalkDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly INotificationService _notificationService;
 
-        public ReactionsController(TownTalkDbContext context, UserManager<ApplicationUser> userManager)
+        public ReactionsController(TownTalkDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
+            _notificationService = notificationService;
         }
 
         // POST: Reactions/Create
-        [HttpPost("Reactions/Create")]
+        [HttpPost("Reactions/Create/")]
         public async Task<IActionResult> Create([FromBody] Reaction reaction)
         {
             ApplicationUser? user = await _userManager.GetUserAsync(User);
@@ -43,7 +45,7 @@ namespace TownTalk.Controllers
 
             if (ModelState.IsValid)
             {
-                var existingReaction = await _context.Reactions
+                Reaction? existingReaction = await _context.Reactions
                     .FirstOrDefaultAsync(r => r.PostId == reaction.PostId && r.UserId == user.Id);
 
                 if (existingReaction != null && existingReaction.Type == reaction.Type)
@@ -62,6 +64,10 @@ namespace TownTalk.Controllers
 
                 await _context.SaveChangesAsync();
 
+                Console.WriteLine($"{reaction.PostId} - {reaction.UserId} - {reaction.Post.UserId}");
+
+                await _notificationService.NotifyReactionAsync(reaction.PostId.ToString(), reactorId: reaction.UserId, originalPosterId: post.UserId);
+
                 return Json(new
                 {
                     success = true,
@@ -74,6 +80,31 @@ namespace TownTalk.Controllers
             return Json(new { success = false, errors = ModelState });
         }
 
+        // // DELETE: Reactions/Delete
+        // [HttpDelete("Reactions/Delete")]
+        // public async Task<IActionResult> Delete([FromBody] Reaction reaction)
+        // {
+        //     ApplicationUser? user = await _userManager.GetUserAsync(User);
+
+        //     if (user == null || reaction == null || reaction.PostId == null || reaction.Type == null)
+        //     {
+        //         return Json(new { success = false, message = "Invalid request." });
+        //     }
+
+        //     var existingReaction = await _context.Reactions
+        //         .FirstOrDefaultAsync(r => r.PostId == reaction.PostId && r.UserId == user.Id && r.Type == reaction.Type);
+
+        //     if (existingReaction != null)
+        //     {
+        //         _context.Reactions.Remove(existingReaction);
+        //         await _context.SaveChangesAsync();
+
+        //         return Json(new { success = true, id = existingReaction.Id });
+        //     }
+
+        //     return Json(new { success = false, message = "Reaction not found or you do not have permission to delete this reaction." });
+        // }
+
         // DELETE: Reactions/Delete
         [HttpDelete("Reactions/Delete")]
         public async Task<IActionResult> Delete([FromBody] Reaction reaction)
@@ -85,18 +116,27 @@ namespace TownTalk.Controllers
                 return Json(new { success = false, message = "Invalid request." });
             }
 
-            var existingReaction = await _context.Reactions
+            Reaction? existingReaction = await _context.Reactions
                 .FirstOrDefaultAsync(r => r.PostId == reaction.PostId && r.UserId == user.Id && r.Type == reaction.Type);
 
             if (existingReaction != null)
             {
+                string? originalPosterId = (await _context.Posts.FindAsync(reaction.PostId))?.UserId;
+
                 _context.Reactions.Remove(existingReaction);
                 await _context.SaveChangesAsync();
+
+                // Notify the original poster that their post reaction was removed
+                if (originalPosterId != null)
+                {
+                    await _notificationService.NotifyReactionAsync(reaction.PostId.ToString(), user.Id, originalPosterId);
+                }
 
                 return Json(new { success = true, id = existingReaction.Id });
             }
 
             return Json(new { success = false, message = "Reaction not found or you do not have permission to delete this reaction." });
         }
+
     }
 }

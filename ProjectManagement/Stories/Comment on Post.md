@@ -19,22 +19,22 @@ As a **community member**, I want to **comment on posts** so that **I can share 
 ---
 
 # Tasks for Comment on Post
-- [ ] **Create Comment Display View**
+- [x] **Create Comment Display View**
   - **Considerations**: Ensure comments are structured and easy to read.
   - **Estimate**: 2 hours
   - **Definition of Done**: Comments display correctly under posts.
 
-- [ ] **Implement Comment Submission Form**
+- [x] **Implement Comment Submission Form**
   - **Considerations**: Ensure form accessibility and simplicity.
   - **Estimate**: 2 hours
   - **Definition of Done**: Users can submit comments easily.
 
-- [ ] **Set Up Server-Side Validation for Comments**
+- [x] **Set Up Server-Side Validation for Comments**
   - **Considerations**: Ensure comments meet length and content criteria.
   - **Estimate**: 2 hours
   - **Definition of Done**: Validation shows errors on incorrect submissions.
 
-- [ ] **Create Logic to Save Comments**
+- [x] **Create Logic to Save Comments**
   - **Considerations**: Maintain relationships between comments and posts.
   - **Cross-Functional**: Work with backend for database integration.
   - **Estimate**: 2 hours

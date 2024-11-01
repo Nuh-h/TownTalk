@@ -82,4 +82,34 @@ $(document).ready(function () {
         });
     });
 
+
+    // Function to handle URL fragment for comments
+    function handleCommentLink() {
+        const hash = window.location.hash;
+        if (hash.startsWith('#comment-')) {
+            const commentId = hash.replace('#comment-', '');
+            const commentElement = $(`.comment-item[data-comment-id='${commentId}']`);
+
+            if (commentElement.length) {
+                // Get the postId from the nearest comment list
+                const postId = commentElement.closest('.comment-list').id.replace('commentList-', '');
+
+                // Expand the comment section
+                $(`#comments-${postId}`).collapse('show');
+
+                // Scroll to the comment
+                $('html, body').animate({
+                    scrollTop: commentElement.offset().top
+                }, 500);
+            }
+        }
+    }
+
+    // Check for the comment link on page load
+    handleCommentLink();
+
+    // Optional: Check for changes in the URL hash
+    $(window).on('hashchange', handleCommentLink);
+
+
 });

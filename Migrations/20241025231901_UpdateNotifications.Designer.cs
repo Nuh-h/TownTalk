@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TownTalk.Migrations
 {
     [DbContext(typeof(TownTalkDbContext))]
-    partial class TownTalkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241025231901_UpdateNotifications")]
+    partial class UpdateNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -291,6 +294,9 @@ namespace TownTalk.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("CommentId")
                         .HasColumnType("int");
 
@@ -323,6 +329,8 @@ namespace TownTalk.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("CommentId");
 
@@ -498,6 +506,10 @@ namespace TownTalk.Migrations
 
             modelBuilder.Entity("TownTalk.Models.Notification", b =>
                 {
+                    b.HasOne("ApplicationUser", null)
+                        .WithMany("Notifications")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("TownTalk.Models.Comment", null)
                         .WithMany()
                         .HasForeignKey("CommentId")
@@ -595,6 +607,8 @@ namespace TownTalk.Migrations
                     b.Navigation("Followers");
 
                     b.Navigation("Following");
+
+                    b.Navigation("Notifications");
 
                     b.Navigation("Posts");
 

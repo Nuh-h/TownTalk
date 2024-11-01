@@ -4,11 +4,11 @@
 @model IEnumerable<TownTalk.Models.Post>
 
 @{
-    ViewBag.Title = "Posts Feed";
+    ViewBag.Title = "Posts";
 }
 
 <div class="container mt-4">
-    <h1>Posts Feed</h1>
+    <h1>Posts (@Model.Count())</h1>
 
     @foreach (Post post in Model)
     {
@@ -17,4 +17,4 @@
         @await Html.PartialAsync("_PostCard", new PostViewModel(post: post, userId)) <!-- Render each post card -->
     }
 
-</div>    using TownTalk.ViewModels;
+</div>

@@ -6,7 +6,7 @@
     string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
-<div class="card mb-3" style="background-color: rgba(255, 255, 255, 0.05);">
+<div id="post-@Model.Id" class="card mb-3" style="background-color: rgba(255, 255, 255, 0.05);">
     <div class="card-body">
         <div class="d-flex justify-content-between">
             <div>
@@ -34,10 +34,10 @@
                 Show Comments (@Model.CommentCount)
             </button>
             <div class="ml-auto">
-                @await Html.PartialAsync(partialViewName: "~/Views/Shared/_Reactions.cshtml", model: Model) <!-- Render the reactions partial -->
+                @await Html.PartialAsync(partialViewName: "~/Views/Shared/_Reactions.cshtml", model: Model)
             </div>
         </div>
 
-        @await Html.PartialAsync(partialViewName: "_Comments", model: Model) <!-- Render the comments section -->
+        @await Html.PartialAsync(partialViewName: "_Comments", model: Model)
     </div>
 </div>

@@ -17,7 +17,7 @@ As a **user**, I want to **view a list of all posts** so that **I can stay infor
 ---
 
 # Tasks for View Posts
-- [ ] **Create Homepage View for All Posts**
+- [x] **Create Homepage View for All Posts**
   - **Considerations**: Ensure usability and visual appeal.
   - **Cross-Functional**: Work with designers for consistency.
   - **Estimate**: 3 hours

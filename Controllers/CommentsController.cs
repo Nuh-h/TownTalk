@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TownTalk.Models;
+using TownTalk.Services.Interfaces;
 
 namespace TownTalk.Controllers
 {
@@ -11,11 +12,13 @@ namespace TownTalk.Controllers
     {
         private readonly TownTalkDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly INotificationService _notificationService;
 
-        public CommentsController(TownTalkDbContext context, UserManager<ApplicationUser> userManager)
+        public CommentsController(TownTalkDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
+            _notificationService = notificationService;
         }
 
         // POST: Comments/Create
@@ -44,6 +47,8 @@ namespace TownTalk.Controllers
             {
                 _context.Comments.Add(comment);
                 await _context.SaveChangesAsync();
+
+                await _notificationService.NotifyCommentAsync(comment.PostId.ToString(), comment.UserId, comment.Post.UserId);
 
                 // Return JSON with the newly created comment data
                 return Json(new

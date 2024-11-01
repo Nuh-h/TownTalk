@@ -8,7 +8,7 @@ public class ApplicationUser : IdentityUser
     public ICollection<Post> Posts { get; set; } = [];
     public ICollection<Comment> Comments { get; set; } = [];
     public ICollection<Reaction> Reactions { get; set; } = [];
-    public ICollection<Notification> Notifications { get; set; } = [];
+    // public ICollection<Notification> Notifications { get; set; } = [];
     public ICollection<UserFollow> Following { get; set; } = [];
     public ICollection<UserFollow> Followers { get; set; } = [];
 }

@@ -8,7 +8,11 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -19,4 +23,76 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+/* other*/
+.dropdown-menu {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.popover {
+  max-width: 600px;
+  background: #0000003b;
+  backdrop-filter: blur(2em);
+  box-shadow: inset 0px 0px 20px 0px blue;
+}
+
+.popover-body {
+  color: white;
+}
+
+#notificationContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+
+.notification-item {
+  padding: 10px;
+  background: #00000073;
+  border-radius: 1em;
+  padding: 1em;
+  box-shadow: 2px 1px 0px 1px #0e5bbb;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-unread {
+  background-color: rgba(173, 216, 230, 0.5);
+}
+
+.notification-read {
+  color: grey;
+}
+
+.notification-read .sender-display-name {
+  font-weight: bold;
+  color: black;
+}
+
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+  /* Initially hidden */
+  background-color: var(--pico-color-primary);
+  /* Primary color from Pico CSS */
+  color: white;
+  /* Icon color */
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  /* Make sure it’s on top */
+}
+
+.scroll-to-top-btn:hover {
+  background-color: var(--pico-color-secondary);
+  /* Secondary color from Pico CSS on hover */
 }

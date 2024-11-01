@@ -1,8 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    string currentUserName = User?.Identity?.Name?.Split("@")?.First();
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Welcome <span class="badge bg-success text-white fw-bold rounded-pill"
+            style="box-shadow: 0 0 10px rgba(0, 128, 0, 0.5); filter:hue-rotate(45deg)">@currentUserName</span>
+    </h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

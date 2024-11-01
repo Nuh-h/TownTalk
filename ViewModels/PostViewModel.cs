@@ -64,7 +64,7 @@ namespace TownTalk.ViewModels
                     Type = r.Type,
                     UserId = r.UserId,
                     Count = post.Reactions.Count(re => re.Type == r.Type)
-                }).ToList() ?? new List<ReactionViewModel>(); ;
+                }).ToList() ?? new List<ReactionViewModel>();
             }
 
             if (!string.IsNullOrEmpty(userId))

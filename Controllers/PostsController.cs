@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TownTalk.Models;
 using Microsoft.EntityFrameworkCore;
-using TownTalk.Repositories;
 using TownTalk.ViewModels;
+using TownTalk.Repositories.Interfaces;
 
 [Authorize]
 public class PostsController : Controller
@@ -63,7 +63,7 @@ public class PostsController : Controller
     {
         if (id == null) return NotFound();
 
-        var post = await _postRepository.GetPostByIdAsync(id.Value);
+        var post = await _postRepository.GetPostByIdAsync(id: id.Value);
         if (post == null) return NotFound();
 
         ViewData["CategoryId"] = new SelectList(await _postRepository.GetCategoriesAsync(), "Id", "Name", post.CategoryId);
@@ -112,7 +112,7 @@ public class PostsController : Controller
     {
         if (id == null) return NotFound();
 
-        var post = await _postRepository.GetPostByIdAsync(id.Value);
+        var post = await _postRepository.GetPostByIdAsync(id: id.Value);
         if (post == null) return NotFound();
 
         return View(post);
@@ -129,7 +129,7 @@ public class PostsController : Controller
 
     private async Task<bool> PostExists(int id)
     {
-        var post = await _postRepository.GetPostByIdAsync(id);
+        var post = await _postRepository.GetPostByIdAsync(id: id);
         return post != null;
     }
 
@@ -139,7 +139,7 @@ public class PostsController : Controller
         ApplicationUser? currentUser = await _userManager.GetUserAsync(User);
         string currentUserId = currentUser?.Id ?? string.Empty;
 
-        var post = await _postRepository.GetPostByIdAsync(id, includeReactions: true);
+        Post? post = await _postRepository.GetPostByIdAsync(id, includeReactions: true);
 
         if (post == null)
         {
