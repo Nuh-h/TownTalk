@@ -1,0 +1,9 @@
+@model ApplicationUser
+
+<form asp-action="Edit" method="post">
+    <div>
+        <label asp-for="DisplayName"></label>
+        <input asp-for="DisplayName" />
+    </div>
+    <button type="submit">Save</button>
+</form>
