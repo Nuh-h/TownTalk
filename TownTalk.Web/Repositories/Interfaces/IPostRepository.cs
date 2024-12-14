@@ -10,5 +10,5 @@ public interface IPostRepository
     Task DeletePostAsync(int id);
     Task<List<Category>> GetCategoriesAsync();
     Task<List<Post>> GetAllPostsByUserIdAsync(string userId);
-
+    Task<List<dynamic>> GetPostsByMonth(string userId);
 }

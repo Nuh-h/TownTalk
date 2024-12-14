@@ -24,14 +24,17 @@ namespace TownTalk.ViewModels
         public ICollection<CommentViewModel> Comments { get; set; }
         public ICollection<ReactionViewModel> Reactions { get; set; }
 
-        public int LikeCount => Reactions.Count(r => r.Type == ReactionType.Like);
-        public int LoveCount => Reactions.Count(r => r.Type == ReactionType.Love);
-        public int SadCount => Reactions.Count(r => r.Type == ReactionType.Sad);
         public List<ReactionType> AvailableReactions => new List<ReactionType>
         {
             ReactionType.Like,
             ReactionType.Love,
-            ReactionType.Sad
+            ReactionType.Haha,
+            ReactionType.Wow,
+            ReactionType.HeartEyes,
+            ReactionType.Sad,
+            ReactionType.Angry,
+            ReactionType.Cool,
+            ReactionType.Clap
         };
 
         public ReactionType? ActiveUserReaction { get; set; }

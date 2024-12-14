@@ -73,7 +73,7 @@
                     }
 
                     <div class="mb-4">
-                        @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != Model.UserId)
+                        @if (User.Identity.IsAuthenticated && User.FindFirstValue(ClaimTypes.NameIdentifier) != Model.UserId)
                         {
                             <button
                                     class="btn @(Model.IsFollowing ? "btn-danger":"btn-primary") js-profile-btn"
@@ -90,7 +90,9 @@
             <!-- Account Management Card (Only if viewing own profile) -->
             @if (User.FindFirstValue(claimType: ClaimTypes.NameIdentifier) == Model.UserId)
             {
-                <div class="card mt-4 text-white" style="background-color: #00000057;">
+                <div class="card mt-4 text-white js-profile-user"
+                    style="background-color: #00000057;"
+                    data-profile-id="@Model.UserId">
                     <div class="card-header bg-secondary">
                         <h5>Account Management</h5>
                     </div>
@@ -100,7 +102,19 @@
                         <a href="@Url.Action(action: "Delete", "Profile", new { id = Model.UserId })"
                             class="btn btn-danger btn-sm mb-1">Delete Account</a>
                     </div>
+
+                    <!-- Chart: Posts Created by Month -->
+                <div class="chart-container">
+                    <canvas id="postsByMonthChart" width="400" height="200"></canvas>
                 </div>
+
+                <!-- Chart: Followers Growth Over Time -->
+                <div class="chart-container">
+                    <canvas id="followersGrowthChart" width="400" height="200"></canvas>
+                </div>
+                </div>
+
+
             }
         </div>
 

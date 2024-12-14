@@ -1,3 +1,5 @@
+namespace TownTalk.Services.Interfaces;
+
 public interface IUserFollowService
 {
     Task FollowUserAsync(string followerId, string followedId);
@@ -7,4 +9,5 @@ public interface IUserFollowService
     Task<bool> IsFollowingAsync(string followerId, string followedId);
     Task<int> GetFollowerCountAsync(string userId);
     Task<int> GetFollowingCountAsync(string userId);
+    Task<List<dynamic>> GetFollowersGrowth(string userId);
 }

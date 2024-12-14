@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using TownTalk.Data;
 using TownTalk.Models;
+using TownTalk.Services.Interfaces;
 
 public class UserFollowService : IUserFollowService
 {
@@ -12,12 +14,12 @@ public class UserFollowService : IUserFollowService
 
     public async Task FollowUserAsync(string followerId, string followedId)
     {
-        var existingFollow = await _context.UserFollows
+        bool existingFollow = await _context.UserFollows
             .AnyAsync(userFollow => userFollow.FollowerId == followerId && userFollow.FollowedId == followedId);
 
         if (!existingFollow)
         {
-            var userFollow = new UserFollow { FollowerId = followerId, FollowedId = followedId };
+            UserFollow? userFollow = new UserFollow { FollowerId = followerId, FollowedId = followedId };
             await _context.UserFollows.AddAsync(userFollow);
             await _context.SaveChangesAsync();
         }
@@ -25,7 +27,7 @@ public class UserFollowService : IUserFollowService
 
     public async Task UnfollowUserAsync(string followerId, string followedId)
     {
-        var userFollow = await _context.UserFollows
+        UserFollow? userFollow = await _context.UserFollows
             .FirstOrDefaultAsync(userFollow => userFollow.FollowerId == followerId && userFollow.FollowedId == followedId);
 
         if (userFollow != null)
@@ -66,4 +68,30 @@ public class UserFollowService : IUserFollowService
     {
         return await _context.UserFollows.CountAsync(userFollow => userFollow.FollowerId == userId);
     }
+
+    public async Task<List<dynamic>> GetFollowersGrowth(string userId)
+    {
+        // Load all necessary data first
+        var result = await _context.UserFollows
+            .Where(u => u.FollowedId == userId) // Only consider followers for the specified user
+            .Select(u => new { u.FollowedAt, u.FollowedId }) // Select the FollowedAt and FollowedId fields
+            .ToListAsync(); // Load the data into memory
+
+        // Group by year and month in memory (client-side)
+        List<dynamic>? groupedResult = result
+            .GroupBy(u => new { u.FollowedAt.Year, u.FollowedAt.Month }) // Group by Year and Month
+            .Select(g => new
+            {
+                year = g.Key.Year,
+                month = g.Key.Month,
+                count = g.Count()
+            })
+            .OrderBy(g => g.year)
+            .ThenBy(g => g.month)
+            .ToList<dynamic>();
+
+        return groupedResult;
+    }
+
+
 }

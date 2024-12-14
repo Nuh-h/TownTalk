@@ -40,21 +40,21 @@ public class ProfileController : Controller
         }
 
         string? currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        ApplicationUser? currentUser = await _userManager.FindByIdAsync(currentUserId);
+        ApplicationUser? currentUser = currentUserId != null ? await _userManager.FindByIdAsync(currentUserId): null;
 
-        bool isFollowing = await _userFollowService.IsFollowingAsync(followerId: currentUserId, followedId: userId);
+        bool isFollowing = currentUser != null ? await _userFollowService.IsFollowingAsync(followerId: currentUserId, followedId: userId): false;
 
         int followersCount = user.Followers.Count;
         int followingCount = user.Following.Count;
         int postsCount = user.Posts.Count;
         int commentsCount = user.Comments.Count;
 
-        List<string>? currentUserFollowersIds = currentUser.Followers.Select(f => f.FollowerId).ToList();
+        List<string>? currentUserFollowersIds = currentUser?.Followers.Select(f => f.FollowerId).ToList();
         List<string>? profileUserFollowersIds = user.Followers.Select(f => f.FollowerId).ToList();
 
         // Compute mutual followers by finding the intersection of these two lists
-        List<string>? mutualFollowers = currentUserFollowersIds.Intersect(profileUserFollowersIds).ToList();
-        int mutualFollowersCount = mutualFollowers.Count;
+        List<string>? mutualFollowers = currentUserFollowersIds?.Intersect(profileUserFollowersIds).ToList();
+        int mutualFollowersCount = mutualFollowers == null ? 0 : mutualFollowers.Count;
 
         // Maps names to two-letter or up to first 3 letters if only one word
         string profileDisplayName = user.DisplayName.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)

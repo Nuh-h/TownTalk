@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using TownTalk.Data;
 
 #nullable disable
 
-namespace TownTalk.Migrations
+namespace TownTalk.Web.Migrations
 {
     [DbContext(typeof(TownTalkDbContext))]
     partial class TownTalkDbContextModelSnapshot : ModelSnapshot
@@ -389,6 +390,9 @@ namespace TownTalk.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
@@ -415,6 +419,9 @@ namespace TownTalk.Migrations
 
                     b.Property<string>("FollowedId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("FollowedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");

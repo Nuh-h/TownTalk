@@ -52,6 +52,7 @@ public class PostsController : Controller
     }
 
     // GET: Posts/Index
+    [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
         var posts = await _postRepository.GetAllPostsAsync();

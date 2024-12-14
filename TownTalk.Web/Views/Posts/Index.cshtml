@@ -10,11 +10,80 @@
 <div class="container mt-4">
     <h1>Posts (@Model.Count())</h1>
 
-    @foreach (Post post in Model)
-    {
-        string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    @{
+        // Calculate available dates (unique MM/yyyy values from the post CreatedAt property)
+        List<string>? availableDates = Model
+        .Select(p => p.CreatedAt) // Select the DateTime value
+        .OrderBy(d => d) // Sort by DateTime value
+        .Select(d => d.ToString("MM/yyyy")) // Convert to MM/yyyy format after sorting
+        .Distinct().ToList();
 
-        @await Html.PartialAsync("_PostCard", new PostViewModel(post: post, userId)) <!-- Render each post card -->
+        // Calculate authors (unique users who posted)
+        var authors = Model
+        .Select(p => p.User)
+        .Distinct()
+        .Select(u => new { u.Id, u.DisplayName })
+        .ToList();
+
+        // Calculate categories (unique categories for the posts)
+        List<Category?>? categories = Model
+        .Where(p => p.Category != null) // Only include posts with a category
+        .Select(p => p.Category)
+        .Distinct()
+        .ToList();
     }
+
+    <div class="container mt-3">
+        <!-- Filters Group -->
+        <div class="row">
+            <!-- Date Filter -->
+            <div class="col-md-4">
+                <label for="dateFilter">Date</label>
+                <select class="form-control" id="dateFilter">
+                    <option value="">All Dates</option>
+                    @foreach (var date in availableDates)
+                    {
+                        <option value="@date">@date</option> <!-- List available months/years -->
+                    }
+                </select>
+            </div>
+
+            <!-- Author Filter -->
+            <div class="col-md-4">
+                <label for="authorFilter">Author</label>
+                <select class="form-control" id="authorFilter">
+                    <option value="">All Authors</option>
+                    @foreach (var author in authors)
+                    {
+                        <option value="@author.Id">@author.DisplayName</option> <!-- List authors -->
+                    }
+                </select>
+            </div>
+
+            <!-- Category Filter -->
+            <div class="col-md-4">
+                <label for="categoryFilter">Category</label>
+                <select class="form-control" id="categoryFilter">
+                    <option value="">All Categories</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option> <!-- List categories -->
+                    }
+                </select>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Posts Display Area -->
+        <div id="postList">
+            @foreach (Post post in Model)
+            {
+                string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                @await Html.PartialAsync("_PostCard", new PostViewModel(post: post, userId))
+            }
+        </div>
+    </div>
+
 
 </div>

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TownTalk.Models;
 using TownTalk.Repositories.Interfaces;
+using System.Linq;
+using TownTalk.Data;
 
 namespace TownTalk.Repositories;
 public class PostRepository : IPostRepository
@@ -70,4 +72,29 @@ public class PostRepository : IPostRepository
             .Where(post => post.UserId == userId)
             .ToListAsync();
     }
+
+    public async Task<List<dynamic>> GetPostsByMonth(string userId)
+    {
+
+        List<dynamic>? result = await _context.Posts
+            .Where(p => p.UserId == userId)
+            .Select(p => new { p.CreatedAt })
+            .ToListAsync<dynamic>();
+
+        List<dynamic>? groupedResult = result
+            .GroupBy(p => new { p.CreatedAt.Year, p.CreatedAt.Month })
+            .Select(g => new
+            {
+                year = g.Key.Year,
+                month = g.Key.Month,
+                count = g.Count()
+            })
+            .OrderBy(g => g.year)
+            .ThenBy(g => g.month)
+            .ToList<dynamic>();
+
+        return groupedResult;
+    }
+
+
 }

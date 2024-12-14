@@ -31,7 +31,7 @@ namespace TownTalk.Services
                 return;
             }
 
-            Notification? notification = new()
+            Notification? notification = new Notification()
             {
                 UserId = userId,
                 Message = message,
@@ -53,8 +53,8 @@ namespace TownTalk.Services
         {
             if (followerId == followedId) return; // Don't notify if the user is following themselves
 
-            var sender = await _userManager.FindByIdAsync(followerId);
-            var message = $"{sender.DisplayName} is now following you.";
+            ApplicationUser? sender = await _userManager.FindByIdAsync(followerId);
+            string? message = $"{sender.DisplayName} is now following you.";
 
             // Send notification to the followed user
             await NotifyUserAsync(followedId, message, 0, followerId, "Follow");
@@ -66,8 +66,8 @@ namespace TownTalk.Services
         {
             if (commenterId == originalPosterId) return;
 
-            var sender = await _userManager.FindByIdAsync(commenterId);
-            var message = $"{sender.DisplayName} commented on your post.";
+            ApplicationUser? sender = await _userManager.FindByIdAsync(commenterId);
+            string? message = $"{sender.DisplayName} commented on your post.";
             await NotifyUserAsync(originalPosterId, message, int.Parse(postId), commenterId, "Comment");
         }
 
@@ -75,7 +75,7 @@ namespace TownTalk.Services
         public async Task NotifyReactionAsync(string postId, string reactorId, string originalPosterId)
         {
             ApplicationUser? sender = await _userManager.FindByIdAsync(reactorId);
-            var message = $"{sender.DisplayName} reacted to your post.";
+            string? message = $"{sender.DisplayName} reacted to your post.";
             await NotifyUserAsync(originalPosterId, message, int.Parse(postId), senderId: reactorId, type: "Reaction");
         }
 
@@ -84,8 +84,8 @@ namespace TownTalk.Services
         {
             if (viewerId == viewedUserId) return;
 
-            var sender = await _userManager.FindByIdAsync(viewerId);
-            var message = $"{sender.DisplayName} viewed your profile.";
+            ApplicationUser? sender = await _userManager.FindByIdAsync(viewerId);
+            string? message = $"{sender.DisplayName} viewed your profile.";
             await NotifyUserAsync(viewedUserId, message, 0, viewerId, "ProfileView");
         }
 
@@ -94,8 +94,8 @@ namespace TownTalk.Services
         {
             if (followerId == unfollowedId) return;
 
-            var sender = await _userManager.FindByIdAsync(followerId);
-            var message = $"{sender.DisplayName} unfollowed you.";
+            ApplicationUser? sender = await _userManager.FindByIdAsync(followerId);
+            string? message = $"{sender.DisplayName} unfollowed you.";
             await NotifyUserAsync(unfollowedId, message, 0, followerId, "Unfollow");
         }
 

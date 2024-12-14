@@ -19,10 +19,16 @@ namespace TownTalk.ViewModels
         {
             return Type switch
             {
-                ReactionType.Like => "😊",
+                ReactionType.Like => "👍",
                 ReactionType.Love => "❤️",
+                ReactionType.Haha => "😂",
+                ReactionType.Wow => "😮",
+                ReactionType.HeartEyes => "😍",
                 ReactionType.Sad => "😢",
-                _ => ""
+                ReactionType.Angry => "😡",
+                ReactionType.Cool => "😎",
+                ReactionType.Clap => "👏",
+                _ => "❓", // Default if invalid
             };
         }
     }

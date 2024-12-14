@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TownTalk.Data;
 using TownTalk.Repositories;
 using TownTalk.Repositories.Interfaces;
 using TownTalk.Services;
 using TownTalk.Services.Interfaces;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<TownTalkDbContext>(options =>
@@ -14,8 +15,11 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserFollowService, UserFollowService>();
+builder.Services.AddScoped<UserDataSeeder>();
+
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TownTalkDbContext>();
+
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -28,11 +32,13 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Add MVC services (controllers + views)
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddEndpointsApiExplorer(); // Required for Swagger documentation
+builder.Services.AddSwaggerGen(); // Add Swagger generation
 
-var app = builder.Build();
+WebApplication? app = builder.Build();
 
 // Apply migrations and seed data
-using (var scope = app.Services.CreateScope())
+using (IServiceScope? scope = app.Services.CreateScope())
 {
     IServiceProvider? services = scope.ServiceProvider;
     TownTalkDbContext? context = services.GetRequiredService<TownTalkDbContext>();
@@ -51,6 +57,12 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
+}
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger(); // Enable Swagger UI
+    app.UseSwaggerUI(); // Display Swagger UI at /swagger
 }
 
 // Redirect HTTP to HTTPS

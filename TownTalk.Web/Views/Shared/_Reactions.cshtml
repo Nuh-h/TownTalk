@@ -8,26 +8,32 @@
 
 <div class="reaction-container d-flex align-items-center" data-post-id="@Model.Id" data-active-reaction="@activeReactionIndex">
     <div class="position-relative">
-        <button class="reaction-btn btn w-small p-1 rounded"
-            aria-haspopup="true"
-            aria-expanded="false"
-            data-bs-toggle="popover"
-            style="margin-right: 0.5em;">
+        <button class="reaction-btn btn w-small p-1 rounded" aria-haspopup="true" aria-expanded="false"
+            data-bs-toggle="popover" style="margin-right: 0.5em;">
             ➕
         </button>
 
         <div class="reactionPopoverContent" style="display: none;">
             <div data-post-id="@Model.Id" class="reaction-container bg-black p-1 rounded"
-                style="background: black; text-align: center; color: #fff;">
-                @foreach (var reactionType in Model.AvailableReactions)
-                {
-                    <button class="reaction btn" data-reaction-type="@((int)reactionType)" tabindex="0" role="menuitem">
-                        @(new ReactionViewModel { Type = reactionType }.GetEmoji())
-                    </button>
-                }
+                style="text-align: center; color: #fff;">
+
+                <div class="row g-1">
+                    @foreach (var reactionType in Model.AvailableReactions)
+                    {
+                        <!-- Define the number of columns for each screen size -->
+                        <div class="col-4 col-sm-3 col-md-2 col-lg-1 d-flex justify-content-center align-items-center">
+                            <button class="reaction btn w-100" data-reaction-type="@((int)reactionType)" tabindex="0"
+                                role="menuitem">
+                                @(new ReactionViewModel { Type = reactionType }.GetEmoji())
+                            </button>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
+
     </div>
+
 
     @{
         // Group reactions by their type
@@ -58,47 +64,3 @@
     }
 
 </div>
-
-
-
-<style>
-    .popover {
-        background-color: #333;
-        /* Dark background */
-        color: #fff;
-        /* White text */
-        border: 1px solid #555;
-        /* Border color */
-        border-radius: 0.5rem;
-        /* Rounded corners */
-    }
-
-    .popover .reaction-container {
-        padding: 0.5rem;
-        /* Padding for the content */
-    }
-
-    .popover .reaction {
-        display: inline-block;
-        /* Make reactions inline */
-        padding: 0.5rem;
-        /* Padding around reaction buttons */
-        border: 1px solid transparent;
-        /* Initial border */
-        border-radius: 1em;
-        /* Rounded edges */
-        cursor: pointer;
-        /* Pointer cursor */
-        transition: background-color 0.3s ease, border-color 0.3s ease;
-        /* Smooth transitions */
-    }
-
-    .popover .reaction:hover,
-    .popover .reaction:active {
-        background-color: rgba(255, 255, 255, 0.1);
-        /* Slightly transparent white on hover */
-        border-color: rgba(255, 255, 255, 0.2);
-        /* Light border on hover */
-        color: #fff;
-    }
-</style>

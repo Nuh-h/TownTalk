@@ -20,7 +20,7 @@ namespace TownTalk.Tests
         public void Setup()
         {
             // Setup UserManager mock
-            var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
+            Mock<IUserStore<ApplicationUser>>? userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _mockUserManager = new Mock<UserManager<ApplicationUser>>(
                 userStoreMock.Object, null, null, null, null, null, null, null, null);
 
@@ -28,7 +28,7 @@ namespace TownTalk.Tests
             _mockClientProxy = new Mock<IClientProxy>();
             _mockHubContext = new Mock<IHubContext<NotificationHub>>();
 
-            var mockClients = new Mock<IHubClients>();
+            Mock<IHubClients>? mockClients = new Mock<IHubClients>();
             mockClients.Setup(c => c.User(It.IsAny<string>()))
                       .Returns(_mockClientProxy.Object);
 
@@ -38,9 +38,9 @@ namespace TownTalk.Tests
             _mockNotificationRepository = new Mock<INotificationRepository>();
 
             _notificationService = new NotificationService(
-                _mockNotificationRepository.Object,
-                _mockHubContext.Object,
-                _mockUserManager.Object
+                notificationRepository: _mockNotificationRepository.Object,
+                hubContext: _mockHubContext.Object,
+                userManager: _mockUserManager.Object
             );
         }
 
@@ -63,7 +63,7 @@ namespace TownTalk.Tests
                 .ReturnsAsync(false);
 
             // Setup SignalR mock to track method calls
-            var signalRCalled = false;
+            bool signalRCalled = false;
             _mockClientProxy.Setup(x => x.SendCoreAsync(
                 It.IsAny<string>(),
                 It.IsAny<object[]>(),

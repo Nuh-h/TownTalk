@@ -5,14 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using TownTalk.Data;
 
 #nullable disable
 
-namespace TownTalk.Migrations
+namespace TownTalk.Web.Migrations
 {
     [DbContext(typeof(TownTalkDbContext))]
-    [Migration("20241026084504_AddSenderName")]
-    partial class AddSenderName
+    [Migration("20241109103507_ReInit_1")]
+    partial class ReInit_1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +33,9 @@ namespace TownTalk.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -49,6 +53,12 @@ namespace TownTalk.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastActive")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -383,6 +393,9 @@ namespace TownTalk.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
@@ -409,6 +422,9 @@ namespace TownTalk.Migrations
 
                     b.Property<string>("FollowedId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("FollowedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");

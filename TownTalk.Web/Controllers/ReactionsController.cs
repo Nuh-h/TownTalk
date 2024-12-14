@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TownTalk.Data;
 using TownTalk.Models;
 using TownTalk.Services.Interfaces;
 
@@ -43,6 +44,8 @@ namespace TownTalk.Controllers
                 ModelState.Remove(key: "PostId");
             }
 
+            reaction.CreatedAt = DateTime.Now;
+
             if (ModelState.IsValid)
             {
                 Reaction? existingReaction = await _context.Reactions
@@ -73,7 +76,8 @@ namespace TownTalk.Controllers
                     success = true,
                     id = reaction.Id,
                     postId = reaction.PostId,
-                    type = reaction.Type
+                    type = reaction.Type,
+                    createdAt = reaction.CreatedAt
                 });
             }
 

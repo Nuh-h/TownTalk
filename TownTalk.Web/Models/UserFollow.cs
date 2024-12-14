@@ -6,4 +6,5 @@ public class UserFollow
     public ApplicationUser Follower { get; set; } // Navigation property for follower
     public string FollowedId { get; set; }
     public ApplicationUser Followed { get; set; } // Navigation property for followed user
+    public DateTime FollowedAt { get; set; }
 }
