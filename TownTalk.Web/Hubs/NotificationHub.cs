@@ -27,7 +27,7 @@ public class NotificationHub : Hub
         string? userId = Context.UserIdentifier;
         if (!string.IsNullOrEmpty(userId))
         {
-            var notifications = await _notificationRepository.GetUnreadNotificationsAsync(userId);
+            var notifications = await _notificationRepository.GetUserNotificationsAsync(userId, unread: false);
             foreach (var notification in notifications)
             {
                 await Clients.User(userId).SendAsync("ReceiveNotification", notification);

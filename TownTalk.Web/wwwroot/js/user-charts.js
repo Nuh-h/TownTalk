@@ -28,69 +28,17 @@ class UserCharts {
         const data = await this.getPostsByMonth();
         const ctx = document.getElementById('postsByMonthChart').getContext('2d');
         new Chart(ctx, {
-            type: 'line',
+            type: 'bubble',
             data: {
-                labels: data.map(item => item.date.length === 7 ? item.date : `0${item.date}`),
+                // labels: Array.from(new Set(data.map(item => `${item.year}`))),
                 datasets: [{
                     label: 'Posts Created',
-                    data: data.sort((a, b) => new Date(`01/` + a.date) - new Date(`01/` + b.date))
-                        .map((item, index) => {
-                            console.log(index);
-                            if (index > 0) { data[index].cumulative = data[index - 1].cumulative + item.count; }
-                            else { data[index].cumulative = item.count; }
-
-                            return data[index].cumulative;
-                        }),
+                    data: data.map(item => ({ x: item.year, y: item.month, r: item.count*10 })),
                     backgroundColor: '#4C8BF5',
                     borderColor: '#1f1f1f',
-                    borderWidth: 1
                 }]
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: 'rgba(255, 255, 255, 0.7)'
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: '#121212',
-                        titleColor: '#ffffff',
-                        bodyColor: '#ffffff',
-                        footerColor: '#ffffff'
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)',
-                        },
-                        ticks: {
-                            color: 'rgba(255, 255, 255, 0.7)'
-                        }
-                    },
-                    y: {
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.1)',
-                        },
-                        ticks: {
-                            color: 'rgba(255, 255, 255, 0.7)'
-                        }
-                    }
-                },
-                elements: {
-                    point: {
-                        radius: 5,
-                        backgroundColor: '#F1C40F',
-                        borderWidth: 2
-                    }
-                },
-                layout: {
-                    padding: 20
-                },
-                responsive: true
-            }
+            options: {}
         });
     }
 

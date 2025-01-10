@@ -19,7 +19,7 @@ public class NotificationRepository : INotificationRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Notification>> GetUserNotificationsAsync(string userId, bool unread = false)
+    public async Task<IEnumerable<Notification>> GetUserNotificationsAsync(string userId, bool unread)
     {
 
         IQueryable<Notification>? query = _context.Notifications
