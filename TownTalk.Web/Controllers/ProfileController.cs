@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TownTalk.Helpers;
 using TownTalk.Models;
 using TownTalk.Repositories.Interfaces;
 using TownTalk.Services.Interfaces;
@@ -22,16 +23,44 @@ public class ProfileController : Controller
         _notificationService = notificationService;
     }
 
+    async public Task<bool> IsFollowed(string followedId, string followerId)
+    {
+
+        bool isFollowing = await _userFollowService.IsFollowingAsync(followerId, followedId);
+
+        return isFollowing;
+    }
+
     // View a user's profile
     public async Task<IActionResult> Index(string userId)
     {
-        ApplicationUser? user = await _userManager.Users
-        .Include(u => u.Followers)
-        .Include(u => u.Following)
-        .Include(u => u.Posts)
-        .Include(u => u.Comments)
-        .FirstOrDefaultAsync(u => u.Id == userId);
-        ;
+        PerformanceLogger performanceLogger = new PerformanceLogger();
+        PerformanceLogger pagePerformanceLogger = new PerformanceLogger();
+
+        performanceLogger.Start();
+        pagePerformanceLogger.Start();
+
+        var user = await _userManager.Users
+        .Where(u => u.Id == userId)
+        .Select(u => new
+        {
+            u.Id,
+            u.DisplayName,
+            u.DateJoined,
+            u.Bio,
+            u.Location,
+            u.LastActive,
+            u.Posts,
+            FollowersCount = u.Followers.Count(),
+            FollowingCount = u.Following.Count(),
+            PostsCount = u.Posts.Count(),
+            CommentsCount = u.Comments.Count(),
+
+        })
+        .FirstOrDefaultAsync();
+
+        performanceLogger.Stop("Fetching Profile user data");
+
         List<Post>? posts = await _postRepository.GetAllPostsByUserIdAsync(userId);
 
         if (user == null)
@@ -39,22 +68,33 @@ public class ProfileController : Controller
             return NotFound();
         }
 
+        performanceLogger.Start();
+
         string? currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        ApplicationUser? currentUser = currentUserId != null ? await _userManager.FindByIdAsync(currentUserId): null;
+        ApplicationUser? currentUser = currentUserId != null ? await _userManager.FindByIdAsync(currentUserId) : null;
 
-        bool isFollowing = currentUser != null ? await _userFollowService.IsFollowingAsync(followerId: currentUserId, followedId: userId): false;
-
-        int followersCount = user.Followers.Count;
-        int followingCount = user.Following.Count;
+        int followersCount = user.FollowersCount;
+        int followingCount = user.FollowingCount;
         int postsCount = user.Posts.Count;
-        int commentsCount = user.Comments.Count;
+        int commentsCount = user.CommentsCount;
+        bool isFollowing = await IsFollowed(userId, currentUserId);
 
         List<string>? currentUserFollowersIds = currentUser?.Followers.Select(f => f.FollowerId).ToList();
-        List<string>? profileUserFollowersIds = user.Followers.Select(f => f.FollowerId).ToList();
 
-        // Compute mutual followers by finding the intersection of these two lists
-        List<string>? mutualFollowers = currentUserFollowersIds?.Intersect(profileUserFollowersIds).ToList();
-        int mutualFollowersCount = mutualFollowers == null ? 0 : mutualFollowers.Count;
+        int mutualFollowersCount = 0;
+
+        if (currentUser?.Followers != null)
+        {
+            // Create an array of tasks to run IsFollowed for each follower
+            Task<bool>[]? tasks = currentUser.Followers
+                .Select(f => IsFollowed(f.FollowerId, user.Id))
+                .ToArray();
+
+            // Await all tasks to complete concurrently
+            bool[]? results = await Task.WhenAll(tasks);
+
+            mutualFollowersCount = results.Count(r => r);
+        }
 
         // Maps names to two-letter or up to first 3 letters if only one word
         string profileDisplayName = user.DisplayName.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
@@ -62,6 +102,8 @@ public class ProfileController : Controller
                          .Take(2)
                          .Aggregate("", (a, b) => a + b)
                          ?? user.DisplayName.Substring(0, Math.Min(3, user.DisplayName.Length));
+
+        performanceLogger.Stop("Crunching numbers for profile stats");
 
         ProfileViewModel? viewModel = new ProfileViewModel
         {
@@ -80,6 +122,8 @@ public class ProfileController : Controller
             PostsCount = postsCount,
             CommentsCount = commentsCount
         };
+
+        pagePerformanceLogger.Stop("Profile page's speed is: ");
 
         return View(viewModel);
     }

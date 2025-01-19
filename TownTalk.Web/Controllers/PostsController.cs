@@ -55,7 +55,7 @@ public class PostsController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Index()
     {
-        var posts = await _postRepository.GetAllPostsAsync();
+        List<Post>? posts = await _postRepository.GetAllPostsAsync();
         return View(posts);
     }
 
@@ -113,7 +113,7 @@ public class PostsController : Controller
     {
         if (id == null) return NotFound();
 
-        var post = await _postRepository.GetPostByIdAsync(id: id.Value);
+        Post? post = await _postRepository.GetPostByIdAsync(id: id.Value);
         if (post == null) return NotFound();
 
         return View(post);
@@ -130,7 +130,7 @@ public class PostsController : Controller
 
     private async Task<bool> PostExists(int id)
     {
-        var post = await _postRepository.GetPostByIdAsync(id: id);
+        Post? post = await _postRepository.GetPostByIdAsync(id: id);
         return post != null;
     }
 
