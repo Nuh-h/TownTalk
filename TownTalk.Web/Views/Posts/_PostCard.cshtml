@@ -27,12 +27,15 @@
                 @Model.CreatedAt.ToShortDateString()</small>
         </p>
 
-        <div class="reaction-containers d-flex justify-content-between align-items-center" data-post-id="@Model.Id">
+        <div class="d-flex gap-1 align-items-center w-100 justify-content-between">
             <button class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-@Model.Id">
-                Show Comments (@Model.CommentCount)
+                Comments (@Model.CommentCount)
             </button>
-            <div class="ml-auto">
-                @await Html.PartialAsync(partialViewName: "~/Views/Shared/_Reactions.cshtml", model: Model)
+
+            <div class="reaction-containers" data-post-id="@Model.Id">
+                <div class="ml-auto">
+                    @await Html.PartialAsync(partialViewName: "~/Views/Shared/_Reactions.cshtml", model: Model)
+                </div>
             </div>
         </div>
 

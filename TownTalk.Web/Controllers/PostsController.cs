@@ -53,13 +53,24 @@ public class PostsController : Controller
 
     // GET: Posts/Index
     [AllowAnonymous]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string? q, string? cl, string? by, string? at)
     {
-        List<Post>? posts = await _postRepository.GetAllPostsAsync();
+
+        ViewBag.Query = q;
+        ViewBag.Category = cl;
+        ViewBag.Author = by;
+        ViewBag.Date = at;
+
+        List<Post>? posts = await _postRepository.GetFilteredPostsAsync(q, cl, by, at);
+
+        if (string.IsNullOrWhiteSpace(q) && string.IsNullOrWhiteSpace(cl) && string.IsNullOrWhiteSpace(by) && string.IsNullOrWhiteSpace(at))
+        {
+            posts = await _postRepository.GetAllPostsAsync();
+        }
         return View(posts);
     }
 
-    // GET: Posts/Edit/5
+    // GET: Posts/Edit/{id}
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null) return NotFound();
@@ -71,7 +82,7 @@ public class PostsController : Controller
         return View(post);
     }
 
-    // POST: Posts/Edit/5
+    // POST: Posts/Edit/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Post post)
@@ -108,7 +119,7 @@ public class PostsController : Controller
         return View(post);
     }
 
-    // GET: Posts/Delete/5
+    // GET: Posts/Delete/{id}
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return NotFound();
@@ -119,7 +130,7 @@ public class PostsController : Controller
         return View(post);
     }
 
-    // POST: Posts/Delete/5
+    // POST: Posts/Delete/{id}
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)

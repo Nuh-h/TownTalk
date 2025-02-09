@@ -35,44 +35,57 @@
 
     <div class="container mt-3">
         <!-- Filters Group -->
-        <div class="row">
-            <!-- Date Filter -->
-            <div class="col-md-4">
-                <label for="dateFilter">Date</label>
-                <select class="form-control" id="dateFilter">
-                    <option value="">All Dates</option>
-                    @foreach (var date in availableDates)
-                    {
-                        <option value="@date">@date</option> <!-- List available months/years -->
-                    }
-                </select>
+        <form method="get" asp-action="Index">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="q">Search</label>
+                    <input type="text" id="q" name="q" value="@ViewBag.Query"
+                        placeholder="Search by title or content" />
+                </div>
+            </div>
+            <div class="row align-items-center">
+                <!-- Date Filter -->
+                <div class="col-md-3">
+                    <label for="dateFilter">Date</label>
+                    <select id="dateFilter" name="at">
+                        <option value="">All Dates</option>
+                        @foreach (var date in availableDates)
+                        {
+                            <option value="@date" selected="@(ViewBag?.Date == date)">@date</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Author Filter -->
+                <div class="col-md-3">
+                    <label for="authorFilter">Author</label>
+                    <select id="authorFilter" name="by">
+                        <option value="">All Authors</option>
+                        @foreach (var author in authors)
+                        {
+                            <option value="@author.DisplayName" selected="@(ViewBag?.Author == @author.DisplayName)">@author.DisplayName</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="col-md-3">
+                    <label for="categoryFilter">Category</label>
+                    <select id="categoryFilter" name="cl">
+                        <option value="">All Categories</option>
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Name" selected="@(ViewBag?.Category == category.Name)">@category.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3 d-flex align-items-center">
+                    <button class="btn-primary mt-2" type="submit">Apply filters</button>
+                </div>
             </div>
 
-            <!-- Author Filter -->
-            <div class="col-md-4">
-                <label for="authorFilter">Author</label>
-                <select class="form-control" id="authorFilter">
-                    <option value="">All Authors</option>
-                    @foreach (var author in authors)
-                    {
-                        <option value="@author.Id">@author.DisplayName</option> <!-- List authors -->
-                    }
-                </select>
-            </div>
-
-            <!-- Category Filter -->
-            <div class="col-md-4">
-                <label for="categoryFilter">Category</label>
-                <select class="form-control" id="categoryFilter">
-                    <option value="">All Categories</option>
-                    @foreach (var category in categories)
-                    {
-                        <option value="@category.Id">@category.Name</option> <!-- List categories -->
-                    }
-                </select>
-            </div>
-        </div>
-
+        </form>
         <hr>
 
         <!-- Posts Display Area -->

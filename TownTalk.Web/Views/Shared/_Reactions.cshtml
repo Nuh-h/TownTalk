@@ -7,33 +7,45 @@
 }
 
 <div class="reaction-container d-flex align-items-center" data-post-id="@Model.Id" data-active-reaction="@activeReactionIndex">
+
     <div class="position-relative">
-        <button class="reaction-btn btn w-small p-1 rounded" aria-haspopup="true" aria-expanded="false"
-            data-bs-toggle="popover" style="margin-right: 0.5em;">
-            ➕
+        <button class="reaction-btn btn w-small p-1 rounded btn-secondary" aria-haspopup="true" aria-expanded="false"
+            data-bs-toggle="popover" style="
+            margin-right: 0.5em;
+            border-radius: 12px 6px;
+    background: linear-gradient(45deg, black, transparent);
+    border-right: 0.3em solid #0a79f2;
+            " aria-label="Select emoji to react with">
+            <!-- License: PD. Made by Significa Labs: https://significa.co/labs/ -->
+            <svg width="24px" height="24px" viewBox="0 0 24 24" id="add-reaction" xmlns="http://www.w3.org/2000/svg">
+            <rect id="Rectangle_3" data-name="Rectangle 3" width="24" height="24" fill="none"/>
+            <path id="Oval" d="M8.4,0a8.4,8.4,0,0,0,0,16.8h0a8.4,8.4,0,0,0,8.4-8.4" transform="translate(2.4 4.8)" fill="none" stroke="white" stroke-miterlimit="10" stroke-width="1.5"/>
+            <path id="Oval-2" data-name="Oval" d="M0,0A4.807,4.807,0,0,0,1.042,1.557,4.785,4.785,0,0,0,4.436,2.963h0A4.785,4.785,0,0,0,7.83,1.557,4.807,4.807,0,0,0,8.872,0" transform="translate(6.364 15.037)" fill="none" stroke="white" stroke-miterlimit="10" stroke-width="1.5"/>
+            <circle id="Oval-3" data-name="Oval" cx="1.2" cy="1.2" r="1.2" transform="translate(7.2 9.6)" fill="#fff" stroke="white" stroke-width="1"/>
+            <circle id="Oval-4" data-name="Oval" cx="1.2" cy="1.2" r="1.2" transform="translate(12 9.6)" fill="#fff" stroke="white" stroke-width="1"/>
+            <path id="Line" d="M1.2,0V7.2" transform="translate(18 1.2)" fill="none" stroke="white" stroke-linecap="square" stroke-miterlimit="10" stroke-width="1.5"/>
+            <path id="Line-2" data-name="Line" d="M0,1.2H7.2" transform="translate(15.6 3.6)" fill="none" stroke="white" stroke-linecap="square" stroke-miterlimit="10" stroke-width="1.5"/>
+            </svg>
+
         </button>
 
         <div class="reactionPopoverContent" style="display: none;">
             <div data-post-id="@Model.Id" class="reaction-container bg-black p-1 rounded"
-                style="text-align: center; color: #fff;">
+                style="text-align: center; color: #fff; filter: drop-shadow(2px 4px 6px black);">
 
-                <div class="row g-1">
+                <div class="row d-flex g-1 d-flex-wrap">
                     @foreach (var reactionType in Model.AvailableReactions)
                     {
-                        <!-- Define the number of columns for each screen size -->
-                        <div class="col-4 col-sm-3 col-md-2 col-lg-1 d-flex justify-content-center align-items-center">
-                            <button class="reaction btn w-100" data-reaction-type="@((int)reactionType)" tabindex="0"
+                            <button class="reaction btn col-2" data-reaction-type="@((int)reactionType)" tabindex="0"
                                 role="menuitem">
                                 @(new ReactionViewModel { Type = reactionType }.GetEmoji())
                             </button>
-                        </div>
                     }
                 </div>
             </div>
         </div>
 
     </div>
-
 
     @{
         // Group reactions by their type
@@ -56,7 +68,7 @@
         // Only display count if more than one user has reacted
         var reactionCountDisplay = group.Count >= 1 ? $"{group.Count}" : "";
 
-        <button class="mr-2 reaction btn" data-reaction-type="@((int)group.Type)" data-post-id="@Model.Id"
+        <button class="mr-2 reaction btn d-flex gap-2" data-reaction-type="@((int)group.Type)" data-post-id="@Model.Id"
             style="cursor: pointer; color: #fff; border-radius: 12px; border: 1px solid #ffffff24; @currentUserReactionStyles">
             @(new ReactionViewModel { Type = group.Type }.GetEmoji())
             <span class="reaction-count">@reactionCountDisplay</span>

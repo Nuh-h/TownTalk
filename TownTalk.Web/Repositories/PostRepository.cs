@@ -130,5 +130,48 @@ public class PostRepository : IPostRepository
         return groupedResult;
     }
 
+    public async Task<List<Post>> GetFilteredPostsAsync(string? q, string? cl, string? by, string? at)
+    {
+        PerformanceLogger performanceLogger = new PerformanceLogger();
+        performanceLogger.Start();
+
+        IQueryable<Post> query = _context.Posts
+            .Include(p => p.User)
+            .Include(p => p.Category)
+            .Include(p => p.Reactions)
+            .Include(p => p.Comments)
+                .ThenInclude(c => c.User)
+            .Include(p => p.Comments)
+                .ThenInclude(c => c.Replies);
+
+        if (!string.IsNullOrEmpty(q))
+        {
+            query = query.Where(p => p.Title.Contains(q) || p.Content.Contains(q));
+        }
+
+        if (!string.IsNullOrEmpty(cl))
+        {
+            query = query.Where(p => p.Category.Name.Contains(cl));
+        }
+
+        if (!string.IsNullOrEmpty(by))
+        {
+            query = query.Where(p => p.User.DisplayName.Contains(by));
+        }
+
+        if (!string.IsNullOrEmpty(at))
+        {
+            int month, year;
+            int.TryParse(at.Split("/")[0], out month);
+            int.TryParse(at.Split("/")[1], out year);
+            query = query.Where(p => p.CreatedAt.Year == year && p.CreatedAt.Month == month);
+        }
+
+        List<Post> filteredList = await query.ToListAsync();
+
+        performanceLogger.Stop("GetFilteredPosts");
+
+        return filteredList;
+    }
 
 }

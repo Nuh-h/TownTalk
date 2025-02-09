@@ -103,7 +103,7 @@ body {
   right: 20px;
   display: none;
   /* Initially hidden */
-  background-color: var(--pico-color-primary);
+  background-color: rgb(10, 121, 242);
   /* Primary color from Pico CSS */
   color: white;
   /* Icon color */
@@ -119,4 +119,15 @@ body {
 .scroll-to-top-btn:hover {
   background-color: var(--pico-color-secondary);
   /* Secondary color from Pico CSS on hover */
+}
+
+/* Reaction container */
+.reaction-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  border: 0.05em solid black;
+  padding: 0.2em;
+  border-radius: 1em;
 }
