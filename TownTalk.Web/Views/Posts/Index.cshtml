@@ -1,32 +1,37 @@
 @using System.Security.Claims
 @using TownTalk.Models
 @using TownTalk.ViewModels
-@model IEnumerable<TownTalk.Models.Post>
+@model SearchResultsViewModel;
 
 @{
     ViewBag.Title = "Posts";
+    int count = Model.Posts.Count();
+    int start = (Model.CurrentPage - 1) * 20 + 1;
+    int end = Model.CurrentPage*20;
+    int total = Model.TotalPosts;
+    string heading = Model.Posts.Count() > 0 ? " | " + start + " - " + end + " of " + total: "";
 }
 
 <div class="container mt-4">
-    <h1>Posts (@Model.Count())</h1>
+    <h1>Posts</h1>
 
     @{
         // Calculate available dates (unique MM/yyyy values from the post CreatedAt property)
-        List<string>? availableDates = Model
+        List<string>? availableDates = Model.Posts
         .Select(p => p.CreatedAt) // Select the DateTime value
         .OrderBy(d => d) // Sort by DateTime value
         .Select(d => d.ToString("MM/yyyy")) // Convert to MM/yyyy format after sorting
         .Distinct().ToList();
 
         // Calculate authors (unique users who posted)
-        var authors = Model
+        var authors = Model.Posts
         .Select(p => p.User)
         .Distinct()
         .Select(u => new { u.Id, u.DisplayName })
         .ToList();
 
         // Calculate categories (unique categories for the posts)
-        List<Category?>? categories = Model
+        List<Category?>? categories = Model.Posts
         .Where(p => p.Category != null) // Only include posts with a category
         .Select(p => p.Category)
         .Distinct()
@@ -40,7 +45,7 @@
                 <div class="col-md-12">
                     <label for="q">Search</label>
                     <input type="text" id="q" name="q" value="@ViewBag.Query"
-                        placeholder="Search by title or content" />
+                    placeholder="Search by title or content" />
                 </div>
             </div>
             <div class="row align-items-center">
@@ -88,15 +93,27 @@
         </form>
         <hr>
 
-        <!-- Posts Display Area -->
-        <div id="postList">
-            @foreach (Post post in Model)
-            {
-                string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                @await Html.PartialAsync("_PostCard", new PostViewModel(post: post, userId))
-            }
-        </div>
+        @{
+            await Html.RenderPartialAsync("_SearchResults", Model);
+        }
+
     </div>
 
 
 </div>
+
+<script>
+    function loadPosts(page) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set("page", page);
+
+        const queryString = urlParams.toString();
+
+        fetch(`/Posts/GetPosts?${queryString}`)
+            .then(response => response.text())
+            .then(data => {
+                // Replace the PostList and Pagination parts with new content
+                document.getElementById("resultsContainer").innerHTML = data;
+            });
+    }
+</script>

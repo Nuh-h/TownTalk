@@ -130,7 +130,7 @@ public class PostRepository : IPostRepository
         return groupedResult;
     }
 
-    public async Task<List<Post>> GetFilteredPostsAsync(string? q, string? cl, string? by, string? at)
+    public async Task<List<Post>> GetFilteredPostsAsync(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 20)
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
         performanceLogger.Start();
@@ -144,6 +144,35 @@ public class PostRepository : IPostRepository
             .Include(p => p.Comments)
                 .ThenInclude(c => c.Replies);
 
+        query = ApplyFilters(query, q, cl, by, at);
+
+        query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+        List<Post> filteredList = await query.ToListAsync();
+
+        performanceLogger.Stop("GetFilteredPosts");
+
+        return filteredList;
+    }
+
+    public async Task<int> GetFilteredPostsCountAsync(string? q, string? cl, string? by, string? at)
+    {
+        PerformanceLogger performanceLogger = new PerformanceLogger();
+        performanceLogger.Start();
+
+        IQueryable<Post> query = _context.Posts;
+
+        query = ApplyFilters(query, q, cl, by, at);
+
+        int count = await query.CountAsync();
+
+        performanceLogger.Stop("GetFilteredCount");
+
+        return count;
+    }
+
+    private static IQueryable<Post> ApplyFilters(IQueryable<Post> query, string? q, string? cl, string? by, string? at)
+    {
         if (!string.IsNullOrEmpty(q))
         {
             query = query.Where(p => p.Title.Contains(q) || p.Content.Contains(q));
@@ -167,11 +196,7 @@ public class PostRepository : IPostRepository
             query = query.Where(p => p.CreatedAt.Year == year && p.CreatedAt.Month == month);
         }
 
-        List<Post> filteredList = await query.ToListAsync();
-
-        performanceLogger.Stop("GetFilteredPosts");
-
-        return filteredList;
+        return query;
     }
 
 }

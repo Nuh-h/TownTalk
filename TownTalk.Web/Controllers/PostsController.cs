@@ -53,22 +53,55 @@ public class PostsController : Controller
 
     // GET: Posts/Index
     [AllowAnonymous]
-    public async Task<IActionResult> Index(string? q, string? cl, string? by, string? at)
+    public async Task<IActionResult> Index(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 20)
     {
 
-        ViewBag.Query = q;
-        ViewBag.Category = cl;
-        ViewBag.Author = by;
-        ViewBag.Date = at;
+        List<Post> posts = await _postRepository.GetFilteredPostsAsync(q, cl, by, at, page, pageSize);
 
-        List<Post>? posts = await _postRepository.GetFilteredPostsAsync(q, cl, by, at);
+        int totalPosts = await _postRepository.GetFilteredPostsCountAsync(q, cl, by, at);
+        int totalPages = (int)Math.Ceiling(totalPosts / (double)pageSize);
 
-        if (string.IsNullOrWhiteSpace(q) && string.IsNullOrWhiteSpace(cl) && string.IsNullOrWhiteSpace(by) && string.IsNullOrWhiteSpace(at))
+        SearchResultsViewModel? viewModel = new SearchResultsViewModel
         {
-            posts = await _postRepository.GetAllPostsAsync();
-        }
-        return View(posts);
+            Posts = posts,
+            CurrentPage = page,
+            TotalPages = totalPages,
+            TotalPosts = totalPosts,
+            Query = q,
+            Category = cl,
+            Author = by,
+            Date = at
+        };
+
+        return View(viewModel);
     }
+
+    // New endpoint for getting paginated posts
+    [HttpGet]
+    public async Task<IActionResult> GetPosts(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 10)
+    {
+        // Get filtered posts
+        List<Post> posts = await _postRepository.GetFilteredPostsAsync(q, cl, by, at, page, pageSize);
+
+        // Calculate total pages for pagination
+        int totalPosts = await _postRepository.GetFilteredPostsCountAsync(q, cl, by, at);
+        int totalPages = (int)Math.Ceiling(totalPosts / (double)pageSize);
+
+        SearchResultsViewModel? viewModel = new SearchResultsViewModel
+        {
+            Posts = posts,
+            CurrentPage = page,
+            TotalPages = totalPages,
+            TotalPosts = totalPosts,
+            Query = q,
+            Category = cl,
+            Author = by,
+            Date = at
+        };
+
+        return PartialView("_SearchResults", viewModel); ;
+    }
+
 
     // GET: Posts/Edit/{id}
     public async Task<IActionResult> Edit(int? id)

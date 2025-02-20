@@ -1,0 +1,60 @@
+@using TownTalk.ViewModels
+@model PaginationViewModel
+
+<nav class="d-flex justify-content-center align-items-center rounded w-auto shadow-sm"
+aria-label="Pagination for news" aria-controls="news-list">
+    <!-- Previous Button -->
+    @if (Model.CurrentPage > 1)
+    {
+        <div class="p-2">
+            <button class="btn btn-primary" onclick="loadPosts(@(Model.CurrentPage - 1))" aria-label="Previous">
+                Previous<span class="sr-only"> page</span>
+            </button>
+        </div>
+    }
+
+    <!-- Page Numbers -->
+    <ul class="d-flex list-unstyled gap-2">
+        @{
+            int startPage = Math.Max(1, Model.CurrentPage - 3);
+            int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 3);
+
+            // Adjust the start page if we're at the beginning and we need to show 7 pages
+            if (Model.CurrentPage <= 4)
+            {
+                startPage = 1;
+                endPage = Math.Min(7, Model.TotalPages);
+            }
+            // Adjust the end page if we're at the end and we need to show 7 pages
+            else if (Model.CurrentPage + 3 >= Model.TotalPages)
+            {
+                endPage = Model.TotalPages;
+                startPage = Math.Max(1, Model.TotalPages - 6);
+            }
+        }
+
+        @for (int pageNo = startPage; pageNo <= endPage; pageNo++)
+        {
+            string? activeClass = pageNo == Model.CurrentPage ? "active" :"";
+
+            <li>
+                <button class="btn btn-outline-primary @activeClass"
+                        onclick="loadPosts(@pageNo)"
+                        aria-label="Page @pageNo"
+                        aria-current="page"
+                        >
+                    @pageNo
+                </button>
+            </li>
+        }
+    </ul>
+
+    @if (Model.CurrentPage < Model.TotalPages)
+    {
+        <div class="p-2">
+            <button class="btn btn-primary" onclick="loadPosts(@(Model.CurrentPage + 1))" aria-label="Next">
+                Next<span class="sr-only"> page</span>
+            </button>
+        </div>
+    }
+</nav>
