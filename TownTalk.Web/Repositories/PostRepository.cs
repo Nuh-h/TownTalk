@@ -82,6 +82,41 @@ public class PostRepository : IPostRepository
         return results;
     }
 
+    public async Task<List<ApplicationUser>> GetAuthorsAsync()
+    {
+        PerformanceLogger performanceLogger = new PerformanceLogger();
+
+        performanceLogger.Start();
+
+        List<ApplicationUser>? results = await _context.Users.Where(u => u.Posts.Count > 0).ToListAsync();
+
+        performanceLogger.Stop("GetAuthors");
+
+        return results;
+    }
+
+    public async Task<List<string>> GetPublishedDatesAsync()
+    {
+        PerformanceLogger performanceLogger = new PerformanceLogger();
+
+        performanceLogger.Start();
+
+        var posts = await _context.Posts
+        .Select(p => p.CreatedAt)
+        .ToListAsync();
+
+        var uniqueDates = posts
+            .Select(p => p.ToString("MM/yyyy"))
+            .Distinct()
+            .OrderBy(d => d)
+            .ToList();
+
+        performanceLogger.Stop("GetPublishedDates");
+
+        return uniqueDates;
+    }
+
+
     public async Task<List<Post>> GetAllPostsByUserIdAsync(string userId)
     {
 

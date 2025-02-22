@@ -61,7 +61,18 @@ public class PostsController : Controller
         int totalPosts = await _postRepository.GetFilteredPostsCountAsync(q, cl, by, at);
         int totalPages = (int)Math.Ceiling(totalPosts / (double)pageSize);
 
-        SearchResultsViewModel? viewModel = new SearchResultsViewModel
+        List<string>? dates = await _postRepository.GetPublishedDatesAsync();
+        List<ApplicationUser>? authors = await _postRepository.GetAuthorsAsync();
+        List<Category>? categories = await _postRepository.GetCategoriesAsync();
+
+        Filters? filters = new Filters()
+        {
+            Authors = authors,
+            AvailableDates = dates,
+            Categories = categories
+        };
+
+        PostsLandingViewModel? viewModel = new PostsLandingViewModel()
         {
             Posts = posts,
             CurrentPage = page,
@@ -70,7 +81,8 @@ public class PostsController : Controller
             Query = q,
             Category = cl,
             Author = by,
-            Date = at
+            Date = at,
+            Filters = filters
         };
 
         return View(viewModel);
@@ -78,7 +90,7 @@ public class PostsController : Controller
 
     // New endpoint for getting paginated posts
     [HttpGet]
-    public async Task<IActionResult> GetPosts(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 10)
+    public async Task<IActionResult> GetPosts(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 20)
     {
         // Get filtered posts
         List<Post> posts = await _postRepository.GetFilteredPostsAsync(q, cl, by, at, page, pageSize);

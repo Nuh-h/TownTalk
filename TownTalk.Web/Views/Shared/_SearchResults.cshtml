@@ -5,9 +5,9 @@
 @{
     int count = Model.Posts.Count();
     int start = (Model.CurrentPage - 1) * 20 + 1;
-    int end = Model.CurrentPage * 20;
     int total = Model.TotalPosts;
-    string heading = Model.Posts.Count() > 0 ? start + " - " + end + " of " + total : "Looks like we have a clean slate!";
+    int end = Model.CurrentPage * 20 > total ? total : Model.CurrentPage*20;
+    string heading = Model.Posts.Count() > 0 ? $"{start} - {end} of {total}" : "Looks like we have a clean slate!";
 }
 <!-- Posts Display Area -->
 <div id="resultsContainer">

@@ -11,6 +11,8 @@ public interface IPostRepository
     Task UpdatePostAsync(Post post);
     Task DeletePostAsync(int id);
     Task<List<Category>> GetCategoriesAsync();
+    Task<List<ApplicationUser>> GetAuthorsAsync();
+    Task<List<string>> GetPublishedDatesAsync();
     Task<List<Post>> GetAllPostsByUserIdAsync(string userId);
     Task<List<dynamic>> GetPostsByMonth(string userId);
 }

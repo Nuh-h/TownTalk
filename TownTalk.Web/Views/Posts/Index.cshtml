@@ -1,7 +1,7 @@
 @using System.Security.Claims
 @using TownTalk.Models
 @using TownTalk.ViewModels
-@model SearchResultsViewModel;
+@model PostsLandingViewModel;
 
 @{
     ViewBag.Title = "Posts";
@@ -15,36 +15,13 @@
 <div class="container mt-4">
     <h1>Posts</h1>
 
-    @{
-        // Calculate available dates (unique MM/yyyy values from the post CreatedAt property)
-        List<string>? availableDates = Model.Posts
-        .Select(p => p.CreatedAt) // Select the DateTime value
-        .OrderBy(d => d) // Sort by DateTime value
-        .Select(d => d.ToString("MM/yyyy")) // Convert to MM/yyyy format after sorting
-        .Distinct().ToList();
-
-        // Calculate authors (unique users who posted)
-        var authors = Model.Posts
-        .Select(p => p.User)
-        .Distinct()
-        .Select(u => new { u.Id, u.DisplayName })
-        .ToList();
-
-        // Calculate categories (unique categories for the posts)
-        List<Category?>? categories = Model.Posts
-        .Where(p => p.Category != null) // Only include posts with a category
-        .Select(p => p.Category)
-        .Distinct()
-        .ToList();
-    }
-
     <div class="container mt-3">
         <!-- Filters Group -->
         <form method="get" asp-action="Index">
             <div class="row">
                 <div class="col-md-12">
                     <label for="q">Search</label>
-                    <input type="text" id="q" name="q" value="@ViewBag.Query"
+                    <input type="text" id="q" name="q" value="@Model.Query"
                     placeholder="Search by title or content" />
                 </div>
             </div>
@@ -54,9 +31,9 @@
                     <label for="dateFilter">Date</label>
                     <select id="dateFilter" name="at">
                         <option value="">All Dates</option>
-                        @foreach (var date in availableDates)
+                        @foreach (string date in Model.Filters.AvailableDates)
                         {
-                            <option value="@date" selected="@(ViewBag?.Date == date)">@date</option>
+                            <option value="@date" selected="@(Model?.Date == date)">@date</option>
                         }
                     </select>
                 </div>
@@ -66,9 +43,9 @@
                     <label for="authorFilter">Author</label>
                     <select id="authorFilter" name="by">
                         <option value="">All Authors</option>
-                        @foreach (var author in authors)
+                        @foreach (ApplicationUser author in Model.Filters.Authors)
                         {
-                            <option value="@author.DisplayName" selected="@(ViewBag?.Author == @author.DisplayName)">@author.DisplayName</option>
+                            <option value="@author.DisplayName" selected="@(Model.Author == @author.DisplayName)">@author.DisplayName</option>
                         }
                     </select>
                 </div>
@@ -78,15 +55,15 @@
                     <label for="categoryFilter">Category</label>
                     <select id="categoryFilter" name="cl">
                         <option value="">All Categories</option>
-                        @foreach (var category in categories)
+                        @foreach (Category category in Model.Filters.Categories)
                         {
-                            <option value="@category.Name" selected="@(ViewBag?.Category == category.Name)">@category.Name</option>
+                            <option value="@category.Name" selected="@(Model.Category == category.Name)">@category.Name</option>
                         }
                     </select>
                 </div>
 
                 <div class="col-md-3 d-flex align-items-center">
-                    <button class="btn-primary mt-2" type="submit">Apply filters</button>
+                    <button class="btn-primary m-0 mt-3" type="submit">Apply filters</button>
                 </div>
             </div>
 
