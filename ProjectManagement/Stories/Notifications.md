@@ -18,7 +18,7 @@ As a **user**, I want to **receive notifications for new comments on my posts** 
 
 ## Tasks for Notifications
 
-1. **Design Notification System Architecture**
+- [x] **Design Notification System Architecture**
    - **Considerations**:
      - Define a database schema for notifications (e.g., notification type, message, user ID, post ID, timestamp, status).
      - Decide whether to use a real-time service (like SignalR) for instant notifications or batch processing.
@@ -26,7 +26,7 @@ As a **user**, I want to **receive notifications for new comments on my posts** 
    - **Estimate**: 3 hours
    - **Definition of Done**: Notification system design document is completed.
 
-2. **Implement Logic to Send Notifications**
+- [x] **Implement Logic to Send Notifications**
    - **Considerations**:
      - Create event listeners to trigger notifications when comments or reactions occur.
      - Ensure notifications are stored in the database and marked as unread by default.
@@ -35,7 +35,7 @@ As a **user**, I want to **receive notifications for new comments on my posts** 
    - **Estimate**: 4 hours
    - **Definition of Done**: Notifications are sent out as intended based on user actions.
 
-3. **Create Notification View for Users**
+- [x] **Create Notification View for Users**
    - **Considerations**:
      - Design a user-friendly interface for displaying notifications (e.g., using Bootstrap modals or dropdowns).
      - Ensure that notifications can be filtered (e.g., all, unread, by type).
@@ -43,7 +43,7 @@ As a **user**, I want to **receive notifications for new comments on my posts** 
    - **Estimate**: 3 hours
    - **Definition of Done**: Users can view their notifications in a structured manner.
 
-4. **Set Up Notification Preferences**
+- [ ] **Set Up Notification Preferences**
    - **Considerations**:
      - Allow users to choose which notifications they want to receive (e.g., comments, likes).
      - Implement a user settings page where preferences can be managed.

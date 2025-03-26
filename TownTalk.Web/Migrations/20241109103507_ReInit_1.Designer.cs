@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TownTalk.Data;
+using TownTalk.Web.Data;
 
 #nullable disable
 
@@ -243,7 +243,7 @@ namespace TownTalk.Web.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Category", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -260,7 +260,7 @@ namespace TownTalk.Web.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Comment", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -296,7 +296,7 @@ namespace TownTalk.Web.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Notification", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Notification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -350,7 +350,7 @@ namespace TownTalk.Web.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Post", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Post", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -385,7 +385,7 @@ namespace TownTalk.Web.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Reaction", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Reaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -415,7 +415,7 @@ namespace TownTalk.Web.Migrations
                     b.ToTable("Reactions");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.UserFollow", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.UserFollow", b =>
                 {
                     b.Property<string>("FollowerId")
                         .HasColumnType("nvarchar(450)");
@@ -489,14 +489,14 @@ namespace TownTalk.Web.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Comment", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Comment", b =>
                 {
-                    b.HasOne("TownTalk.Models.Comment", "ParentComment")
+                    b.HasOne("TownTalk.Web.Models.Comment", "ParentComment")
                         .WithMany("Replies")
                         .HasForeignKey("ParentCommentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("TownTalk.Models.Post", "Post")
+                    b.HasOne("TownTalk.Web.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -515,14 +515,14 @@ namespace TownTalk.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Notification", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Notification", b =>
                 {
-                    b.HasOne("TownTalk.Models.Comment", null)
+                    b.HasOne("TownTalk.Web.Models.Comment", null)
                         .WithMany()
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("TownTalk.Models.Post", null)
+                    b.HasOne("TownTalk.Web.Models.Post", null)
                         .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -551,9 +551,9 @@ namespace TownTalk.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Post", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Post", b =>
                 {
-                    b.HasOne("TownTalk.Models.Category", "Category")
+                    b.HasOne("TownTalk.Web.Models.Category", "Category")
                         .WithMany("Posts")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -569,9 +569,9 @@ namespace TownTalk.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Reaction", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Reaction", b =>
                 {
-                    b.HasOne("TownTalk.Models.Post", "Post")
+                    b.HasOne("TownTalk.Web.Models.Post", "Post")
                         .WithMany("Reactions")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -588,7 +588,7 @@ namespace TownTalk.Web.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.UserFollow", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.UserFollow", b =>
                 {
                     b.HasOne("ApplicationUser", "Followed")
                         .WithMany("Followers")
@@ -620,17 +620,17 @@ namespace TownTalk.Web.Migrations
                     b.Navigation("Reactions");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Category", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Category", b =>
                 {
                     b.Navigation("Posts");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Comment", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Comment", b =>
                 {
                     b.Navigation("Replies");
                 });
 
-            modelBuilder.Entity("TownTalk.Models.Post", b =>
+            modelBuilder.Entity("TownTalk.Web.Models.Post", b =>
                 {
                     b.Navigation("Comments");
 

@@ -23,7 +23,7 @@ As a **user**, I want to **view a list of all posts** so that **I can stay infor
   - **Estimate**: 3 hours
   - **Definition of Done**: All posts display correctly on the homepage.
 
-- [ ] **Implement Pagination for Posts**
+- [x] **Implement Pagination for Posts**
   - **Considerations**: Ensure smooth user experience when navigating.
   - **Estimate**: 3 hours
   - **Definition of Done**: Pagination works correctly without errors.

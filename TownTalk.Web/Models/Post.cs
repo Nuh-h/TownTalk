@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+namespace TownTalk.Web.Models;
 
-namespace TownTalk.Models;
+using System.ComponentModel.DataAnnotations;
 
 public class Post
 {
@@ -9,7 +9,7 @@ public class Post
     public string Title { get; set; }
     [Required]
     public string Content { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public string UserId { get; set; } // Foreign key for User
     public ApplicationUser User { get; set; } // Navigation property for User
     public ICollection<Comment> Comments { get; set; } = [];

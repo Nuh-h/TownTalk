@@ -1,9 +1,10 @@
+namespace TownTalk.Web.Data;
+
 using Bogus;
 using Microsoft.AspNetCore.Identity;
-using TownTalk.Models;
-using TownTalk.Repositories.Interfaces;
+using TownTalk.Web.Models;
+using TownTalk.Web.Repositories.Interfaces;
 
-namespace TownTalk.Data;
 public class UserDataSeeder
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -27,8 +28,8 @@ public class UserDataSeeder
 
         // Generate 50 fake users
         Faker<ApplicationUser> userFaker = new Faker<ApplicationUser>()
-        .RuleFor(u => u.UserName, f => f.Internet.UserName())
-        .RuleFor(u => u.Email, (f, u) => $"{u.UserName}@town.talk")
+        .RuleFor(u => u.UserName, f => f.Person.FullName)
+        .RuleFor(u => u.Email, (f, u) => $"{string.Join(".", u.UserName.Split(' '))}@town.talk")
         .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
         .RuleFor(u => u.EmailConfirmed, f => true)
         .RuleFor(u => u.DisplayName, (f, u) => u.UserName)
@@ -63,7 +64,9 @@ public class UserDataSeeder
                 createdUsers.Add(defaultUser);
 
             }
-        }else{
+        }
+        else
+        {
             createdUsers.Add(defaultUser);
         }
 

@@ -1,11 +1,13 @@
+namespace TownTalk.Web.Controllers;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using TownTalk.Models;
 using Microsoft.EntityFrameworkCore;
-using TownTalk.ViewModels;
-using TownTalk.Repositories.Interfaces;
+using TownTalk.Web.ViewModels;
+using TownTalk.Web.Models;
+using TownTalk.Web.Repositories.Interfaces;
 
 [Authorize]
 public class PostsController : Controller

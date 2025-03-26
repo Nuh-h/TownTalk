@@ -1,9 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using TownTalk.Data;
-using TownTalk.Models;
-using TownTalk.Repositories.Interfaces;
+namespace TownTalk.Web.Repositories;
 
-namespace TownTalk.Repositories;
+using Microsoft.EntityFrameworkCore;
+using TownTalk.Web.Data;
+using TownTalk.Web.Repositories.Interfaces;
+using TownTalk.Web.Models;
+
 public class NotificationRepository : INotificationRepository
 {
     private readonly TownTalkDbContext _context;
@@ -32,6 +33,14 @@ public class NotificationRepository : INotificationRepository
         }
 
         return await query
+            .OrderByDescending(n => n.CreatedAt)
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Notification>> GetRecentNotificationsAsync(DateTime fromDate)
+    {
+        return await _context.Notifications
+            .Where(n => n.CreatedAt >= fromDate)
             .OrderByDescending(n => n.CreatedAt)
             .ToListAsync();
     }

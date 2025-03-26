@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace TownTalk.Helpers;
+namespace TownTalk.Web.Helpers;
 public class PerformanceLogger
 {
     private Stopwatch _stopwatch;

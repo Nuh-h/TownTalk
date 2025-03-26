@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+namespace TownTalk.Web.Models;
 
-namespace TownTalk.Models;
+using System.ComponentModel.DataAnnotations;
 
 public enum ReactionType
 {

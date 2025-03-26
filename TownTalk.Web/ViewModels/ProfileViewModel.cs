@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using TownTalk.Models;
-
-namespace TownTalk.ViewModels
+namespace TownTalk.Web.ViewModels
 {
     public class ProfileViewModel
     {

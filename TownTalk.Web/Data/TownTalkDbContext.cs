@@ -1,9 +1,9 @@
+namespace TownTalk.Web.Data;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TownTalk.Models;
-
-namespace TownTalk.Data;
+using TownTalk.Web.Models;
 
 public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 {

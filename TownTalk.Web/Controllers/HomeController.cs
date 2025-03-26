@@ -1,9 +1,9 @@
-using System.Diagnostics;
+namespace TownTalk.Web.Controllers;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TownTalk.Models;
-
-namespace TownTalk.Controllers;
+using System.Diagnostics;
+using TownTalk.Web.Models;
 
 public class HomeController : Controller
 {

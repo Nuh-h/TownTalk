@@ -1,7 +1,9 @@
+namespace TownTalk.Web.Services;
+
 using Microsoft.EntityFrameworkCore;
-using TownTalk.Data;
-using TownTalk.Models;
-using TownTalk.Services.Interfaces;
+using TownTalk.Web.Data;
+using TownTalk.Web.Services.Interfaces;
+using TownTalk.Web.Models;
 
 public class UserFollowService : IUserFollowService
 {

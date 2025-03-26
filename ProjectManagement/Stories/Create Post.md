@@ -23,7 +23,7 @@ As a **logged-in user**, I want to **create a new post** so that **I can share n
   - **Considerations**: Consider using a WYSIWYG editor for rich content.
   - **Cross-Functional**: Work with frontend and design teams for UI consistency.
   - **Estimate**: 3 hours
-  - **Definition of Done**: The view is functional and visually appealing.
+  - **Definition of Done**: The view is functional and visually appealing. [TODO tinymce integration]
 
 - [x] **Implement Client-Side Validation**
   - **Considerations**: Validate title and content length.

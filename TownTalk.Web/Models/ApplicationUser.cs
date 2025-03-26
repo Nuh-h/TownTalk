@@ -1,5 +1,5 @@
+namespace TownTalk.Web.Models;
 using Microsoft.AspNetCore.Identity;
-using TownTalk.Models;
 
 public class ApplicationUser : IdentityUser
 {

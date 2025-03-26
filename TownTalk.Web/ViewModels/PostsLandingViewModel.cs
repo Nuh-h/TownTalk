@@ -1,6 +1,6 @@
-using TownTalk.Models;
+namespace TownTalk.Web.ViewModels;
 
-namespace TownTalk.ViewModels;
+using TownTalk.Web.Models;
 
 public class PostsLandingViewModel : SearchResultsViewModel
 {

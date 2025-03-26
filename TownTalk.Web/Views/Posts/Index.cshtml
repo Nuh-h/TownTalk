@@ -1,6 +1,6 @@
 @using System.Security.Claims
-@using TownTalk.Models
-@using TownTalk.ViewModels
+@using TownTalk.Web.Models
+@using TownTalk.Web.ViewModels
 @model PostsLandingViewModel;
 
 @{
@@ -13,7 +13,10 @@
 }
 
 <div class="container mt-4">
-    <h1>Posts</h1>
+    <div class="d-flex justify-content-between w-100 px-2">
+        <h1 class="m-0">Posts</h1>
+        <a class="btn btn-primary" href="/Posts/Create">Add a post</a>
+    </div>
 
     <div class="container mt-3">
         <!-- Filters Group -->
@@ -75,22 +78,4 @@
         }
 
     </div>
-
-
 </div>
-
-<script>
-    function loadPosts(page) {
-        const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set("page", page);
-
-        const queryString = urlParams.toString();
-
-        fetch(`/Posts/GetPosts?${queryString}`)
-            .then(response => response.text())
-            .then(data => {
-                // Replace the PostList and Pagination parts with new content
-                document.getElementById("resultsContainer").innerHTML = data;
-            });
-    }
-</script>

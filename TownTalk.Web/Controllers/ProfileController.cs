@@ -1,12 +1,14 @@
-using System.Security.Claims;
+namespace TownTalk.Web.Controllers;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TownTalk.Helpers;
-using TownTalk.Models;
-using TownTalk.Repositories.Interfaces;
-using TownTalk.Services.Interfaces;
-using TownTalk.ViewModels;
+using System.Security.Claims;
+using TownTalk.Web.Helpers;
+using TownTalk.Web.Models;
+using TownTalk.Web.Repositories.Interfaces;
+using TownTalk.Web.Services.Interfaces;
+using TownTalk.Web.ViewModels;
 
 public class ProfileController : Controller
 {
@@ -96,13 +98,6 @@ public class ProfileController : Controller
             mutualFollowersCount = results.Count(r => r);
         }
 
-        // Maps names to two-letter or up to first 3 letters if only one word
-        string profileDisplayName = user.DisplayName.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                         .Select(w => w[0])
-                         .Take(2)
-                         .Aggregate("", (a, b) => a + b)
-                         ?? user.DisplayName.Substring(0, Math.Min(3, user.DisplayName.Length));
-
         performanceLogger.Stop("Crunching numbers for profile stats");
 
         ProfileViewModel? viewModel = new ProfileViewModel
@@ -110,7 +105,7 @@ public class ProfileController : Controller
             UserId = user.Id,
             DisplayName = user.DisplayName,
             DateJoined = user.DateJoined,
-            ProfilePictureUrl = $"https://placehold.co/800?text={profileDisplayName}&font=Lora",
+            ProfilePictureUrl = Profile.GetProfilePictureUrl(user.DisplayName),
             IsFollowing = isFollowing,
             Posts = posts.Select(p => new PostViewModel(p)).ToList(),
             Bio = user.Bio,
@@ -128,6 +123,56 @@ public class ProfileController : Controller
         return View(viewModel);
     }
 
+
+    public async Task<IActionResult> GetUsers(string userId, string tab)
+    {
+        List<ApplicationUser> following = await _userFollowService.GetFollowingAsync(userId);
+        List<ApplicationUser> followers = await _userFollowService.GetFollowersAsync(userId);
+        List<ApplicationUser> recommendedUsers = new List<ApplicationUser>();
+
+        foreach (ApplicationUser user in following.Take(5))
+        {
+            List<ApplicationUser>? seconddegreefollowers = await _userFollowService.GetFollowingAsync(user.Id);
+
+            IEnumerable<ApplicationUser>? potentialUsers = seconddegreefollowers.Where(x => !following.Contains(x) && !recommendedUsers.Contains(x));
+
+            if (potentialUsers.Any())
+            {
+                recommendedUsers.Add(potentialUsers.First());
+            }
+        }
+
+        return tab switch
+        {
+            "following" => Json(following.Select(u => new
+            {
+                u.Id,
+                u.DisplayName,
+                u.LastActive,
+                u.Location,
+                IsMutual = followers.Contains(u),
+                ProfilePictureUrl = Profile.GetProfilePictureUrl(u.DisplayName),
+            })),
+            "followers" => Json(followers.Select(u => new
+            {
+                u.Id,
+                u.DisplayName,
+                u.LastActive,
+                u.Location,
+                IsMutual = following.Contains(u),
+                ProfilePictureUrl = Profile.GetProfilePictureUrl(u.DisplayName),
+            })),
+            _ => Json(recommendedUsers.Select(u => new
+            {
+                u.Id,
+                u.DisplayName,
+                u.LastActive,
+                u.Location,
+                IsMutual = false,
+                ProfilePictureUrl = Profile.GetProfilePictureUrl(u.DisplayName),
+            })),
+        };
+    }
 
 
     // Edit user profile

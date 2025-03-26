@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using TownTalk.Data;
-using TownTalk.Repositories.Interfaces;
-using TownTalk.Services.Interfaces;
+namespace TownTalk.Web.Controllers.Api;
 
-namespace TownTalk.Controllers.Api;
+using Microsoft.AspNetCore.Mvc;
+using TownTalk.Web.Data;
+using TownTalk.Web.Repositories.Interfaces;
+using TownTalk.Web.Services.Interfaces;
 
 [Route("api/usercharts")]
 [ApiController]

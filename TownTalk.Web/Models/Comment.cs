@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TownTalk.Models;
+namespace TownTalk.Web.Models;
 
 public class Comment
 {

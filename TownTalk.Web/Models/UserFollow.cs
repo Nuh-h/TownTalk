@@ -1,4 +1,4 @@
-namespace TownTalk.Models;
+namespace TownTalk.Web.Models;
 public class UserFollow
 {
     public int Id { get; set; }

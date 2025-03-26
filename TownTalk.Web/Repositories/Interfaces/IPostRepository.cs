@@ -1,6 +1,7 @@
-using TownTalk.Models;
+namespace TownTalk.Web.Repositories.Interfaces;
 
-namespace TownTalk.Repositories.Interfaces;
+using TownTalk.Web.Models;
+
 public interface IPostRepository
 {
     Task<List<Post>> GetAllPostsAsync();

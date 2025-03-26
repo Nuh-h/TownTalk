@@ -1,7 +1,6 @@
-using System.Runtime.InteropServices;
-using System.Text.Json.Serialization;
+namespace TownTalk.Web.Models;
 
-namespace TownTalk.Models;
+using System.Text.Json.Serialization;
 
 public class Notification
 {

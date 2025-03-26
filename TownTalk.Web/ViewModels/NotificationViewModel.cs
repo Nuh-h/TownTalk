@@ -1,4 +1,4 @@
-namespace TownTalk.ViewModels
+namespace TownTalk.Web.ViewModels
 {
     public class NotificationViewModel
     {

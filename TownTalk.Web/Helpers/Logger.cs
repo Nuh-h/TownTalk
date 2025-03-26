@@ -1,4 +1,4 @@
-namespace TownTalk.Helpers;
+namespace TownTalk.Web.Helpers;
 
 public static class Logger
 {

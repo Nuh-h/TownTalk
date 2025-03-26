@@ -1,4 +1,5 @@
-namespace TownTalk.Services.Interfaces;
+namespace TownTalk.Web.Services.Interfaces;
+using TownTalk.Web.Models;
 
 public interface IUserFollowService
 {

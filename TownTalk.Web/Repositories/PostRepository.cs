@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using TownTalk.Models;
-using TownTalk.Repositories.Interfaces;
-using TownTalk.Data;
-using TownTalk.Helpers;
+using TownTalk.Web.Data;
+using TownTalk.Web.Helpers;
+using TownTalk.Web.Repositories.Interfaces;
+using TownTalk.Web.Models;
 
-namespace TownTalk.Repositories;
+namespace TownTalk.Web.Repositories;
 public class PostRepository : IPostRepository
 {
     private readonly TownTalkDbContext _context;
@@ -124,9 +124,9 @@ public class PostRepository : IPostRepository
 
         performanceLogger.Start();
 
-         List<Post>? results = await _context.Posts
-            .Where(post => post.UserId == userId)
-            .ToListAsync();
+        List<Post>? results = await _context.Posts
+           .Where(post => post.UserId == userId)
+           .ToListAsync();
 
         performanceLogger.Stop("GetAllPostsByUser");
 
@@ -139,10 +139,10 @@ public class PostRepository : IPostRepository
 
         performanceLogger.Start();
 
-         List<dynamic>? result = await _context.Posts
-            .Where(p => p.UserId == userId)
-            .Select(p => new { p.CreatedAt })
-            .ToListAsync<dynamic>();
+        List<dynamic>? result = await _context.Posts
+           .Where(p => p.UserId == userId)
+           .Select(p => new { p.CreatedAt })
+           .ToListAsync<dynamic>();
 
         performanceLogger.Stop("Finding posts for user");
 
@@ -225,10 +225,13 @@ public class PostRepository : IPostRepository
 
         if (!string.IsNullOrEmpty(at))
         {
-            int month, year;
-            int.TryParse(at.Split("/")[0], out month);
-            int.TryParse(at.Split("/")[1], out year);
-            query = query.Where(p => p.CreatedAt.Year == year && p.CreatedAt.Month == month);
+            _ = int.TryParse(at.Split("/")[0], out int month);
+            _ = int.TryParse(at.Split("/")[1], out int year);
+
+            if (month >= 0 || year >= 0)
+            {
+                query = query.Where(p => p.CreatedAt.Year == year && p.CreatedAt.Month == month);
+            }
         }
 
         return query;

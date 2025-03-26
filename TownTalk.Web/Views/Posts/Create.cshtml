@@ -1,25 +1,26 @@
-@model TownTalk.Models.Post;
+@model TownTalk.Web.Models.Post;
 
 <h2>Create Post</h2>
 
-<form method="post">
-    <div class="form-group">
+<form method="post" class="container">
+    <div class="row">
         <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
+        <input asp-for="Title" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
+    <div class="row">
         <label asp-for="Content"></label>
-        <textarea asp-for="Content" class="form-control"></textarea>
+        <textarea asp-for="Content"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="CategoryId" class="control-label"></label>
-        <select asp-for="CategoryId" class="form-control" asp-items="@(ViewData["CategoryId"] as SelectList)"></select>
+    <div class="row">
+        <label asp-for="Category"></label>
+        <select asp-for="Category" asp-items="@(ViewData["CategoryId"] as SelectList)"></select>
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
-
-    <button type="submit" class="btn btn-primary">Create</button>
+    <div class="row">
+        <button type="submit" class="btn btn-primary">Create</button>
+    </div>
 </form>

@@ -1,6 +1,6 @@
-using TownTalk.Models;
+using TownTalk.Web.Models;
 
-namespace TownTalk.ViewModels
+namespace TownTalk.Web.ViewModels
 {
     public class CommentViewModel
     {

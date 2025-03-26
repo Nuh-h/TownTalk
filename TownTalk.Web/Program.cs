@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TownTalk.Data;
-using TownTalk.Repositories;
-using TownTalk.Repositories.Interfaces;
-using TownTalk.Services;
-using TownTalk.Services.Interfaces;
+using TownTalk.Web.Data;
+using TownTalk.Web.Hubs;
+using TownTalk.Web.Models;
+using TownTalk.Web.Repositories;
+using TownTalk.Web.Repositories.Interfaces;
+using TownTalk.Web.Services;
+using TownTalk.Web.Services.Interfaces;
 
 WebApplicationBuilder? builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,7 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserFollowService, UserFollowService>();
+builder.Services.AddScoped<IGraphService, GraphService>();
 builder.Services.AddScoped<UserDataSeeder>();
 
 
