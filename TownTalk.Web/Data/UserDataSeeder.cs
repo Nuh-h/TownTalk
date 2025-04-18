@@ -10,29 +10,38 @@ public class UserDataSeeder
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly TownTalkDbContext _context;
     private readonly IPostRepository _postRepository;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly Random _random;
 
     public UserDataSeeder(
         UserManager<ApplicationUser> userManager,
         TownTalkDbContext context,
-        IPostRepository postRepository)
+        IPostRepository postRepository,
+        RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _context = context;
         _postRepository = postRepository;
+        _roleManager = roleManager;
         _random = new Random();
     }
 
     public async Task SeedDataAsync()
     {
 
+        await CreateRolesAsync();
+
         // Generate 50 fake users
         Faker<ApplicationUser> userFaker = new Faker<ApplicationUser>()
-        .RuleFor(u => u.UserName, f => f.Person.FullName)
-        .RuleFor(u => u.Email, (f, u) => $"{string.Join(".", u.UserName.Split(' '))}@town.talk")
+        .RuleFor(u => u.DisplayName, f => f.Person.FullName)
+        .RuleFor(u => u.Email, (f, u) =>
+        {
+            string[] names = u.DisplayName?.Split(" ") ?? ["Test", "User"];
+            return $"{string.Join(".", names)}@town.talk";
+        })
+        .RuleFor(u => u.UserName, (f, u) => u.Email) //Oddity of Identity that it requires Username to be same as Email
         .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
         .RuleFor(u => u.EmailConfirmed, f => true)
-        .RuleFor(u => u.DisplayName, (f, u) => u.UserName)
         .RuleFor(u => u.Bio, f => f.Lorem.Sentence())
         .RuleFor(u => u.Location, f => f.Address.City())
         .RuleFor(u => u.Bio, f => f.Lorem.Paragraph())
@@ -40,7 +49,7 @@ public class UserDataSeeder
         .RuleFor(u => u.LastActive, f => f.Date.Between(new DateTime(2020, 1, 1), DateTime.UtcNow))
         .RuleFor(u => u.DateJoined, f => f.Date.Between(new DateTime(2020, 1, 1), new DateTime(2025, 12, 31)));
 
-        List<ApplicationUser>? users = userFaker.Generate(50);
+        List<ApplicationUser>? users = userFaker.Generate(5);
         List<ApplicationUser>? createdUsers = new List<ApplicationUser>();
 
         ApplicationUser defaultUser = _userManager.Users.FirstOrDefault();
@@ -49,12 +58,13 @@ public class UserDataSeeder
         {
             defaultUser = new ApplicationUser
             {
-                UserName = "admin@town.talk",
+                UserName = "admin",
                 Email = "admin@town.talk",
-                DisplayName = "Admin User",
+                DisplayName = "Admin",
                 EmailConfirmed = true,
                 Bio = "King of the castle"
             };
+
 
             IdentityResult? result = _userManager.CreateAsync(user: defaultUser, "Admin@1234").Result;
 
@@ -62,7 +72,6 @@ public class UserDataSeeder
             {
                 _userManager.AddToRoleAsync(defaultUser, "Admin").Wait();
                 createdUsers.Add(defaultUser);
-
             }
         }
         else
@@ -73,7 +82,7 @@ public class UserDataSeeder
         // Create users in the database
         foreach (ApplicationUser user in users)
         {
-            string? password = "Password123!";
+            string? password = "Ambition@1!";
             IdentityResult? result = _userManager.CreateAsync(user, password).Result;
             if (result.Succeeded)
             {
@@ -221,5 +230,20 @@ public class UserDataSeeder
         TimeSpan timeSpan = end - start;
         TimeSpan newSpan = new TimeSpan(0, _random.Next(0, (int)timeSpan.TotalMinutes), 0);
         return start + newSpan;
+    }
+
+    private async Task CreateRolesAsync()
+    {
+        string[] roleNames = { "Admin", "User" };
+
+        foreach (string roleName in roleNames)
+        {
+            bool roleExist = await _roleManager.RoleExistsAsync(roleName);
+            if (!roleExist)
+            {
+                IdentityRole? role = new IdentityRole(roleName);
+                await _roleManager.CreateAsync(role);
+            }
+        }
     }
 }

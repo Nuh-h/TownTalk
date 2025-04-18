@@ -21,7 +21,11 @@ builder.Services.AddScoped<IGraphService, GraphService>();
 builder.Services.AddScoped<UserDataSeeder>();
 
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TownTalkDbContext>();
+builder.Services
+    .AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddDefaultTokenProviders()
+    .AddDefaultUI()
+    .AddEntityFrameworkStores<TownTalkDbContext>();
 
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -33,6 +37,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 // Add MVC services (controllers + views)
+builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer(); // Required for Swagger documentation

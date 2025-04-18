@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TownTalk.Web.Data;
 
@@ -11,9 +12,11 @@ using TownTalk.Web.Data;
 namespace TownTalk.Web.Migrations
 {
     [DbContext(typeof(TownTalkDbContext))]
-    partial class TownTalkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250406080505_RegenerateUsers")]
+    partial class RegenerateUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

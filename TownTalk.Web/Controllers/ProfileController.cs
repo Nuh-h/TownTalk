@@ -34,8 +34,13 @@ public class ProfileController : Controller
     }
 
     // View a user's profile
-    public async Task<IActionResult> Index(string userId)
+    public async Task<IActionResult> Index(string? userId)
     {
+
+        if(string.IsNullOrEmpty(userId) && User.Identity.IsAuthenticated){
+            userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
+
         PerformanceLogger performanceLogger = new PerformanceLogger();
         PerformanceLogger pagePerformanceLogger = new PerformanceLogger();
 

@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-    string currentUserName = User?.Identity?.Name?.Split("@")?.First();
+    string currentUserName = User?.Identity?.Name?.Split('@')[0].Split('.').FirstOrDefault();
 }
 
 <div class="text-center">

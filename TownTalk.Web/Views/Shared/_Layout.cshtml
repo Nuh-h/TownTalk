@@ -12,8 +12,8 @@
     <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/@@picocss/pico@2/css/pico.fluid.classless.cyan.min.css" />
     <!-- Include Vis.js for Network Graph -->
-<link href="https://unpkg.com/vis-network/styles/vis-network.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/dist/vis-network.min.js" integrity="sha512-4/EGWWWj7LIr/e+CvsslZkRk0fHDpf04dydJHoHOH32Mpw8jYU28GNI6mruO7fh/1kq15kSvwhKJftMSlgm0FA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://unpkg.com/vis-network/styles/vis-network.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/dist/vis-network.min.js" integrity="sha512-4/EGWWWj7LIr/e+CvsslZkRk0fHDpf04dydJHoHOH32Mpw8jYU28GNI6mruO7fh/1kq15kSvwhKJftMSlgm0FA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @await Html.PartialAsync("_Favicons")
 </head>
 
@@ -26,7 +26,7 @@
 
                     @if (User.Identity.IsAuthenticated)
                     {
-                        string currentUserName = User?.Identity?.Name?.Split("@")?.First();
+                        string currentUserName = User?.Identity?.Name?.Split('@')[0].Split('.').FirstOrDefault();
 
                         <span class="badge bg-success text-white fw-bold rounded-pill"
                         style="box-shadow: 0 0 10px rgba(0, 128, 0, 0.5); filter:hue-rotate(45deg)">@currentUserName</span>
@@ -43,11 +43,18 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Posts"
                             asp-action="Index">Posts</a>
                         </li>
-                        @if (!User.IsInRole("Admin"))
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-link m-0 px-1 text-white text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
+                            </li>
+
+                         }
+                        @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin"
-                                   asp-action="Index">Admin</a>
+                                asp-action="Index">Admin</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin"
@@ -58,46 +65,46 @@
                                 asp-action="Analytics">Analytics</a>
                             </li>
                         }
-                        <li class="nav-item">
-                               <!-- Notification Bell -->
-                                <div class="popoverwrapper p-0 m-0">
-                                    <button type="button" class="btn bg-transparent text-dark m-0 js-notification-bell" data-bs-toggle="modal" data-bs-target="#notificationModal">
-                                        <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="24"
-                                                    height="24"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    class="feather feather-bell"
-                                                >
-                                            <path d="M18 8c0-5-3-8-6-8S6 3 6 8c0 5-3 8-3 8h18s-3-3-3-8z"></path>
-                                            <path d="M13 21h-2c0 1.1.9 2 2 2s2-.9 2-2h-2z"></path>
-                                            <circle id="notification-indicator" cx="18" cy="6" r="6" fill="transparent" stroke="none" />
-                                        </svg>
-                                    </button>
-                                    <div id="notificationContent" style="display: none;"></div>
-                                </div>
+                            <li class="nav-item">
+                            <!-- Notification Bell -->
+                            <div class="popoverwrapper p-0 m-0">
+                                <button type="button" class="btn bg-transparent text-dark m-0 js-notification-bell" data-bs-toggle="modal" data-bs-target="#notificationModal">
+                                    <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="feather feather-bell"
+                                    >
+                                        <path d="M18 8c0-5-3-8-6-8S6 3 6 8c0 5-3 8-3 8h18s-3-3-3-8z"></path>
+                                        <path d="M13 21h-2c0 1.1.9 2 2 2s2-.9 2-2h-2z"></path>
+                                        <circle id="notification-indicator" cx="18" cy="6" r="6" fill="transparent" stroke="none" />
+                                    </svg>
+                                </button>
+                                <div id="notificationContent" style="display: none;"></div>
+                            </div>
 
-                        @if (User.Identity.IsAuthenticated)
-                        {
+                            @if (User.Identity.IsAuthenticated)
+                            {
                                 <li class="nav-item">
-                                     <a class="nav-link btn btn-link m-0 px-1 text-white text-dark" href="/Identity/Account/Logout">Logout</a>
+                                    <a class="nav-link btn btn-link m-0 px-1 text-white text-dark" href="/Identity/Account/Logout">Logout</a>
                                 </li>
-                        }
-                        else
-                        {
+                            }
+                            else
+                            {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark text-dark" href="/Identity/Account/Login">Login</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark text-dark" href="/Identity/Account/Register">Sign Up</a>
                                 </li>
-                        }
-                        </ul>
+                            }
+                    </ul>
                     </div>
 
                 </div>
