@@ -118,5 +118,7 @@ class UserCharts {
 
 $(document).ready(() => {
     const profileId = $('.js-profile-user').data("profile-id");
-    new UserCharts(profileId).initializeCharts();
+    if (profileId) {
+        new UserCharts(profileId).initializeCharts();
+    }
 });

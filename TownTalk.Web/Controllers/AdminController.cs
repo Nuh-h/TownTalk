@@ -7,7 +7,6 @@ using TownTalk.Web.Data;
 using TownTalk.Web.Models;
 using TownTalk.Web.Services.Interfaces;
 
-
 [Authorize]
 public class AdminController : Controller
 {
@@ -29,9 +28,11 @@ public class AdminController : Controller
         _graphService = graphService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
         List<ApplicationUser> users = _context.Users.ToList();
+        IEnumerable<Notification> notifications = await _notificationService.GetRecentNotificationsAsync();
+        ViewData["notifications"] = notifications;
         return View(users);
     }
 
@@ -45,11 +46,34 @@ public class AdminController : Controller
 
     // }
 
+    [HttpPost]
+    public async Task<ActionResult> SimulateNotification(string senderId, string receiverId, string notificationType) {
+
+        ApplicationUser? sender = await _userManager.FindByIdAsync(senderId);
+        ApplicationUser? receiver = await _userManager.FindByIdAsync(receiverId);
+
+        switch(notificationType){
+            case "reaction":
+                await _notificationService.NotifyReactionAsync(senderId, receiverId);
+                break;
+            case "follow":
+                await _notificationService.NotifyFollowAsync(senderId, receiverId);
+                break;
+            // case "new-post":
+            //     _notificationService.NotifyUserAsync();
+            //     break;
+            default:
+                break;
+        }
+
+        return RedirectToAction("Index");
+
+    }
+
     // Endpoint to get mutual followers and connection details
     [HttpGet("connections")]
     public async Task<IActionResult> GetConnections(string userId1, string userId2)
     {
-        // Check if both users exist
         ApplicationUser? user1 = await _userManager.FindByIdAsync(userId1);
         ApplicationUser? user2 = await _userManager.FindByIdAsync(userId2);
 
@@ -105,21 +129,5 @@ public class AdminController : Controller
 
         return Ok(result);
     }
-
-    // Helper method to get mutual followers
-    private async Task<List<ApplicationUser>> GetMutualFollowers(string userId1, string userId2)
-    {
-        List<ApplicationUser>? followersUser1 = await _userFollowService.GetFollowersAsync(userId1);
-        var followersUser2 = await _userFollowService.GetFollowersAsync(userId2);
-
-        // Find intersection of followers lists (mutual followers)
-        List<ApplicationUser>? mutualFollowers = followersUser1
-            .Where(f => followersUser2.Any(f2 => f2.Id == f.Id))
-            .Select(f => f)
-            .ToList();
-
-        return mutualFollowers;
-    }
-
 
 }

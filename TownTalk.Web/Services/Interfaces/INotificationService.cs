@@ -9,5 +9,6 @@ public interface INotificationService
     Task NotifyUnfollowAsync(string followerId, string followedId);
     Task NotifyCommentAsync(string postId, string commenterId, string originalPosterId);
     Task NotifyReactionAsync(string postId, string reactorId, string originalPosterId);
+    Task NotifyReactionAsync(string reactorId, string originalPosterId);
     Task<IEnumerable<Notification>> GetRecentNotificationsAsync();
 }

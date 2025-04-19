@@ -49,9 +49,28 @@ public class NotificationService : INotificationService
         await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", notification);
     }
 
+    public async Task NotifyUserAsync(string userId, string message, string senderId, string type)
+    {
+        ApplicationUser? sender = await _userManager.FindByIdAsync(senderId);
+
+        Notification? notification = new Notification()
+        {
+            UserId = userId,
+            Message = message,
+            SenderId = sender.Id,
+            CreatedAt = DateTime.UtcNow,
+            IsRead = false,
+            Type = type
+        };
+
+        await _notificationRepository.AddNotificationAsync(notification);
+
+        await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", notification);
+    }
+
     public async Task<IEnumerable<Notification>> GetRecentNotificationsAsync()
     {
-        var thirtyMinutesAgo = DateTime.UtcNow.AddMinutes(-30);
+        DateTime thirtyMinutesAgo = DateTime.UtcNow.AddMinutes(-30);
         return await _notificationRepository.GetRecentNotificationsAsync(thirtyMinutesAgo);
     }
 
@@ -78,11 +97,18 @@ public class NotificationService : INotificationService
     }
 
     // Notifies when a reaction is added to a post
-    public async Task NotifyReactionAsync(string postId, string reactorId, string originalPosterId)
+    public async Task NotifyReactionAsync(string? postId, string reactorId, string originalPosterId)
     {
         ApplicationUser? sender = await _userManager.FindByIdAsync(reactorId);
-        string? message = $"{sender.DisplayName} reacted to your post.";
-        await NotifyUserAsync(originalPosterId, message, int.Parse(postId), senderId: reactorId, type: "Reaction");
+        string? message = $"{sender?.DisplayName} reacted to your post.";
+        await NotifyUserAsync(originalPosterId, message, int.Parse(postId),  senderId: reactorId, type: "Reaction");
+    }
+
+    public async Task NotifyReactionAsync(string reactorId, string originalPosterId)
+    {
+        ApplicationUser? sender = await _userManager.FindByIdAsync(reactorId);
+        string? message = $"{sender?.DisplayName} reacted to your post.";
+        await NotifyUserAsync(originalPosterId, message, senderId: reactorId, type: "Reaction");
     }
 
     // Notifies when a user views another user's profile

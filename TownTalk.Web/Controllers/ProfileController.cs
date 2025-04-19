@@ -137,9 +137,7 @@ public class ProfileController : Controller
 
         foreach (ApplicationUser user in following.Take(5))
         {
-            List<ApplicationUser>? seconddegreefollowers = await _userFollowService.GetFollowingAsync(user.Id);
-
-            IEnumerable<ApplicationUser>? potentialUsers = seconddegreefollowers.Where(x => !following.Contains(x) && !recommendedUsers.Contains(x));
+            IEnumerable<ApplicationUser>? potentialUsers = (await _userFollowService.GetFollowingAsync(user.Id)).Where(x => !following.Contains(x) && !recommendedUsers.Contains(x) && x.Id != userId);
 
             if (potentialUsers.Any())
             {
