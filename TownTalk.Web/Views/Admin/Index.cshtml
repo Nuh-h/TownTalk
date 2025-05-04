@@ -49,123 +49,6 @@
 </style>
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-<script>
-    Window.GetMap = async function () {
-    var user1 = $("form select#userId1").val();
-    var user1Label = $("form select#userId1 option:selected").text();
-    var user2 = $("form select#userId2").val();
-    var user2Label = $("form select#userId2 option:selected").text();
-
-    console.log({ user1, user2 });
-
-    // Make the API call to get mutual followers and connections
-    await $.get(`/connections?userId1=${user1}&userId2=${user2}`, function (data) {
-    console.log(data);
-    $('#mutual-followers').html(`There are ${data.mutualConnections.length} mutual connections`);
-
-    // Step 2: Prepare data for the network graph visualization
-    let nodes = [];
-    let edges = [];
-    let nodeIds = new Set(); // To track added node IDs
-
-    // Helper function to add a node only if it does not exist yet
-    function addNode(nodeId, label, color) {
-    if (!nodeIds.has(nodeId)) {
-    nodes.push({ id: nodeId, label: label, color: color });
-    nodeIds.add(nodeId);
-    }
-    }
-
-    // Add nodes for User 1 and User 2
-    addNode(user1, user1Label, { background: '#FF0000', border: '#D32F2F' });
-    addNode(user2, user2Label, { background: '#00FF00', border: '#388E3C' });
-
-    // Add nodes for mutual followers and edges
-    data.mutualConnections.forEach(function (follower) {
-    // Add the mutual follower node if not already added
-    addNode(follower.id, follower.displayName, { background: '#318E3C', border: '#FF9800' });
-
-    // Add edges for mutual connections (user1 <-> mutualFollower, user2 <-> mutualFollower)
-    edges.push({ from: user1, to: follower.id });
-    edges.push({ from: user2, to: follower.id });
-    });
-
-
-    // Step 3: Add all connections (direct followers and following)
-    addConnections(user1, data.allConnectionsUser1, nodes, edges);
-    addConnections(user2, data.allConnectionsUser2, nodes, edges);
-
-
-    highlightPath(data.path, edges);
-
-    // Step 4: Set up the Vis.js network graph
-    var container = document.getElementById('network');
-    var networkData = {
-    nodes: new vis.DataSet(nodes),
-    edges: new vis.DataSet(edges)
-    };
-
-    var options = {
-    nodes: {
-    shape: 'dot',               // Node shape
-    size: 30,                   // Node size
-    color: {
-    background: '#FF6F61', // Fill color (background)
-    border: '#D32F2F',     // Stroke (border) color
-    highlight: {
-    background: '#FF8A65',  // Highlighted node fill color
-    border: '#C2185B'       // Highlighted node stroke color
-    }
-    },
-    font: {
-    color: 'white',         // Font color on the node
-    size: 16,               // Font size
-    face: 'arial'           // Font face
-    }
-    },
-    edges: {
-    width: 2,                    // Edge width
-    color: '#A9A9A9',            // Edge color
-    smooth: true,                // Smooth curve for edges
-    },
-    physics: {
-    enabled: true                 // Enables physics for node movement
-    }
-    };
-
-    var network = new vis.Network(container, networkData, options);
-
-    function addConnections(userId, connections, nodes, edges, nodeIds) {
-    connections.forEach(function (connection) {
-    // Add each connected user as a node if not already added
-    addNode(connection.id, connection.displayName, { background: '#FF6F61', border: '#D32F2F' });
-
-    // Add edge between user and their connection (follower/following)
-    edges.push({ from: userId, to: connection.id });
-    });
-    }
-
-    // Helper function to highlight the path by changing edge color and width
-    function highlightPath(path, edges) {
-    for (let i = 0; i < path.length - 1; i++) {
-    // Find the edge connecting the nodes in the path
-    let fromNode = path[i];
-    let toNode = path[i + 1];
-
-    console.log(edges, fromNode, toNode);
-    // Change the edge properties (color, width)
-    let edge = edges.find(e => (e.from === fromNode.id && e.to === toNode.id) || (e.from === toNode.id && e.to === fromNode.id));
-    if (edge) {
-    edge.color = { color: '#FF8C00' }; // Set color of the path edge to orange
-    edge.width = 4;                    // Increase width of the path edge
-    }
-    }
-    }
-    });
-    };
-
-</script>
-
 <div class="container mt-4">
     <h1>Admin</h1>
     <p>Here will be a suite of capabilities Admins can use to adminster, and manage this site.</p>
@@ -196,7 +79,7 @@
                     </select>
                 </div>
                 <div>
-                    <button onClick="Window.GetMap()" type="button" class="btn btn-primary">Find degree of
+                    <button type="button" class="btn btn-primary js-vis-network">Find degree of
                         connections</button>
                 </div>
             </form>
@@ -290,9 +173,3 @@
         </div>
     </details>
 </div>
-
-<!-- jQuery and jQuery UI JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

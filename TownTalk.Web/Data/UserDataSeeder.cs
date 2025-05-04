@@ -1,6 +1,7 @@
 namespace TownTalk.Web.Data;
 
 using Bogus;
+using Bogus.Extensions;
 using Microsoft.AspNetCore.Identity;
 using TownTalk.Web.Models;
 using TownTalk.Web.Repositories.Interfaces;
@@ -31,13 +32,15 @@ public class UserDataSeeder
 
         await CreateRolesAsync();
 
-        // Generate 50 fake users
-        Faker<ApplicationUser> userFaker = new Faker<ApplicationUser>()
+        Random? random = new Random();
+        string? locale = random.Next(2) % 2 == 0 ? "ar" : "en";
+
+        Faker<ApplicationUser> userFaker = new Faker<ApplicationUser>(locale)
         .RuleFor(u => u.DisplayName, f => f.Person.FullName)
         .RuleFor(u => u.Email, (f, u) =>
         {
             string[] names = u.DisplayName?.Split(" ") ?? ["Test", "User"];
-            return $"{string.Join(".", names)}@town.talk";
+            return $"{string.Join(".", names).Transliterate()}@town.talk";
         })
         .RuleFor(u => u.UserName, (f, u) => u.Email) //Oddity of Identity that it requires Username to be same as Email
         .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber())
@@ -58,7 +61,7 @@ public class UserDataSeeder
         {
             defaultUser = new ApplicationUser
             {
-                UserName = "admin",
+                UserName = "admin@town.talk",
                 Email = "admin@town.talk",
                 DisplayName = "Admin",
                 EmailConfirmed = true,
@@ -144,7 +147,7 @@ public class UserDataSeeder
         // Retrieve all categories from the database to use them when creating posts
         List<Category> categories = _context.Categories.ToList();
 
-        Faker<Post>? postFaker = new Faker<Post>()
+        Faker<Post>? postFaker = new Faker<Post>(locale)
             .RuleFor(p => p.Title, f => f.Lorem.Sentence()) // Random title for post
             .RuleFor(p => p.Content, f => f.Lorem.Paragraph()) // Random content
             .RuleFor(p => p.CreatedAt, f => GetRandomDateBetween(
@@ -176,10 +179,10 @@ public class UserDataSeeder
         // Generate reactions and comments
         List<Reaction>? reactions = new List<Reaction>();
         List<Comment>? comments = new List<Comment>();
-        Faker<Comment>? commentFaker = new Faker<Comment>()
+        Faker<Comment>? commentFaker = new Faker<Comment>(locale)
             .RuleFor(c => c.Content, f => f.Lorem.Sentence());
 
-        foreach (var post in allPosts)
+        foreach (Post post in allPosts)
         {
             // Random reactions
             IEnumerable<ApplicationUser>? reactingUsers = createdUsers
@@ -209,7 +212,7 @@ public class UserDataSeeder
             {
                 DateTime commentDate = GetRandomDateBetween(post.CreatedAt, new DateTime(2025, 12, 31));
 
-                var comment = commentFaker
+                Comment? comment = commentFaker
                     .RuleFor(c => c.PostId, f => post.Id)
                     .RuleFor(c => c.UserId, f => commentingUser.Id)
                     .RuleFor(c => c.CreatedAt, f => commentDate)

@@ -6,7 +6,7 @@
     <div class="card-body">
         <div class="d-flex justify-content-between">
             <div>
-                <h5 class="card-title">@Model.Title</h5>
+                <h5 class="card-title font-bold">@Model.Title</h5>
                 <p class="card-text">@Model.Content</p>
             </div>
 
@@ -20,15 +20,17 @@
             }
         </div>
 
-        <p class="card-text text-muted">
+        <p class="card-text text-muted mt-4">
             <small>Posted by <a
                     href="@Url.Action("Index", "Profile", new { userId = Model.UserId })">@Model.UserDisplayName</a>
-                in @Model.CategoryName on @Model.CreatedAt.ToShortDateString() in @Model.CategoryName on
+                in <a href="@Url.Action("Index", "Posts" , new { cl=Model.CategoryName
+                    })">#@Model.CategoryName</a> on
                 @Model.CreatedAt.ToShortDateString()</small>
         </p>
 
         <div class="d-flex gap-1 align-items-center w-100 justify-content-between">
-            <button class="btn btn-secondary btn-sm" data-toggle="collapse" data-target="#comments-@Model.Id">
+            <button class="btn btn-secondary btn-sm" data-toggle="js-comments-wrapper"
+                data-target="#comments-@Model.Id">
                 Comments (@Model.CommentCount)
             </button>
 

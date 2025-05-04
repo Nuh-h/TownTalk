@@ -1,110 +1,104 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims;
+
+
+<!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TownTalk</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/TownTalk.styles.css" asp-append-version="true" /> *@
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@@picocss/pico@2/css/pico.fluid.classless.cyan.min.css" />
-    <!-- Include Vis.js for Network Graph -->
-    <link href="https://unpkg.com/vis-network/styles/vis-network.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/dist/vis-network.min.js" integrity="sha512-4/EGWWWj7LIr/e+CvsslZkRk0fHDpf04dydJHoHOH32Mpw8jYU28GNI6mruO7fh/1kq15kSvwhKJftMSlgm0FA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    @await Html.PartialAsync("_Favicons")
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - TownTalk</title>
+        <link rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
 
-<body style="background-color: transparent; color: inherit;">
-    <header>
-        <nav class="navbar navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
-                <!-- Logo on the left -->
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TownTalk
+
+        @await Html.PartialAsync("_Favicons")
+
+    </head>
+
+    <body style="background-color: transparent;" data-bs-theme="dark">
+        <header>
+            <nav class="navbar navbar-light  border-bottom box-shadow mb-3 px-2">
+                <div class="container-fluid d-flex justify-content-between align-items-center">
+                    <!-- Logo on the left -->
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TownTalk
 
                     @if (User.Identity.IsAuthenticated)
                     {
                         string currentUserName = User?.Identity?.Name?.Split('@')[0].Split('.').FirstOrDefault();
 
-                        <span class="badge bg-success text-white fw-bold rounded-pill"
-                        style="box-shadow: 0 0 10px rgba(0, 128, 0, 0.5); filter:hue-rotate(45deg)">@currentUserName</span>
+                        <span class="badge bg-success fw-bold rounded-pill"
+                            style="box-shadow: 0 0 10px rgba(0, 128, 0, 0.5); filter:hue-rotate(45deg)">@currentUserName</span>
                     }
-                </a>
-                <!-- Right-aligned navigation and buttons -->
-                <div class="d-flex align-items-center w-auto">
-                    <ul class="navbar-nav d-flex flex-row" style="gap: 1rem;">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
-                            asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Posts"
-                            asp-action="Index">Posts</a>
-                        </li>
+                    </a>
+                    <!-- Right-aligned navigation and buttons -->
+                    <div class="d-flex align-items-center w-auto">
+                        <ul class="navbar-nav d-flex flex-row" style="gap: 1rem;">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home"
+                                    asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Posts"
+                                    asp-action="Index">Posts</a>
+                            </li>
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link btn btn-link m-0 px-1 text-white text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-link m-0 px-1" asp-area="" asp-controller="Profile"
+                                        asp-action="Index">Profile</a>
+                                </li>
 
-                         }
+                        }
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin"
-                                asp-action="Index">Admin</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin"
-                                asp-action="Moderation">Moderation</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin"
-                                asp-action="Analytics">Analytics</a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Admin"
+                                        asp-action="Index">Admin</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Admin"
+                                        asp-action="Moderation">Moderation</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Admin"
+                                        asp-action="Analytics">Analytics</a>
+                                </li>
                         }
                             <li class="nav-item">
-                            <!-- Notification Bell -->
-                            <div class="popoverwrapper p-0 m-0">
-                                <button type="button" class="btn bg-transparent text-dark m-0 js-notification-bell" data-bs-toggle="modal" data-bs-target="#notificationModal">
-                                    <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="feather feather-bell"
-                                    >
-                                        <path d="M18 8c0-5-3-8-6-8S6 3 6 8c0 5-3 8-3 8h18s-3-3-3-8z"></path>
-                                        <path d="M13 21h-2c0 1.1.9 2 2 2s2-.9 2-2h-2z"></path>
-                                        <circle id="notification-indicator" cx="18" cy="6" r="6" fill="transparent" stroke="none" />
-                                    </svg>
-                                </button>
-                                <div id="notificationContent" style="display: none;"></div>
-                            </div>
+                                <!-- Notification Bell -->
+                                <div class="popoverwrapper p-0 m-0">
+                                    <button type="button" class="btn bg-transparent m-0 js-notification-bell"
+                                        data-bs-toggle="modal" data-bs-target="#notificationModal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell">
+                                            <path d="M18 8c0-5-3-8-6-8S6 3 6 8c0 5-3 8-3 8h18s-3-3-3-8z"></path>
+                                            <path d="M13 21h-2c0 1.1.9 2 2 2s2-.9 2-2h-2z"></path>
+                                            <circle id="notification-indicator" cx="18" cy="6" r="6" fill="transparent"
+                                                stroke="none" />
+                                        </svg>
+                                    </button>
+                                    <div id="notificationContent" style="display: none;"></div>
+                                </div>
+                            </li>
 
-                            @if (User.Identity.IsAuthenticated)
-                            {
+                        @if (User.Identity.IsAuthenticated)
+                        {
                                 <li class="nav-item">
-                                    <a class="nav-link btn btn-link m-0 px-1 text-white text-dark" href="/Identity/Account/Logout">Logout</a>
+                                    <a class="nav-link btn btn-link m-0 px-1"
+                                        href="/Identity/Account/Logout">Logout</a>
                                 </li>
-                            }
-                            else
-                            {
+                        }
+                        else
+                        {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark text-dark" href="/Identity/Account/Login">Login</a>
+                                    <a class="nav-link" href="/Identity/Account/Login">Login</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark text-dark" href="/Identity/Account/Register">Sign Up</a>
+                                    <a class="nav-link" href="/Identity/Account/Register">Sign Up</a>
                                 </li>
-                            }
-                    </ul>
+                        }
+                        </ul>
                     </div>
 
                 </div>
@@ -113,10 +107,10 @@
 
         <div class="container">
             <main role="main" class="pb-3" style="min-height: 77vh;">
-                @RenderBody()
+            @RenderBody()
             </main>
-            @await Html.PartialAsync("_NotificationsModal")
-            @await Html.PartialAsync("_ScrollTop")
+        @await Html.PartialAsync("_NotificationsModal")
+        @await Html.PartialAsync("_ScrollTop")
         </div>
 
         <footer class="border-top footer text-muted">
@@ -125,22 +119,23 @@
             </div>
         </footer>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js" type="module"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> *@
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+        @* <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"></script> *@
+        @* <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script> *@
+        @* <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js" type="module"></script> *@
+        @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
 
 
-        @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 
-        <script src="~/js/site.js" asp-append-version="true"></script>
-         <script src="~/js/comments.js" asp-append-version="true"></script>
-            <script src="~/js/notifications.js" asp-append-version="true" defer></script>
-            <script src="~/js/reactions.js" asp-append-version="true"></script>
-            <script src="~/js/user-follow.js" asp-append-version="true"></script>
-            <script src="~/js/user-charts.js" asp-append-version="true"></script>
+        @* <script src="~/js/site.js" asp-append-version="true"></script> *@
+        <script src="~/js/main.js" asp-append-version="true"></script>
+        @* <script src="~/js/comments.js" asp-append-version="true"></script> *@
+        @* <script src="~/js/notifications.js" asp-append-version="true" defer></script> *@
+        @* <script src="~/js/reactions.js" asp-append-version="true"></script> *@
+        @* <script src="~/js/user-follow.js" asp-append-version="true"></script> *@
+        @* <script src="~/js/user-charts.js" asp-append-version="true"></script> *@
     </body>
 
 </html>

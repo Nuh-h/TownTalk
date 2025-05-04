@@ -1,7 +1,7 @@
 @using TownTalk.Web.ViewModels
 @model TownTalk.Web.ViewModels.PostViewModel
 
-<div class="collapse mt-2" id="comments-@Model.Id">
+<div class="mt-2 js-comments-wrapper collapse" id="comments-@Model.Id">
     <div class="card card-body mt-2" style="background-color: rgba(255, 255, 255, 0.05);">
         <h6>Comments</h6>
         <form class="comment-form" method="post" action="/Comments/Create">

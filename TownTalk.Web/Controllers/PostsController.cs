@@ -92,6 +92,7 @@ public class PostsController : Controller
 
     // New endpoint for getting paginated posts
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetPosts(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 20)
     {
         // Get filtered posts

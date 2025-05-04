@@ -1,0 +1,8 @@
+// @tailwind base;
+// @tailwind components;
+@use "node_modules/vis-network/styles/vis-network.min.css";@tailwind utilities;
+
+// Import all of Bootstrap's CSS
+@import "node_modules/bootstrap/scss/bootstrap";
+//components
+// @import "./modules/{module}/{module}";
