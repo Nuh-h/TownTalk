@@ -9,26 +9,41 @@ using TownTalk.Web.ViewModels;
 using TownTalk.Web.Models;
 using TownTalk.Web.Repositories.Interfaces;
 
+/// <summary>
+/// Controller for managing posts, including creation, editing, deletion, and displaying posts.
+/// </summary>
 [Authorize]
 public class PostsController : Controller
 {
     private readonly IPostRepository _postRepository;
     private readonly UserManager<ApplicationUser> _userManager;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PostsController"/> class.
+    /// </summary>
+    /// <param name="postRepository">The repository for managing posts.</param>
+    /// <param name="userManager">The user manager for handling user-related operations.</param>
     public PostsController(IPostRepository postRepository, UserManager<ApplicationUser> userManager)
     {
         _postRepository = postRepository;
         _userManager = userManager;
     }
 
-    // GET: Posts/Create
+    /// <summary>
+    /// Displays the form for creating a new post.
+    /// </summary>
+    /// <returns>The view for creating a new post.</returns>
     public async Task<IActionResult> Create()
     {
         ViewData["CategoryId"] = new SelectList(await _postRepository.GetCategoriesAsync(), "Id", "Name");
         return View();
     }
 
-    // POST: Posts/Create
+    /// <summary>
+    /// Handles the POST request for creating a new post.
+    /// </summary>
+    /// <param name="post">The post to create, bound from the form.</param>
+    /// <returns>Redirects to the index page if successful; otherwise, returns the view with validation errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Bind("Title,Content,CategoryId")] Post post)
@@ -53,7 +68,16 @@ public class PostsController : Controller
         return View(post);
     }
 
-    // GET: Posts/Index
+    /// <summary>
+    /// Displays a paginated list of posts with optional filtering by query, category, author, and date.
+    /// </summary>
+    /// <param name="q">Search query string.</param>
+    /// <param name="cl">Category filter.</param>
+    /// <param name="by">Author filter.</param>
+    /// <param name="at">Date filter.</param>
+    /// <param name="page">Current page number.</param>
+    /// <param name="pageSize">Number of posts per page.</param>
+    /// <returns>The view with the filtered and paginated list of posts.</returns>
     [AllowAnonymous]
     public async Task<IActionResult> Index(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 20)
     {
@@ -90,7 +114,17 @@ public class PostsController : Controller
         return View(viewModel);
     }
 
-    // New endpoint for getting paginated posts
+
+    /// <summary>
+    /// Returns a partial view with filtered and paginated posts for AJAX requests.
+    /// </summary>
+    /// <param name="q">Search query string.</param>
+    /// <param name="cl">Category filter.</param>
+    /// <param name="by">Author filter.</param>
+    /// <param name="at">Date filter.</param>
+    /// <param name="page">Current page number.</param>
+    /// <param name="pageSize">Number of posts per page.</param>
+    /// <returns>A partial view containing the filtered and paginated posts.</returns>
     [HttpGet]
     [AllowAnonymous]
     public async Task<IActionResult> GetPosts(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 20)
@@ -118,7 +152,11 @@ public class PostsController : Controller
     }
 
 
-    // GET: Posts/Edit/{id}
+    /// <summary>
+    /// Displays the edit form for a specific post.
+    /// </summary>
+    /// <param name="id">The ID of the post to edit.</param>
+    /// <returns>The edit view for the specified post, or NotFound if not found.</returns>
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null) return NotFound();
@@ -130,7 +168,13 @@ public class PostsController : Controller
         return View(post);
     }
 
-    // POST: Posts/Edit/{id}
+
+    /// <summary>
+    /// Handles the POST request for editing an existing post.
+    /// </summary>
+    /// <param name="id">The ID of the post to edit.</param>
+    /// <param name="post">The updated post object.</param>
+    /// <returns>Redirects to the index page if successful; otherwise, returns the view with validation errors.</returns>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Post post)
@@ -167,7 +211,11 @@ public class PostsController : Controller
         return View(post);
     }
 
-    // GET: Posts/Delete/{id}
+    /// <summary>
+    /// Displays the delete confirmation view for a specific post.
+    /// </summary>
+    /// <param name="id">The ID of the post to delete.</param>
+    /// <returns>The delete confirmation view for the specified post, or NotFound if not found.</returns>
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return NotFound();
@@ -178,7 +226,11 @@ public class PostsController : Controller
         return View(post);
     }
 
-    // POST: Posts/Delete/{id}
+    /// <summary>
+    /// Handles the POST request to confirm deletion of a post.
+    /// </summary>
+    /// <param name="id">The ID of the post to delete.</param>
+    /// <returns>Redirects to the index page after deletion.</returns>
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
@@ -187,13 +239,11 @@ public class PostsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private async Task<bool> PostExists(int id)
-    {
-        Post? post = await _postRepository.GetPostByIdAsync(id: id);
-        return post != null;
-    }
-
-    //Reactions
+    /// <summary>
+    /// Retrieves the reactions for a specific post and returns a partial view.
+    /// </summary>
+    /// <param name="id">The ID of the post for which to get reactions.</param>
+    /// <returns>A partial view displaying the reactions for the specified post.</returns>
     public async Task<IActionResult> GetReactions(int id)
     {
         ApplicationUser? currentUser = await _userManager.GetUserAsync(User);
@@ -211,4 +261,9 @@ public class PostsController : Controller
         return PartialView("_Reactions", postViewModel);
     }
 
+    private async Task<bool> PostExists(int id)
+    {
+        Post? post = await _postRepository.GetPostByIdAsync(id: id);
+        return post != null;
+    }
 }

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using TownTalk.Web.Models;
 using TownTalk.Web.Repositories.Interfaces;
 
+/// <summary>
+/// Provides methods to seed initial user, role, category, post, follow, reaction, and comment data into the database.
+/// </summary>
 public class UserDataSeeder
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -14,6 +17,13 @@ public class UserDataSeeder
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly Random _random;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UserDataSeeder"/> class.
+    /// </summary>
+    /// <param name="userManager">The user manager for managing application users.</param>
+    /// <param name="context">The database context.</param>
+    /// <param name="postRepository">The post repository for managing posts.</param>
+    /// <param name="roleManager">The role manager for managing roles.</param>
     public UserDataSeeder(
         UserManager<ApplicationUser> userManager,
         TownTalkDbContext context,
@@ -27,6 +37,9 @@ public class UserDataSeeder
         _random = new Random();
     }
 
+    /// <summary>
+    /// Seeds initial user, role, category, post, follow, reaction, and comment data into the database.
+    /// </summary>
     public async Task SeedDataAsync()
     {
 

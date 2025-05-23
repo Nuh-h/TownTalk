@@ -815,12 +815,6 @@ div.vis-network div.vis-manipulation div.vis-separator-line {
 }
 
 
-.bg-white{
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-}
-
-
 .p-0{
   padding: 0px;
 }
@@ -15493,7 +15487,7 @@ body {
 }
 
 .notification-unread {
-  background-color: rgba(173, 216, 230, 0.5);
+  font-style: italic;
 }
 
 .notification-read {

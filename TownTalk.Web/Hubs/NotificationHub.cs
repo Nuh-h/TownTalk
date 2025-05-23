@@ -19,6 +19,7 @@ public class NotificationHub : Hub
         _userManager = userManager;
     }
 
+    /// <inheritdoc/>
     public override async Task OnConnectedAsync()
     {
         var userId = Context.UserIdentifier;
@@ -38,7 +39,7 @@ public class NotificationHub : Hub
         await base.OnConnectedAsync();
     }
 
-    // When a user disconnects from the hub
+    /// <inheritdoc/>
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var userId = Context.UserIdentifier;
@@ -59,6 +60,12 @@ public class NotificationHub : Hub
     }
 
 
+    /// <summary>
+    /// Sends a notification to a specific user and all connected admins.
+    /// </summary>
+    /// <param name="userId">The ID of the user to receive the notification.</param>
+    /// <param name="message">The notification message.</param>
+    /// <param name="postId">The ID of the related post.</param>
     public async Task SendNotification(string userId, string message, int postId)
     {
         await Clients.User(userId).SendAsync("ReceiveNotification", new
@@ -81,6 +88,9 @@ public class NotificationHub : Hub
         }
     }
 
+    /// <summary>
+    /// Sends all unread notifications to the currently connected user.
+    /// </summary>
     public async Task SendUnreadNotifications()
     {
         string? userId = Context.UserIdentifier;
@@ -94,6 +104,9 @@ public class NotificationHub : Hub
         }
     }
 
+    /// <summary>
+    /// Sends all notifications to the currently connected user.
+    /// </summary>
     public async Task FetchAllNotifications()
     {
         string? userId = Context.UserIdentifier;
@@ -104,24 +117,33 @@ public class NotificationHub : Hub
         }
     }
 
+    /// <summary>
+    /// Marks a notification as read for the current user and notifies the client.
+    /// </summary>
+    /// <param name="notificationId">The ID of the notification to mark as read.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     public async Task MarkNotificationAsRead(int notificationId)
     {
-        string? userId = Context.UserIdentifier;
+        string? userId = this.Context.UserIdentifier;
         if (!string.IsNullOrEmpty(userId))
         {
             try
             {
-                await _notificationRepository.MarkAsReadAsync(notificationId);
-                await Clients.User(userId).SendAsync("NotificationMarkedAsRead", notificationId);
+                await this._notificationRepository.MarkAsReadAsync(notificationId);
+                await this.Clients.User(userId).SendAsync("NotificationMarkedAsRead", notificationId);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error marking notification as read: {ex.Message}");
-                await Clients.User(userId).SendAsync("ErrorMarkingAsRead", notificationId);
+                await this.Clients.User(userId).SendAsync("ErrorMarkingAsRead", notificationId);
             }
         }
     }
 
+    /// <summary>
+    /// Retrieves notifications from the last 30 minutes and broadcasts them to all connected admins.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the recent notifications.</returns>
     public async Task<IEnumerable<Notification>> GetRecentNotifications()
     {
         var thirtyMinutesAgo = DateTime.UtcNow.AddMinutes(-30);

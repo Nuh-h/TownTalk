@@ -1,10 +1,14 @@
+namespace TownTalk.Web.Repositories;
+
 using Microsoft.EntityFrameworkCore;
 using TownTalk.Web.Data;
 using TownTalk.Web.Helpers;
 using TownTalk.Web.Repositories.Interfaces;
 using TownTalk.Web.Models;
 
-namespace TownTalk.Web.Repositories;
+/// <summary>
+/// Repository for managing Post entities and related data operations.
+/// </summary>
 public class PostRepository : IPostRepository
 {
     private readonly TownTalkDbContext _context;
@@ -14,6 +18,7 @@ public class PostRepository : IPostRepository
         _context = context;
     }
 
+    /// <inheritdoc/>
     public async Task<List<Post>> GetAllPostsAsync()
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
@@ -35,6 +40,7 @@ public class PostRepository : IPostRepository
         return results;
     }
 
+    /// <inheritdoc/>
     public async Task<Post> GetPostByIdAsync(int id, bool? includeReactions)
     {
         IQueryable<Post> query = _context.Posts.Include(p => p.Category);
@@ -47,18 +53,21 @@ public class PostRepository : IPostRepository
         return await query.FirstOrDefaultAsync(p => p.Id == id);
     }
 
+    /// <inheritdoc/>
     public async Task AddPostAsync(Post post)
     {
         await _context.Posts.AddAsync(post);
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc/>
     public async Task UpdatePostAsync(Post post)
     {
         _context.Posts.Update(post);
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc/>
     public async Task DeletePostAsync(int id)
     {
         var post = await _context.Posts.FindAsync(id);
@@ -69,6 +78,7 @@ public class PostRepository : IPostRepository
         }
     }
 
+    /// <inheritdoc/>
     public async Task<List<Category>> GetCategoriesAsync()
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
@@ -82,6 +92,7 @@ public class PostRepository : IPostRepository
         return results;
     }
 
+    /// <inheritdoc/>
     public async Task<List<ApplicationUser>> GetAuthorsAsync()
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
@@ -95,6 +106,7 @@ public class PostRepository : IPostRepository
         return results;
     }
 
+    /// <inheritdoc/>
     public async Task<List<string>> GetPublishedDatesAsync()
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
@@ -117,9 +129,9 @@ public class PostRepository : IPostRepository
     }
 
 
+    /// <inheritdoc/>
     public async Task<List<Post>> GetAllPostsByUserIdAsync(string userId)
     {
-
         PerformanceLogger performanceLogger = new PerformanceLogger();
 
         performanceLogger.Start();
@@ -133,6 +145,7 @@ public class PostRepository : IPostRepository
         return results;
     }
 
+    /// <inheritdoc/>
     public async Task<List<dynamic>> GetPostsByMonth(string userId)
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
@@ -165,6 +178,7 @@ public class PostRepository : IPostRepository
         return groupedResult;
     }
 
+    /// <inheritdoc/>
     public async Task<List<Post>> GetFilteredPostsAsync(string? q, string? cl, string? by, string? at, int page = 1, int pageSize = 20)
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
@@ -190,6 +204,7 @@ public class PostRepository : IPostRepository
         return filteredList;
     }
 
+    /// <inheritdoc/>
     public async Task<int> GetFilteredPostsCountAsync(string? q, string? cl, string? by, string? at)
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
@@ -206,6 +221,20 @@ public class PostRepository : IPostRepository
         return count;
     }
 
+    /// <summary>
+    /// Applies filtering criteria to a queryable collection of <see cref="Post"/> entities based on the provided parameters.
+    /// </summary>
+    /// <param name="query">The initial <see cref="IQueryable{Post}"/> to apply filters to.</param>
+    /// <param name="q">An optional search term to filter posts by title or content.</param>
+    /// <param name="cl">An optional category name to filter posts by category.</param>
+    /// <param name="by">An optional user display name to filter posts by author.</param>
+    /// <param name="at">
+    /// An optional date filter in the format "MM/YYYY" to filter posts by creation month and year.
+    /// If parsing fails, this filter is ignored.
+    /// </param>
+    /// <returns>
+    /// The filtered <see cref="IQueryable{Post}"/> based on the provided criteria.
+    /// </returns>
     private static IQueryable<Post> ApplyFilters(IQueryable<Post> query, string? q, string? cl, string? by, string? at)
     {
         if (!string.IsNullOrEmpty(q))

@@ -8,6 +8,9 @@ using TownTalk.Web.Data;
 using TownTalk.Web.Services.Interfaces;
 using TownTalk.Web.Models;
 
+/// <summary>
+/// Controller for managing reactions to posts, including creating, updating, and deleting reactions.
+/// </summary>
 [Authorize]
 public class ReactionsController : Controller
 {
@@ -15,6 +18,12 @@ public class ReactionsController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly INotificationService _notificationService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ReactionsController"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
+    /// <param name="userManager">The user manager for handling user-related operations.</param>
+    /// <param name="notificationService">The notification service for sending notifications.</param>
     public ReactionsController(TownTalkDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService)
     {
         _context = context;
@@ -22,8 +31,12 @@ public class ReactionsController : Controller
         _notificationService = notificationService;
     }
 
-    // POST: Reactions/Create
-    [HttpPost("Reactions/Create/")]
+    /// <summary>
+    /// Creates or updates a reaction for a post by the current user.
+    /// </summary>
+    /// <param name="reaction">The reaction to create or update.</param>
+    /// <returns>A JSON result indicating success or failure.</returns>
+    [HttpPost("Reactions/Create")]
     public async Task<IActionResult> Create([FromBody] Reaction reaction)
     {
         ApplicationUser? user = await _userManager.GetUserAsync(User);
@@ -84,7 +97,11 @@ public class ReactionsController : Controller
         return Json(new { success = false, errors = ModelState });
     }
 
-    // DELETE: Reactions/Delete
+    /// <summary>
+    /// Deletes a reaction for a post by the current user.
+    /// </summary>
+    /// <param name="reaction">The reaction to delete.</param>
+    /// <returns>A JSON result indicating success or failure.</returns>
     [HttpDelete(template: "Reactions/Delete")]
     public async Task<IActionResult> Delete([FromBody] Reaction reaction)
     {

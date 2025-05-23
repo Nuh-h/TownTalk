@@ -16,7 +16,10 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between w-100 px-2">
         <h1 class="m-0">Posts</h1>
-        <a class="btn btn-primary" href="/Posts/Create">Add a post</a>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a class="btn btn-primary" href="/Posts/Create">Add a post</a>
+        }
     </div>
 
     <div class="container mt-3">

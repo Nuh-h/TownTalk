@@ -103,7 +103,7 @@ class Notifications {
         const timestamp = new Date(notification.createdAt);
         const relativeTime = dateFns.formatDistanceToNow(timestamp, { addSuffix: true });
         const listItem = document.createElement("li");
-        listItem.className = `list-group-item d-flex justify-content-between align-items-center text-dark ${notification.isRead ? "" : "notification-unread"}`;
+        listItem.className = `list-group-item d-flex justify-content-between align-items-center ${notification.isRead ? "" : "notification-unread"}`;
         const profileUrl = `/user/profile/${notification.senderId}`;
         const displayName = `<span class="sender-display-name" style="font-weight:600">${notification.senderDisplayName}</span>`;
         const notificationMessage = `<div>${notification.senderDisplayName != null ? displayName : ""}${notification.message.replace(notification?.senderDisplayName ?? "", "")}</div>`;

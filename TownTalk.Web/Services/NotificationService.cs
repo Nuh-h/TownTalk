@@ -1,6 +1,5 @@
 namespace TownTalk.Web.Services;
 
-
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using TownTalk.Web.Repositories.Interfaces;
@@ -8,6 +7,9 @@ using TownTalk.Web.Services.Interfaces;
 using TownTalk.Web.Models;
 using TownTalk.Web.Hubs;
 
+/// <summary>
+/// Provides notification-related services, including sending notifications to users and managing notification data.
+/// </summary>
 public class NotificationService : INotificationService
 {
     private readonly INotificationRepository _notificationRepository;
@@ -21,7 +23,7 @@ public class NotificationService : INotificationService
         _userManager = userManager;
     }
 
-    // // Sends a notification to a specific user
+    /// <inheritdoc/>
     public async Task NotifyUserAsync(string userId, string message, int postId, string senderId, string type)
     {
         ApplicationUser? sender = await _userManager.FindByIdAsync(senderId);
@@ -41,7 +43,7 @@ public class NotificationService : INotificationService
             SenderId = sender.Id,
             CreatedAt = DateTime.UtcNow,
             IsRead = false,
-            Type = type
+            Type = type,
         };
 
         await _notificationRepository.AddNotificationAsync(notification);
@@ -49,6 +51,7 @@ public class NotificationService : INotificationService
         await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", notification);
     }
 
+    /// <inheritdoc/>
     public async Task NotifyUserAsync(string userId, string message, string senderId, string type)
     {
         ApplicationUser? sender = await _userManager.FindByIdAsync(senderId);
@@ -68,12 +71,16 @@ public class NotificationService : INotificationService
         await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", notification);
     }
 
+    /// <inheritdoc/>
     public async Task<IEnumerable<Notification>> GetRecentNotificationsAsync()
     {
-        DateTime thirtyMinutesAgo = DateTime.UtcNow.AddMinutes(-30);
-        return await _notificationRepository.GetRecentNotificationsAsync(thirtyMinutesAgo);
+        // DateTime thirtyMinutesAgo = DateTime.UtcNow.AddMinutes(-30);
+        DateTime thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
+
+        return await _notificationRepository.GetRecentNotificationsAsync(thirtyDaysAgo);
     }
 
+    /// <inheritdoc/>
     public async Task NotifyFollowAsync(string followerId, string followedId)
     {
         if (followerId == followedId) return; // Don't notify if the user is following themselves
@@ -86,7 +93,7 @@ public class NotificationService : INotificationService
     }
 
 
-    // Notifies when a comment is added to a post
+    /// <inheritdoc/>
     public async Task NotifyCommentAsync(string postId, string commenterId, string originalPosterId)
     {
         if (commenterId == originalPosterId) return;
@@ -96,14 +103,15 @@ public class NotificationService : INotificationService
         await NotifyUserAsync(originalPosterId, message, int.Parse(postId), commenterId, "Comment");
     }
 
-    // Notifies when a reaction is added to a post
+    /// <inheritdoc/>
     public async Task NotifyReactionAsync(string? postId, string reactorId, string originalPosterId)
     {
         ApplicationUser? sender = await _userManager.FindByIdAsync(reactorId);
         string? message = $"{sender?.DisplayName} reacted to your post.";
-        await NotifyUserAsync(originalPosterId, message, int.Parse(postId),  senderId: reactorId, type: "Reaction");
+        await NotifyUserAsync(originalPosterId, message, int.Parse(postId), senderId: reactorId, type: "Reaction");
     }
 
+    /// <inheritdoc/>
     public async Task NotifyReactionAsync(string reactorId, string originalPosterId)
     {
         ApplicationUser? sender = await _userManager.FindByIdAsync(reactorId);
@@ -111,7 +119,7 @@ public class NotificationService : INotificationService
         await NotifyUserAsync(originalPosterId, message, senderId: reactorId, type: "Reaction");
     }
 
-    // Notifies when a user views another user's profile
+    /// <inheritdoc/>
     public async Task NotifyProfileViewAsync(string viewerId, string viewedUserId)
     {
         if (viewerId == viewedUserId) return;
@@ -121,7 +129,7 @@ public class NotificationService : INotificationService
         await NotifyUserAsync(viewedUserId, message, 0, viewerId, "ProfileView");
     }
 
-    // Notify when a user unfollows another user
+    /// <inheritdoc/>
     public async Task NotifyUnfollowAsync(string followerId, string unfollowedId)
     {
         if (followerId == unfollowedId) return;
@@ -131,7 +139,7 @@ public class NotificationService : INotificationService
         await NotifyUserAsync(unfollowedId, message, 0, followerId, "Unfollow");
     }
 
-    // Sends a notification to all users when there is an update (reaction, follow, etc.)
+    /// <inheritdoc/>
     public async Task PushUpdateToActiveUsersAsync(string message, string type)
     {
         List<ApplicationUser>? activeUsers = _userManager.Users.Where(u => u.LastActive.HasValue && u.LastActive.Value > DateTime.UtcNow.AddMinutes(-5)).ToList();

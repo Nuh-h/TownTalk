@@ -139,11 +139,16 @@ class Reactions {
         const url = isDeleting ? `/Reactions/Delete` : `/Reactions/Create`;
         const method = isDeleting ? 'DELETE' : 'POST';
 
+        const postIdInt = parseInt(postId);
+        const reactionTypeInt = parseInt(reactionType);
+
+        if (!(postIdInt && reactionTypeInt)) throw("Post Id or Reaction Id is missing");
+
         $.ajax({
             url: url,
             type: method,
             contentType: 'application/json',
-            data: JSON.stringify({ PostId: postId, Type: reactionType }),
+            data: JSON.stringify({ PostId: postIdInt, Type: reactionTypeInt }),
             success: () => {
                 this.updateReactions(postId);
             },

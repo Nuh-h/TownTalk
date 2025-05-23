@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using TownTalk.Web.Models;
 
+/// <summary>
+/// Controller responsible for handling home page and privacy views.
+/// </summary>
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

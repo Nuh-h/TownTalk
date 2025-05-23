@@ -7,6 +7,9 @@ using TownTalk.Web.Data;
 using TownTalk.Web.Models;
 using TownTalk.Web.Services.Interfaces;
 
+/// <summary>
+/// Controller for administrative actions, including user management, notifications, and user connections.
+/// </summary>
 [Authorize]
 public class AdminController : Controller
 {
@@ -18,6 +21,14 @@ public class AdminController : Controller
     private readonly IGraphService _graphService;
 
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdminController"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
+    /// <param name="userManager">The user manager for application users.</param>
+    /// <param name="notificationService">The notification service.</param>
+    /// <param name="userFollowService">The user follow service.</param>
+    /// <param name="graphService">The graph service for user connections.</param>
     public AdminController(TownTalkDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService, IUserFollowService userFollowService,
     IGraphService graphService)
     {
@@ -28,6 +39,10 @@ public class AdminController : Controller
         _graphService = graphService;
     }
 
+    /// <summary>
+    /// Displays the list of users and recent notifications in the admin dashboard.
+    /// </summary>
+    /// <returns>The admin dashboard view with users and notifications.</returns>
     public async Task<IActionResult> Index()
     {
         List<ApplicationUser> users = _context.Users.ToList();
@@ -46,6 +61,13 @@ public class AdminController : Controller
 
     // }
 
+    /// <summary>
+    /// Simulates sending a notification of a specified type from one user to another.
+    /// </summary>
+    /// <param name="senderId">The ID of the user sending the notification.</param>
+    /// <param name="receiverId">The ID of the user receiving the notification.</param>
+    /// <param name="notificationType">The type of notification to simulate (e.g., "reaction", "follow").</param>
+    /// <returns>Redirects to the Index action after simulating the notification.</returns>
     [HttpPost]
     public async Task<ActionResult> SimulateNotification(string senderId, string receiverId, string notificationType) {
 
@@ -71,6 +93,12 @@ public class AdminController : Controller
     }
 
     // Endpoint to get mutual followers and connection details
+    /// <summary>
+    /// Retrieves mutual followers and connection details between two users, including degree of separation and connection path.
+    /// </summary>
+    /// <param name="userId1">The ID of the first user.</param>
+    /// <param name="userId2">The ID of the second user.</param>
+    /// <returns>An IActionResult containing mutual connections, all connections, degree of separation, and path.</returns>
     [HttpGet("connections")]
     public async Task<IActionResult> GetConnections(string userId1, string userId2)
     {
@@ -123,8 +151,8 @@ public class AdminController : Controller
             Path = path.Select(user => new
             {
                 user.Id,
-                user.DisplayName
-            }).ToList()
+                user.DisplayName,
+            }).ToList(),
         };
 
         return Ok(result);

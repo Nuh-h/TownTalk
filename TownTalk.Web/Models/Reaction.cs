@@ -2,27 +2,68 @@ namespace TownTalk.Web.Models;
 
 using System.ComponentModel.DataAnnotations;
 
+/// <summary>
+/// Represents the types of reactions that can be made to a post.
+/// </summary>
 public enum ReactionType
 {
-    Like = 0,        // 👍
-    Love = 1,        // ❤️
-    Haha = 2,        // 😂
-    Wow = 3,         // 😮
-    HeartEyes = 4,   // 😍
-    Sad = 5,         // 😢
-    Angry = 6,       // 😡
-    Cool = 7,        // 😎
-    Clap = 8         // 👏
+    /// <summary>Like reaction (👍)</summary>
+    Like = 0,
+    /// <summary>Love reaction (❤️)</summary>
+    Love = 1,
+    /// <summary>Haha reaction (😂)</summary>
+    Haha = 2,
+    /// <summary>Wow reaction (😮)</summary>
+    Wow = 3,
+    /// <summary>Heart Eyes reaction (😍)</summary>
+    HeartEyes = 4,
+    /// <summary>Sad reaction (😢)</summary>
+    Sad = 5,
+    /// <summary>Angry reaction (😡)</summary>
+    Angry = 6,
+    /// <summary>Cool reaction (😎)</summary>
+    Cool = 7,
+    /// <summary>Clap reaction (👏)</summary>
+    Clap = 8
 }
+/// <summary>
+/// Represents a reaction made by a user to a post.
+/// </summary>
 public class Reaction
 {
+    /// <summary>
+    /// Gets or sets the unique identifier for the reaction.
+    /// </summary>
     public int Id { get; set; }
+
+    /// <summary>
+    /// Gets or sets the foreign key for the user who made the reaction.
+    /// </summary>
+    public string UserId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the navigation property for the user who made the reaction.
+    /// </summary>
+    public ApplicationUser User { get; set; }
+
+    /// <summary>
+    /// Gets or sets the foreign key for the post to which the reaction was made.
+    /// </summary>
     [Required]
-    public string UserId { get; set; } // Foreign key for User
-    public ApplicationUser User { get; set; } // Navigation property for User
-    [Required]
-    public int PostId { get; set; } // Foreign key for Post
-    public Post Post { get; set; } // Navigation property for Post
+    public int PostId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the navigation property for the post to which the reaction was made.
+    /// </summary>
+    public Post Post { get; set; }
+
+    /// <summary>
+    /// Gets or sets the type of the reaction.
+    /// </summary>
     public ReactionType Type { get; set; }
+
+    /// <summary>
+    /// Gets or sets the date and time when the reaction was created.
+    /// </summary>
     public DateTime CreatedAt { get; set; }
 }

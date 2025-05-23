@@ -5,21 +5,56 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TownTalk.Web.Models;
 
+/// <summary>
+/// The Entity Framework database context for the TownTalk application, including Identity and application-specific entities.
+/// </summary>
 public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TownTalkDbContext"/> class.
+    /// </summary>
+    /// <param name="options">The options to be used by a <see cref="DbContext"/>.</param>
     public TownTalkDbContext(DbContextOptions<TownTalkDbContext> options)
         : base(options)
     {
 
     }
 
+    /// <summary>
+    /// Gets or sets the posts in the application.
+    /// </summary>
     public DbSet<Post> Posts { get; set; }
+
+    /// <summary>
+    /// Gets or sets the comments in the application.
+    /// </summary>
     public DbSet<Comment> Comments { get; set; }
+
+    /// <summary>
+    /// Gets or sets the reactions in the application.
+    /// </summary>
     public DbSet<Reaction> Reactions { get; set; }
+
+    /// <summary>
+    /// Gets or sets the notifications in the application.
+    /// </summary>
     public DbSet<Notification> Notifications { get; set; }
+
+    /// <summary>
+    /// Gets or sets the categories in the application.
+    /// </summary>
     public DbSet<Category> Categories { get; set; }
+
+    /// <summary>
+    /// Gets or sets the user follow relationships in the application.
+    /// </summary>
     public DbSet<UserFollow> UserFollows { get; set; }
 
+    /// <summary>
+    /// Seeds initial data into the database, such as default categories.
+    /// </summary>
+    /// <param name="context">The database context.</param>
+    /// <param name="userManager">The user manager for handling users.</param>
     public static void SeedData(TownTalkDbContext context, UserManager<ApplicationUser> userManager)
     {
 
@@ -45,11 +80,13 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
     }
 
 
+    /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        #region // Configure UserFollow relationships
+        #region Configure UserFollow relationships
+
         modelBuilder.Entity<UserFollow>()
             .HasKey(keyExpression: uf => new { uf.FollowerId, uf.FollowedId });
 
@@ -67,7 +104,8 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 
         #endregion
 
-        #region //Configure Post
+        #region Configure Post
+
         modelBuilder.Entity<Post>()
             .HasOne(p => p.User)
             .WithMany(u => u.Posts)
@@ -81,7 +119,8 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.SetNull); // Set category to null if the category is deleted
         #endregion
 
-        #region // Comment Configuration
+        #region Comment Configuration
+
         modelBuilder.Entity<Comment>()
             .HasOne(c => c.Post)
             .WithMany(p => p.Comments)
@@ -103,12 +142,12 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 
         #endregion
 
-        #region// Configure Reaction Type to be stored as an integer
+        #region Configure Reaction Type to be stored as an integer
+
         modelBuilder.Entity<Reaction>()
             .Property(r => r.Type)
             .HasConversion<int>(); // Store as integer
 
-        // Reaction Configuration
         modelBuilder.Entity<Reaction>()
             .HasOne(r => r.Post)
             .WithMany(p => p.Reactions)
@@ -117,7 +156,8 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
 
         #endregion
 
-        #region // Category
+        #region Category
+
         modelBuilder.Entity<Category>()
             .HasMany(c => c.Posts)
             .WithOne(p => p.Category)
@@ -127,7 +167,7 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
         #endregion
 
         #region Notifications
-        // Configure Notification relationships
+
         modelBuilder.Entity<Notification>()
             .HasOne(n => n.User) // Recipient of the notification
             .WithMany() // Assuming User can have many notifications
@@ -161,8 +201,8 @@ public class TownTalkDbContext : IdentityDbContext<ApplicationUser>
             .OnDelete(DeleteBehavior.Restrict); // Prevent deletion if notifications exist
         #endregion
 
-        #region
-        //Indexing
+        #region Indexing
+
         modelBuilder.Entity<Post>()
             .HasIndex(p => p.UserId);  // Indexing the UserId in posts for faster queries by author
 

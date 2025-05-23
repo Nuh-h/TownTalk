@@ -5,6 +5,9 @@ using TownTalk.Web.Data;
 using TownTalk.Web.Repositories.Interfaces;
 using TownTalk.Web.Models;
 
+/// <summary>
+/// Repository for managing notifications in the TownTalk application.
+/// </summary>
 public class NotificationRepository : INotificationRepository
 {
     private readonly TownTalkDbContext _context;
@@ -14,12 +17,14 @@ public class NotificationRepository : INotificationRepository
         _context = context;
     }
 
+    /// <inheritdoc/>
     public async Task AddNotificationAsync(Notification notification)
     {
         await _context.Notifications.AddAsync(notification);
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc/>
     public async Task<IEnumerable<Notification>> GetUserNotificationsAsync(string userId, bool unread)
     {
 
@@ -37,6 +42,7 @@ public class NotificationRepository : INotificationRepository
             .ToListAsync();
     }
 
+    /// <inheritdoc/>
     public async Task<IEnumerable<Notification>> GetRecentNotificationsAsync(DateTime fromDate)
     {
         return await _context.Notifications
@@ -45,6 +51,7 @@ public class NotificationRepository : INotificationRepository
             .ToListAsync();
     }
 
+    /// <inheritdoc/>
     public async Task MarkAsReadAsync(int notificationId)
     {
         Notification? notification = await _context.Notifications.FindAsync(notificationId);
@@ -55,7 +62,7 @@ public class NotificationRepository : INotificationRepository
         }
     }
 
-    // Optionally: Deletes a notification if needed
+    /// <inheritdoc/>
     public async Task DeleteNotificationAsync(int notificationId)
     {
         Notification? notification = await _context.Notifications.FindAsync(notificationId);
@@ -66,6 +73,7 @@ public class NotificationRepository : INotificationRepository
         }
     }
 
+    /// <inheritdoc/>
     public async Task<bool> NotificationExistsAsync(string userId, int postId, string senderId, string type)
     {
         return await _context.Notifications

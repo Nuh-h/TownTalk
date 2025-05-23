@@ -1,8 +1,12 @@
+namespace TownTalk.Web.Services;
+
 using Microsoft.AspNetCore.Identity;
 using TownTalk.Web.Services.Interfaces;
 using TownTalk.Web.Models;
 
-namespace TownTalk.Web.Services;
+/// <summary>
+/// Provides graph-related services such as finding degrees of separation and connection paths between users.
+/// </summary>
 public class GraphService : IGraphService
 {
     private readonly IUserFollowService _userFollowService;
@@ -15,7 +19,7 @@ public class GraphService : IGraphService
         _userManager = userManager;
     }
 
-    // This function calculates the shortest path using BFS
+    /// <inheritdoc/>
     public async Task<int> GetDegreeOfSeparation(string userId1, string userId2)
     {
         if (userId1 == userId2) return 0;
@@ -23,7 +27,6 @@ public class GraphService : IGraphService
         HashSet<string>? visited = new HashSet<string>();
         Queue<(string UserId, int Degree)>? queue = new Queue<(string UserId, int Degree)>();
 
-        // Start with the first user
         queue.Enqueue((userId1, 0));
 
         while (queue.Any())
@@ -35,7 +38,6 @@ public class GraphService : IGraphService
             if (visited.Contains(currentUserId)) continue;
             visited.Add(currentUserId);
 
-            // Get the followers (or people that the current user follows)
             List<ApplicationUser>? followers = await _userFollowService.GetFollowersAsync(currentUserId);
 
             foreach (ApplicationUser follower in followers)
@@ -50,6 +52,7 @@ public class GraphService : IGraphService
         return -1; // If no connection is found, return -1 (not connected)
     }
 
+    /// <inheritdoc/>
     public async Task<List<ApplicationUser>> FindConnectionPath(string userId1, string userId2)
     {
         HashSet<string>? visited = new HashSet<string>();
@@ -63,14 +66,12 @@ public class GraphService : IGraphService
             List<ApplicationUser>? path = queue.Dequeue();
             ApplicationUser? currentUser = path.Last();
 
-            // If we reached the target user, return the path
             if (currentUser.Id == userId2)
             {
                 return path;
             }
 
-            // Get the neighbors of the current user (followers and followings)
-            List<ApplicationUser>? neighbors = await GetConnectionsForUser(currentUser.Id); // This could be GetFollowers() + GetFollowing()
+            List<ApplicationUser>? neighbors = await GetConnectionsForUser(currentUser.Id);
 
             foreach (ApplicationUser neighbor in neighbors)
             {
@@ -83,15 +84,22 @@ public class GraphService : IGraphService
             }
         }
 
-        return new List<ApplicationUser>(); // No path found
+        return new List<ApplicationUser>();
     }
 
+    /// <summary>
+    /// Retrieves a combined list of users who are either followers or are being followed by the specified user.
+    /// </summary>
+    /// <param name="userId">The unique identifier of the user whose connections are to be retrieved.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains a list of <see cref="ApplicationUser"/> objects
+    /// representing both followers and users being followed by the specified user.
+    /// </returns>
     private async Task<List<ApplicationUser>> GetConnectionsForUser(string userId)
     {
         List<ApplicationUser>? followers = await _userFollowService.GetFollowersAsync(userId);
         List<ApplicationUser>? following = await _userFollowService.GetFollowingAsync(userId);
         return followers.Concat(following).ToList();
     }
-
 
 }

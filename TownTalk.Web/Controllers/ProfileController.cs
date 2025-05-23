@@ -10,6 +10,9 @@ using TownTalk.Web.Repositories.Interfaces;
 using TownTalk.Web.Services.Interfaces;
 using TownTalk.Web.ViewModels;
 
+/// <summary>
+/// Controller responsible for handling user profile-related actions such as viewing, editing, and managing followers.
+/// </summary>
 public class ProfileController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -17,6 +20,13 @@ public class ProfileController : Controller
     private readonly IPostRepository _postRepository;
     private readonly INotificationService _notificationService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ProfileController"/> class.
+    /// </summary>
+    /// <param name="userManager">The user manager for managing application users.</param>
+    /// <param name="userFollowService">The service for handling user follow operations.</param>
+    /// <param name="postRepository">The repository for accessing posts.</param>
+    /// <param name="notificationService">The service for handling notifications.</param>
     public ProfileController(UserManager<ApplicationUser> userManager, IUserFollowService userFollowService, IPostRepository postRepository, INotificationService notificationService)
     {
         _userManager = userManager;
@@ -25,15 +35,24 @@ public class ProfileController : Controller
         _notificationService = notificationService;
     }
 
-    async public Task<bool> IsFollowed(string followedId, string followerId)
+    /// <summary>
+    /// Determines whether the specified follower is following the specified user.
+    /// </summary>
+    /// <param name="followedId">The ID of the user being followed.</param>
+    /// <param name="followerId">The ID of the follower.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains true if the follower is following the user; otherwise, false.</returns>
+    public async Task<bool> IsFollowed(string followedId, string followerId)
     {
-
         bool isFollowing = await _userFollowService.IsFollowingAsync(followerId, followedId);
 
         return isFollowing;
     }
 
-    // View a user's profile
+    /// <summary>
+    /// Displays the profile page for the specified user or the currently authenticated user if no userId is provided.
+    /// </summary>
+    /// <param name="userId">The ID of the user whose profile is to be displayed. If null, the current user's profile is shown.</param>
+    /// <returns>The profile view for the specified user.</returns>
     public async Task<IActionResult> Index(string? userId)
     {
 
@@ -129,6 +148,12 @@ public class ProfileController : Controller
     }
 
 
+    /// <summary>
+    /// Retrieves a list of users based on the specified tab (following, followers, or recommended).
+    /// </summary>
+    /// <param name="userId">The ID of the user whose connections are to be retrieved.</param>
+    /// <param name="tab">The tab specifying which users to retrieve ("following", "followers", or other for recommended).</param>
+    /// <returns>A JSON result containing the list of users for the specified tab.</returns>
     public async Task<IActionResult> GetUsers(string userId, string tab)
     {
         List<ApplicationUser> following = await _userFollowService.GetFollowingAsync(userId);
@@ -177,14 +202,21 @@ public class ProfileController : Controller
         };
     }
 
-
-    // Edit user profile
+    /// <summary>
+    /// Displays the edit profile view for the currently authenticated user.
+    /// </summary>
+    /// <returns>The edit profile view.</returns>
     public async Task<IActionResult> Edit()
     {
         var user = await _userManager.GetUserAsync(User);
         return View(user);
     }
 
+    /// <summary>
+    /// Handles the POST request to edit the profile of the currently authenticated user.
+    /// </summary>
+    /// <param name="model">The ApplicationUser model containing updated profile information.</param>
+    /// <returns>The profile view with updated information or the edit view if the model state is invalid.</returns>
     [HttpPost]
     public async Task<IActionResult> Edit(ApplicationUser model)
     {
@@ -200,6 +232,11 @@ public class ProfileController : Controller
         return View(model);
     }
 
+    /// <summary>
+    /// Toggles the follow status of the current user for the specified user.
+    /// </summary>
+    /// <param name="userId">The ID of the user to follow or unfollow.</param>
+    /// <returns>A JSON result containing the updated follow status and counts.</returns>
     [HttpPost]
     public async Task<IActionResult> ToggleFollow(string userId)
     {

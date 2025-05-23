@@ -14,6 +14,7 @@ public class UserFollowService : IUserFollowService
         _context = context;
     }
 
+    /// <inheritdoc/>
     public async Task FollowUserAsync(string followerId, string followedId)
     {
         bool existingFollow = await _context.UserFollows
@@ -27,6 +28,7 @@ public class UserFollowService : IUserFollowService
         }
     }
 
+    /// <inheritdoc/>
     public async Task UnfollowUserAsync(string followerId, string followedId)
     {
         UserFollow? userFollow = await _context.UserFollows
@@ -39,6 +41,7 @@ public class UserFollowService : IUserFollowService
         }
     }
 
+    /// <inheritdoc/>
     public async Task<List<ApplicationUser>> GetFollowersAsync(string userId)
     {
         return await _context.UserFollows
@@ -47,6 +50,7 @@ public class UserFollowService : IUserFollowService
             .ToListAsync();
     }
 
+    /// <inheritdoc/>
     public async Task<List<ApplicationUser>> GetFollowingAsync(string userId)
     {
         return await _context.UserFollows
@@ -55,22 +59,26 @@ public class UserFollowService : IUserFollowService
             .ToListAsync();
     }
 
+    /// <inheritdoc/>
     public async Task<bool> IsFollowingAsync(string followerId, string followedId)
     {
         return await _context.UserFollows
             .AnyAsync(userFollow => userFollow.FollowerId == followerId && userFollow.FollowedId == followedId);
     }
 
+    /// <inheritdoc/>
     public async Task<int> GetFollowerCountAsync(string userId)
     {
         return await _context.UserFollows.CountAsync(userFollow => userFollow.FollowedId == userId);
     }
 
+    /// <inheritdoc/>
     public async Task<int> GetFollowingCountAsync(string userId)
     {
         return await _context.UserFollows.CountAsync(userFollow => userFollow.FollowerId == userId);
     }
 
+    /// <inheritdoc/>
     public async Task<List<dynamic>> GetFollowersGrowth(string userId)
     {
         // Load all necessary data first

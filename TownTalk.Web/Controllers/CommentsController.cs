@@ -9,6 +9,9 @@ using TownTalk.Web.Models;
 using TownTalk.Web.Services.Interfaces;
 
 
+/// <summary>
+/// Controller for handling comment creation and deletion.
+/// </summary>
 [Authorize]
 public class CommentsController : Controller
 {
@@ -16,6 +19,12 @@ public class CommentsController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly INotificationService _notificationService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CommentsController"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
+    /// <param name="userManager">The user manager for handling user-related operations.</param>
+    /// <param name="notificationService">The notification service for sending notifications.</param>
     public CommentsController(TownTalkDbContext context, UserManager<ApplicationUser> userManager, INotificationService notificationService)
     {
         _context = context;
@@ -23,7 +32,11 @@ public class CommentsController : Controller
         _notificationService = notificationService;
     }
 
-    // POST: Comments/Create
+    /// <summary>
+    /// Creates a new comment for a post or as a reply to another comment.
+    /// </summary>
+    /// <param name="comment">The comment to create, bound from the request.</param>
+    /// <returns>A JSON result with the created comment data or validation errors.</returns>
     [HttpPost]
     public async Task<IActionResult> Create([Bind("PostId,ParentCommentId,Content")] Comment comment)
     {
@@ -67,7 +80,11 @@ public class CommentsController : Controller
         return Json(new { success = false, errors = ModelState });
     }
 
-    // POST: Comments/Delete/5
+    /// <summary>
+    /// Deletes a comment and its replies by comment ID.
+    /// </summary>
+    /// <param name="id">The ID of the comment to delete.</param>
+    /// <returns>A JSON result indicating success or failure.</returns>
     [HttpPost]
     public async Task<IActionResult> Delete(int id)
     {
