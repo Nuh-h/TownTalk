@@ -1,6 +1,23 @@
 import $ from 'jquery';
 import { CommentResponse } from './interface';
 
+/**
+ * Handles comment-related UI interactions and AJAX operations for a comment system.
+ *
+ * The `CommentHandler` class manages the following features:
+ * - Toggling the visibility of comment sections.
+ * - Handling comment form submissions via AJAX, including updating the comment list on success.
+ * - Toggling reply forms for nested comments.
+ * - Deleting comments via AJAX and removing them from the DOM.
+ * - Navigating to specific comments via URL fragments and scrolling to them.
+ * - Initializing all event handlers required for comment interactions.
+ *
+ * This class relies on jQuery for DOM manipulation and AJAX requests.
+ *
+ * @example
+ * // Instantiate the handler to enable comment features on the page
+ * const handler = new CommentHandler();
+ */
 export class CommentHandler {
 
   constructor() {

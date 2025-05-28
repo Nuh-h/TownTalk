@@ -1,6 +1,18 @@
-@model TownTalk.Web.ViewModels.PostViewModel
-@using System.Security.Claims
-@using TownTalk.Web.ViewModels
+@model TownTalk.Web.ViewModels.PostViewModel;
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TownTalk.Web.ViewModels;
+
+@inject IViewLocalizer Localizer;
+
+@{
+    string editButtonText = Localizer["Edit"].Value;
+    string deleteButtonText = Localizer["Delete"].Value;
+    string postedByText = Localizer["Posted by"].Value;
+    string inText = Localizer["in"].Value;
+    string onText = Localizer["on"].Value;
+    string commentsText = Localizer["Comments"].Value;
+}
 
 <div id="post-@Model.Id" class="card mb-3" style="background-color: rgba(255, 255, 255, 0.05);">
     <div class="card-body">
@@ -14,24 +26,23 @@
             {
                 <div style="flex-shrink: 0;">
                     <a href="@Url.Action("Edit", "Posts", new { id = Model.Id })"
-                        class="btn btn-warning btn-sm me-1">Edit</a>
-                    <a href="@Url.Action("Delete", "Posts", new { id = Model.Id })" class="btn btn-danger btn-sm">Delete</a>
+                        class="btn btn-warning btn-sm me-1">@editButtonText</a>
+                    <a href="@Url.Action("Delete", "Posts", new { id = Model.Id })" class="btn btn-danger btn-sm">@deleteButtonText</a>
                 </div>
             }
         </div>
 
         <p class="card-text text-muted mt-4">
-            <small>Posted by <a
+            <small>@postedByText <a
                     href="@Url.Action("Index", "Profile", new { userId = Model.UserId })">@Model.UserDisplayName</a>
-                in <a href="@Url.Action("Index", "Posts" , new { cl=Model.CategoryName
-                    })">#@Model.CategoryName</a> on
-                @Model.CreatedAt.ToShortDateString()</small>
+                @inText <a href="@Url.Action("Index", "Posts" , new { cl=Model.CategoryName
+                    })" dir="ltr">#@Model.CategoryName</a> (@Model.CreatedAt.ToShortDateString())</small>
         </p>
 
         <div class="d-flex gap-1 align-items-center w-100 justify-content-between">
             <button class="btn btn-secondary btn-sm" data-toggle="js-comments-wrapper"
                 data-target="#comments-@Model.Id">
-                Comments (@Model.CommentCount)
+                @commentsText (@Model.CommentCount)
             </button>
 
             <div class="reaction-containers" data-post-id="@Model.Id">

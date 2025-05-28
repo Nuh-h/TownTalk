@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="ProfileHeader" xml:space="preserve">
+    <value>{0}'s Profile</value>
+  </data>
+  <data name="JoinedOn" xml:space="preserve">
+    <value>Joined on {0}</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Posts</value>
+  </data>
+  <data name="Followers" xml:space="preserve">
+    <value>Followers</value>
+  </data>
+  <data name="Following" xml:space="preserve">
+    <value>Following</value>
+  </data>
+  <data name="MutualFollowers" xml:space="preserve">
+    <value>You have {0} mutual followers</value>
+  </data>
+  <data name="Bio" xml:space="preserve">
+    <value>Bio:</value>
+  </data>
+  <data name="NoBio" xml:space="preserve">
+    <value>This user has not written a bio yet.</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location:</value>
+  </data>
+  <data name="NoLocation" xml:space="preserve">
+    <value>Location not provided.</value>
+  </data>
+  <data name="LastActive" xml:space="preserve">
+    <value>Last Active:</value>
+  </data>
+  <data name="LastActiveUnknown" xml:space="preserve">
+    <value>Last active date not available.</value>
+  </data>
+  <data name="Unfollow" xml:space="preserve">
+    <value>Unfollow</value>
+  </data>
+  <data name="Follow" xml:space="preserve">
+    <value>Follow</value>
+  </data>
+  <data name="AccountManagement" xml:space="preserve">
+    <value>Account Management</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Delete Account</value>
+  </data>
+  <data name="UserPosts" xml:space="preserve">
+    <value>User Posts</value>
+  </data>
+  <data name="NewPost" xml:space="preserve">
+    <value>New post</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="NoPostsYet" xml:space="preserve">
+    <value>No posts yet.</value>
+  </data>
+  <data name="PostedOn" xml:space="preserve"><value>Posted on {0}</value></data>
+</root>

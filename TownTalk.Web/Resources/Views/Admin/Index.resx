@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="AdminTitle" xml:space="preserve"><value>Admin</value></data>
+  <data name="AdminDescription" xml:space="preserve"><value>Here will be a suite of capabilities Admins can use to adminster, and manage this site.</value></data>
+  <data name="ToolsHeader" xml:space="preserve"><value>Tools</value></data>
+  <data name="DegreeOfConnections" xml:space="preserve"><value>Degree of Connections</value></data>
+  <data name="User1Label" xml:space="preserve"><value>User 1</value></data>
+  <data name="User2Label" xml:space="preserve"><value>User 2</value></data>
+  <data name="SelectUser" xml:space="preserve"><value>Select user</value></data>
+  <data name="FindDegreeOfConnections" xml:space="preserve"><value>Find degree of connections</value></data>
+  <data name="NotificationsSummary" xml:space="preserve"><value>Notifications</value></data>
+  <data name="SendNotificationHeader" xml:space="preserve"><value>Send a notification (impersonation)</value></data>
+  <data name="SenderLabel" xml:space="preserve"><value>Sender</value></data>
+  <data name="ReceiverLabel" xml:space="preserve"><value>Receiver</value></data>
+  <data name="SelectSender" xml:space="preserve"><value>Select sender</value></data>
+  <data name="SelectReceiver" xml:space="preserve"><value>Select receiver</value></data>
+  <data name="NotificationTypeLabel" xml:space="preserve"><value>Notification type</value></data>
+  <data name="SelectNotificationType" xml:space="preserve"><value>Select notification type</value></data>
+  <data name="NewFollower" xml:space="preserve"><value>New follower</value></data>
+  <data name="NewReaction" xml:space="preserve"><value>New reaction</value></data>
+  <data name="NewPost" xml:space="preserve"><value>New post</value></data>
+  <data name="SendNotification" xml:space="preserve"><value>Send notification</value></data>
+  <data name="RecentNotifications" xml:space="preserve"><value>Recent notifications</value></data>
+  <data name="SenderColumn" xml:space="preserve"><value>Sender</value></data>
+  <data name="ReceiverColumn" xml:space="preserve"><value>Receiver</value></data>
+  <data name="MessageColumn" xml:space="preserve"><value>Message</value></data>
+  <data name="TimeColumn" xml:space="preserve"><value>Time</value></data>
+  <data name="StatusColumn" xml:space="preserve"><value>Status</value></data>
+  <data name="ReadStatus" xml:space="preserve"><value>Read</value></data>
+  <data name="DeliveredStatus" xml:space="preserve"><value>Delivered</value></data>
+  <data name="AnalyticsSummary" xml:space="preserve"><value>Analytics</value></data>
+  <data name="AnalyticsHeader" xml:space="preserve"><value>Tool 3: Another Placeholder</value></data>
+  <data name="AnalyticsPlaceholder" xml:space="preserve"><value>This is a placeholder for Tool 3. Add functionality here.</value></data>
+  <data name="ReportsSummary" xml:space="preserve"><value>Reports</value></data>
+  <data name="ReportsHeader" xml:space="preserve"><value>Tool 4: Yet Another Tool</value></data>
+  <data name="ReportsPlaceholder" xml:space="preserve"><value>This is a placeholder for Tool 4. Add functionality here.</value></data>
+</root>

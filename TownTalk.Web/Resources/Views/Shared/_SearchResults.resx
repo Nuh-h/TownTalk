@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="SearchResultsHeading" xml:space="preserve">
+    <value>{0} - {1} of {2}</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>Looks like we have a clean slate!</value>
+  </data>
+</root>

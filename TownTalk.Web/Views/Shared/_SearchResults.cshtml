@@ -1,13 +1,18 @@
 @using System.Security.Claims
+@using Microsoft.AspNetCore.Mvc.Localization
 @using TownTalk.Web.ViewModels;
+
 @model SearchResultsViewModel;
+@inject IViewLocalizer Localizer;
 
 @{
     int count = Model.Posts.Count();
     int start = (Model.CurrentPage - 1) * 20 + 1;
     int total = Model.TotalPosts;
     int end = Model.CurrentPage * 20 > total ? total : Model.CurrentPage*20;
-    string heading = Model.Posts.Count() > 0 ? $"{start} - {end} of {total}" : "Looks like we have a clean slate!";
+    string heading = Model.Posts.Count() > 0
+    ? string.Format(Localizer["SearchResultsHeading"].Value, start, end, total)
+    : Localizer["NoResults"].Value;
 }
 <!-- Posts Display Area -->
 <div id="resultsContainer">

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="AdminTitle" xml:space="preserve"><value>الإدارة</value></data>
+  <data name="AdminDescription" xml:space="preserve"><value>هنا توجد مجموعة من الأدوات التي يمكن للمسؤولين استخدامها لإدارة هذا الموقع.</value></data>
+  <data name="ToolsHeader" xml:space="preserve"><value>الأدوات</value></data>
+  <data name="DegreeOfConnections" xml:space="preserve"><value>درجة الاتصالات</value></data>
+  <data name="User1Label" xml:space="preserve"><value>المستخدم 1</value></data>
+  <data name="User2Label" xml:space="preserve"><value>المستخدم 2</value></data>
+  <data name="SelectUser" xml:space="preserve"><value>اختر مستخدمًا</value></data>
+  <data name="FindDegreeOfConnections" xml:space="preserve"><value>ابحث عن درجة الاتصالات</value></data>
+  <data name="NotificationsSummary" xml:space="preserve"><value>الإشعارات</value></data>
+  <data name="SendNotificationHeader" xml:space="preserve"><value>إرسال إشعار (انتحال)</value></data>
+  <data name="SenderLabel" xml:space="preserve"><value>المرسل</value></data>
+  <data name="ReceiverLabel" xml:space="preserve"><value>المستلم</value></data>
+  <data name="SelectSender" xml:space="preserve"><value>اختر المرسل</value></data>
+  <data name="SelectReceiver" xml:space="preserve"><value>اختر المستلم</value></data>
+  <data name="NotificationTypeLabel" xml:space="preserve"><value>نوع الإشعار</value></data>
+  <data name="SelectNotificationType" xml:space="preserve"><value>اختر نوع الإشعار</value></data>
+  <data name="NewFollower" xml:space="preserve"><value>متابع جديد</value></data>
+  <data name="NewReaction" xml:space="preserve"><value>تفاعل جديد</value></data>
+  <data name="NewPost" xml:space="preserve"><value>منشور جديد</value></data>
+  <data name="SendNotification" xml:space="preserve"><value>إرسال إشعار</value></data>
+  <data name="RecentNotifications" xml:space="preserve"><value>الإشعارات الأخيرة</value></data>
+  <data name="SenderColumn" xml:space="preserve"><value>المرسل</value></data>
+  <data name="ReceiverColumn" xml:space="preserve"><value>المستلم</value></data>
+  <data name="MessageColumn" xml:space="preserve"><value>الرسالة</value></data>
+  <data name="TimeColumn" xml:space="preserve"><value>الوقت</value></data>
+  <data name="StatusColumn" xml:space="preserve"><value>الحالة</value></data>
+  <data name="ReadStatus" xml:space="preserve"><value>مقروء</value></data>
+  <data name="DeliveredStatus" xml:space="preserve"><value>تم التسليم</value></data>
+  <data name="AnalyticsSummary" xml:space="preserve"><value>التحليلات</value></data>
+  <data name="AnalyticsHeader" xml:space="preserve"><value>الأداة 3: عنصر نائب آخر</value></data>
+  <data name="AnalyticsPlaceholder" xml:space="preserve"><value>هذا عنصر نائب للأداة 3. أضف الوظائف هنا.</value></data>
+  <data name="ReportsSummary" xml:space="preserve"><value>التقارير</value></data>
+  <data name="ReportsHeader" xml:space="preserve"><value>الأداة 4: أداة أخرى</value></data>
+  <data name="ReportsPlaceholder" xml:space="preserve"><value>هذا عنصر نائب للأداة 4. أضف الوظائف هنا.</value></data>
+</root>

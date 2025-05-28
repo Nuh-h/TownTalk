@@ -1,19 +1,31 @@
-@using TownTalk.Web.ViewModels
-@model TownTalk.Web.ViewModels.PostViewModel
+@using TownTalk.Web.ViewModels;
+@using Microsoft.AspNetCore.Mvc.Localization;
 
-<div class="mt-2 js-comments-wrapper collapse" id="comments-@Model.Id">
+@model TownTalk.Web.ViewModels.PostViewModel;
+@inject IViewLocalizer Localizer;
+
+@{
+    string commentsText = Localizer["Comments"].Value;
+    string addCommentPlaceholder = Localizer["AddCommentPlaceholder"].Value;
+    string commentButtonText = Localizer["Comment"].Value;
+    string noCommentsText = Localizer["NoCommentsText"].Value;
+
+    string postId = Model.Id.ToString();
+}
+
+<div class="mt-2 js-comments-wrapper collapse" id="comments-@postId">
     <div class="card card-body mt-2" style="background-color: rgba(255, 255, 255, 0.05);">
-        <h6>Comments</h6>
+        <h6>@commentsText</h6>
         <form class="comment-form" method="post" action="/Comments/Create">
-            <input type="hidden" name="PostId" value="@Model.Id" />
+            <input type="hidden" name="PostId" value="@postId" />
             <div class="input-group mt-2">
-                <input type="text" class="form-control" name="Content" placeholder="Add a comment..." required />
+                <input type="text" class="form-control" name="Content" placeholder="@addCommentPlaceholder" required />
                 <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit">Comment</button>
+                    <button class="btn btn-primary" type="submit">@commentButtonText</button>
                 </div>
             </div>
         </form>
-        <div id="commentList-@Model.Id" class="comment-list">
+        <div id="commentList-@postId" class="comment-list">
             @if (Model.Comments != null && Model.Comments.Any(c => c.ParentCommentId == null))
             {
                 foreach (CommentViewModel comment in Model.Comments.Where(c => c.ParentCommentId == null))
@@ -23,7 +35,7 @@
             }
             else
             {
-                <p>No comments yet. Be the first to comment!</p>
+                <p>@noCommentsText</p>
             }
         </div>
     </div>

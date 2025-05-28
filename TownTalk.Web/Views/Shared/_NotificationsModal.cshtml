@@ -1,12 +1,23 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer;
+
+@{
+    string notificationsTitle = Localizer["Notifications"].Value;
+    string allTab = Localizer["All"].Value;
+    string reactionsTab = Localizer["Reactions"].Value;
+    string commentsTab = Localizer["Comments"].Value;
+    string followsTab = Localizer["Follows"].Value;
+    string closeButton = Localizer["Close"].Value;
+}
+
 <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title text-dark" id="notificationModalLabel">Notifications</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <?xml version="1.0" encoding="utf-8"?>
-                    <!-- License: Apache. Made by bytedance: https://github.com/bytedance/IconPark -->
-                    <svg width="1em" height="1em" viewBox="0 0 48 48" fill="none"
+            <div class="modal-header flex row justify-content-between width-100">
+                <h5 class="modal-title text-lg-start w-auto text-slate-50 m-0 py-2"
+                    id="notificationModalLabel">@notificationsTitle</h5>
+                <button type="button" class="btn-close btn-primary m-0 mx-md-2 flex" data-bs-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" width="1em" height="1em" viewBox="0 0 48 48" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <rect width="48" height="48" fill="white" fill-opacity="0.01" />
                         <path d="M8 8L40 40" stroke="#fff" stroke-width="4" stroke-linecap="round"
@@ -18,10 +29,10 @@
             </div>
             <div class="modal-body">
                 <ul class="nav nav-tabs" id="notificationTabs" role="tablist">
-                    <li class="nav-item" role="presentation"><a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#all">All</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" id="reaction-tab" data-bs-toggle="tab" href="#reaction">Reactions</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" id="comment-tab" data-bs-toggle="tab" href="#comment">Comments</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" id="follow-tab" data-bs-toggle="tab" href="#follow">Follows</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link active" id="all-tab" data-bs-toggle="tab" href="#all">@allTab</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="reaction-tab" data-bs-toggle="tab" href="#reaction">@reactionsTab</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="comment-tab" data-bs-toggle="tab" href="#comment">@commentsTab</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" id="follow-tab" data-bs-toggle="tab" href="#follow">@followsTab</a></li>
                 </ul>
                 <div class="tab-content" id="notificationTabContent">
                     <div class="tab-pane fade show active" id="all"><ul id="notificationListAll" class="list-group"></ul></div>
@@ -31,7 +42,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@closeButton</button>
             </div>
         </div>
     </div>

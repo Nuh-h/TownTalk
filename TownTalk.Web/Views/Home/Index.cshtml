@@ -1,29 +1,43 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IViewLocalizer Localizer;
+
+@{
     string currentUserName = User?.Identity?.Name?.Split('@')[0].Split('.').FirstOrDefault();
+    string welcomeText = Localizer["Welcome"].Value;
+    string seedDataOverview = Localizer["SeedDataOverview"].Value;
+    string users = Localizer["Users"].Value;
+    string posts = Localizer["Posts"].Value;
+    string interactions = Localizer["Interactions"].Value;
+    string and = Localizer["and"].Value;
+    string seedMoreDataCTA = Localizer["SeedMoreDataCTA"].Value;
+    string latest = Localizer["Latest"].Value;
+    string recommendations = Localizer["Recommendations"].Value;
+
+    ViewData["Title"] = Localizer["HomeLinkTitle"].Value;
+
 }
 
 <div class="text-center" style="min-height: 200px">
-    <h1 class="display-4">Welcome <span class="badge bg-success fw-bold rounded-pill"
+    <h1 class="display-4">@(welcomeText) <span class="badge bg-success fw-bold rounded-pill"
             style="box-shadow: 0 0 10px rgba(0, 128, 0, 0.5); filter:hue-rotate(45deg)">@currentUserName</span>
     </h1>
 
     @if (User.Identity.IsAuthenticated)
     {
         <div class="my-4">
-            <p>Do you want to seed more data? Users, posts and interactions.</p>
-            <a class="" href="/api/users">Seed more data</a>
+            <p>@(string.Format("{0} {1}, {2}, {3} {4}",seedDataOverview, users, posts, and, interactions))</p>
+            <a class="" href="/api/users">@seedMoreDataCTA</a>
         </div>
     }
 </div>
 <div class="text-center">
     <div>
-        <h2>Latest</h2>
+        <h2>@latest</h2>
         <p>This is a placeholder for latest activities - posts, reactions etc</p>
     </div>
 
     <div>
-        <h2>Recommendations</h2>
+        <h2>@recommendations</h2>
         <p>This is a placeholder for recommendation engine - users, posts etc</p>
     </div>
 </div>

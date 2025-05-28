@@ -73,7 +73,7 @@ $(document).ready(function () {
     }
 
     function loadTabData(activeTab: string, userId: string): void {
-        const url = `http://localhost:5036/Profile/GetUsers?userId=${encodeURIComponent(userId)}&tab=${encodeURIComponent(activeTab)}`;
+        const url = `/Profile/GetUsers?userId=${encodeURIComponent(userId)}&tab=${encodeURIComponent(activeTab)}`;
 
         fetch(url)
             .then((response) => response.json())

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="FollowersTab" xml:space="preserve"><value>المتابعون</value></data>
+  <data name="FollowingTab" xml:space="preserve"><value>المتابَعون</value></data>
+  <data name="SuggestionsTab" xml:space="preserve"><value>اقتراحات</value></data>
+</root>

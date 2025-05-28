@@ -1,9 +1,37 @@
-@model TownTalk.Web.ViewModels.ProfileViewModel
-@using System.Security.Claims
-@using TownTalk.Web.ViewModels
+@model TownTalk.Web.ViewModels.ProfileViewModel;
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc.Localization
+@using TownTalk.Web.ViewModels;
+
+@inject IViewLocalizer Localizer;
 
 @{
-    ViewData["Title"] = "Profile";
+    string profileTitle = Localizer["ProfileTitle"].Value;
+    string profileHeader = string.Format(Localizer["ProfileHeader"].Value, Model.DisplayName);
+    string joinedOn = string.Format(Localizer["JoinedOn"].Value, Model.DateJoined.ToString("MMMM dd, yyyy"));
+    string postsLabel = Localizer["Posts"].Value;
+    string followersLabel = Localizer["Followers"].Value;
+    string followingLabel = Localizer["Following"].Value;
+    string mutualFollowers = string.Format(Localizer["MutualFollowers"].Value, Model.MutualFollowersCount);
+    string bioLabel = Localizer["Bio"].Value;
+    string noBio = Localizer["NoBio"].Value;
+    string locationLabel = Localizer["Location"].Value;
+    string noLocation = Localizer["NoLocation"].Value;
+    string lastActiveLabel = Localizer["LastActive"].Value;
+    string lastActiveUnknown = Localizer["LastActiveUnknown"].Value;
+    string unfollowButton = Localizer["Unfollow"].Value;
+    string followButton = Localizer["Follow"].Value;
+    string accountManagement = Localizer["AccountManagement"].Value;
+    string changePassword = Localizer["ChangePassword"].Value;
+    string deleteAccount = Localizer["DeleteAccount"].Value;
+    string userPosts = Localizer["UserPosts"].Value;
+    string newPost = Localizer["NewPost"].Value;
+    string editButton = Localizer["Edit"].Value;
+    string deleteButton = Localizer["Delete"].Value;
+    string noPostsYet = Localizer["NoPostsYet"].Value;
+    string postedOnFormat = Localizer["PostedOn"].Value;
+
+    ViewData["Title"] = profileTitle;
 }
 
 <div class="container mt-5">
@@ -12,80 +40,77 @@
         <div class="col-12 col-md-5 text-center mb-4">
             <div class="card text-white" style="background-color: #00000057;">
                 <div class="card-header bg-secondary">
-                    <h2>@Model.DisplayName's Profile</h2>
+                    <h2 class="text-slate-50 m-0 py-2">@profileHeader</h2>
                 </div>
                 <div class="card-body">
                     <img src="@Model.ProfilePictureUrl" alt="Profile Picture" class="rounded-circle mb-3"
                     style="width: 150px; height: 150px;">
-                    <p class="mt-3 text-muted">Joined on @Model.DateJoined.ToString("MMMM dd, yyyy")</p>
+                    <p class="mt-3 text-muted">@joinedOn</p>
 
                     <div class="d-flex justify-content-around mb-4">
                         <div>
-                            <h6>Posts</h6>
+                            <h6>@postsLabel</h6>
                             <p class="">@Model.Posts.Count()</p>
                         </div>
                         <div>
-                            <h6>Followers</h6>
+                            <h6>@followersLabel</h6>
                             <p id="followers-count">@Model.FollowersCount</p>
                         </div>
                         <div>
-                            <h6>Following</h6>
+                            <h6>@followingLabel</h6>
                             <p id="following-count">@Model.FollowingCount</p>
                         </div>
                     </div>
                     @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != Model.UserId)
                     {
                         <div class="mt-3">
-                            <p class="text-muted" id="mutual-followers-count">@($"You have {Model.MutualFollowersCount} mutual followers")</p>
+                            <p class="text-muted" id="mutual-followers-count">@mutualFollowers</p>
                         </div>
                     }
 
                     <div class="mt-3">
-                        <h6>Bio:</h6>
-                        <p class="text-muted">@(!string.IsNullOrEmpty(Model.Bio) ? Model.Bio : "This user has not written a bio yet.")</p>
+                        <h6>@bioLabel</h6>
+                        <p class="text-muted">@(!string.IsNullOrEmpty(Model.Bio) ? Model.Bio : @noBio)</p>
                     </div>
 
                     <!-- Optional Location and Last Active Date -->
-                    @if (!string.IsNullOrEmpty(Model.Location))
-                    {
-                        <div class="mt-3">
-                            <h6>Location:</h6>
-                            <p class="text-muted">@Model.Location</p>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="mt-3">
-                            <h6>Location:</h6>
-                            <p class="text-muted">Location not provided.</p>
-                        </div>
-                    }
+                    <div class="mt-3">
+                        <h6>@locationLabel</h6>
 
-                    @if (Model.LastActive != DateTime.MinValue)
-                    {
-                        <div class="mt-3">
-                            <h6>Last Active:</h6>
+                        @if (!string.IsNullOrEmpty(Model.Location))
+                        {
+
+                            <p class="text-muted">@Model.Location</p>
+                        }
+                        else
+                        {
+                            <p class="text-muted">@noLocation</p>
+                        }
+                    </div>
+
+
+                    <div class="mt-3">
+                        <h6>@lastActiveLabel</h6>
+
+                        @if (Model.LastActive != DateTime.MinValue)
+                        {
                             <p class="text-muted">@(Model.LastActive?.ToString("MMMM dd, yyyy") ?? "Unknown")</p>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="mt-3">
-                            <h6>Last Active:</h6>
-                            <p class="text-muted">Last active date not available.</p>
-                        </div>
-                    }
+                        }
+                        else
+                        {
+                            <p class="text-muted">@lastActiveUnknown</p>
+                        }
+                    </div>
 
                     <div class="mb-4">
                         @if (User.Identity.IsAuthenticated && User.FindFirstValue(ClaimTypes.NameIdentifier) != Model.UserId)
                         {
                             <button
-                            class="btn @(Model.IsFollowing ? "btn-danger":"btn-primary") js-profile-btn"
-                            data-is-following="@Model.IsFollowing.ToString().ToLower()"
-                            data-profile-id="@Model.UserId">
-                                @(Model.IsFollowing ? "Unfollow" : "Follow")
+                                class="btn @(Model.IsFollowing ? "btn-danger":"btn-primary") js-profile-btn"
+                                data-is-following="@Model.IsFollowing.ToString().ToLower()"
+                                data-profile-id="@Model.UserId">
+                                @(Model.IsFollowing ? unfollowButton : followButton)
                             </button>
-
                         }
                     </div>
                 </div>
@@ -94,17 +119,16 @@
             <!-- Account Management Card (Only if viewing own profile) -->
             @if (User.FindFirstValue(claimType: ClaimTypes.NameIdentifier) == Model.UserId)
             {
-                <div class="card mt-4 text-white js-profile-user"
+                <div class="card mt-4 js-profile-user"
                 style="background-color: #00000057;"
                     data-profile-id="@Model.UserId">
                     <div class="card-header bg-secondary">
-                        <h5>Account Management</h5>
+                        <h5 class="text-slate-50 m-0 py-2">@accountManagement</h5>
                     </div>
                     <div class="card-body text-center gap-4">
-                        <a href="Identity/Account/ChangePassword" class="btn btn-secondary btn-sm mb-1">Change
-                            Password</a>
+                        <a href="Identity/Account/ChangePassword" class="btn btn-secondary btn-sm mb-1">@changePassword</a>
                         <a href="@Url.Action(action: "Delete", "Profile", new { id = Model.UserId })"
-                            class="btn btn-danger btn-sm mb-1">Delete Account</a>
+                            class="btn btn-danger btn-sm mb-1">@deleteAccount</a>
                     </div>
 
                     <!-- Chart: Posts Created by Month -->
@@ -126,33 +150,32 @@
 
         <!-- User Posts Section -->
         <div class="col-12 col-md-7 mb-4">
-            <div class="card text-white" style="background-color: #364e6657;">
+            <div class="card" style="background-color: #364e6657;">
                 <div class="card-header bg-secondary">
-                    <h5>User Posts</h5>
+                    <h5 class="text-slate-50 m-0 py-2">@userPosts</h5>
                 </div>
                 <div class="card-body">
                     @if (User.FindFirstValue(claimType: ClaimTypes.NameIdentifier) == Model.UserId) {
                         <div style="margin: 1rem 0;">
-                            <a href="@Url.Action("Create", "Posts")" class="btn btn-primary btn-sm">New post</a>
+                            <a href="@Url.Action("Create", "Posts")" class="btn btn-primary btn-sm">@newPost</a>
                         </div>
                     }
                     @if (Model.Posts.Any())
                     {
-                        <ul class="list-group list-group-flush">
+                        <ul class="list-group list-group-flush p-0">
                             @foreach (PostViewModel post in Model.Posts)
                             {
                                 <li class="list-group-item text-white" style="background-color: #00000057;">
                                     <h6 class="mb-1">@post.Title</h6>
                                     <p class="mb-1 text-muted">@post.Content</p>
-                                    <small class="text-muted">Posted on @post.CreatedAt.ToShortDateString()</small>
-                                    <div class="d-flex justify-content-between align-items-center mt-2">
-                                        <a href="@Url.Action("Details", "Posts", new { id = post.Id })" class="btn btn-link text-primary">View Post</a>
+                                    <small class="text-muted">@string.Format(postedOnFormat, post.CreatedAt.ToShortDateString())</small>
+                                    <div class="d-flex justify-content-end align-items-center mt-2">
                                         @if (User.FindFirstValue(claimType: ClaimTypes.NameIdentifier) == Model.UserId)
                                         {
                                             <div style="flex-shrink:0;">
-                                                <a href="@Url.Action("Edit", "Posts", new { id = post.Id })" class="btn btn-warning btn-sm">Edit</a>
+                                                <a href="@Url.Action("Edit", "Posts", new { id = post.Id })" class="btn btn-warning btn-sm">@editButton</a>
                                                 <a href="@Url.Action(action: "Delete", "Posts", new { id = post.Id })"
-                                                    class="btn btn-danger btn-sm">Delete</a>
+                                                    class="btn btn-danger btn-sm">@deleteButton</a>
                                             </div>
                                         }
                                     </div>
@@ -162,7 +185,7 @@
                     }
                     else
                     {
-                        <p class="text-muted">No posts yet.</p>
+                        <p class="text-muted">@noPostsYet</p>
                     }
                 </div>
             </div>

@@ -3,6 +3,22 @@ import { Network } from 'vis-network/esnext';
 import { ApiResponse, Node, Edge, Connection } from './interface';
 import { DataSet } from 'vis-data/esnext';
 
+/**
+ * Fetches and visualizes the network of connections between two selected users.
+ *
+ * This function retrieves the selected user IDs and labels from the DOM, fetches their connection data
+ * from the server, and renders a network graph using the vis.js library. The graph displays the users,
+ * their mutual connections, and highlights the shortest path between them if available.
+ *
+ * The visualization is rendered inside the DOM element with the ID 'network'. Node and edge styles are
+ * customized for clarity and emphasis, including special highlighting for mutual connections and the
+ * shortest path.
+ *
+ * @async
+ * @function
+ * @returns {Promise<void>} A promise that resolves when the network has been rendered.
+ * @throws Will log an error to the console if fetching or rendering fails.
+ */
 export async function GetVisNetwork(): Promise<void> {
     const user1 = $('form select#userId1').val() as string;
     const user1Label = $('form select#userId1 option:selected').text();

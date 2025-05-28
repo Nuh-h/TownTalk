@@ -1,11 +1,26 @@
 @using System.Security.Claims
 @using TownTalk.Web.Models
 @using TownTalk.Web.ViewModels
+@using Microsoft.AspNetCore.Mvc.Localization;
+
+@inject IViewLocalizer Localizer;
 @model PostsLandingViewModel;
 
 @{
-    ViewData["Title"] = "Posts";
-    ViewBag.Title = "Posts";
+    string postsTitle = Localizer["Posts"].Value;
+    string addPostButtonText = Localizer["Add post"].Value;
+    string searchPlaceholder = Localizer["SearchPlaceholder"].Value;
+    string dateFilterLabel = Localizer["Date"].Value;
+    string authorFilterLabel = Localizer["Author"].Value;
+    string categoryFilterLabel = Localizer["Category"].Value;
+    string applyFiltersButtonText = Localizer["Filter"].Value;
+    string allFilterOption = Localizer["All"].Value;
+    string searchLabel = Localizer["Search"].Value;
+
+
+    ViewData["Title"] = postsTitle;
+
+    ViewBag.Title = postsTitle;
     int count = Model.Posts.Count();
     int start = (Model.CurrentPage - 1) * 20 + 1;
     int end = Model.CurrentPage*20;
@@ -15,10 +30,10 @@
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between w-100 px-2">
-        <h1 class="m-0">Posts</h1>
+        <h1 class="m-0">@postsTitle</h1>
         @if (User.Identity.IsAuthenticated)
         {
-            <a class="btn btn-primary" href="/Posts/Create">Add a post</a>
+            <a class="btn btn-primary" href="/Posts/Create">@addPostButtonText</a>
         }
     </div>
 
@@ -27,17 +42,17 @@
         <form method="get" asp-action="Index">
             <div class="row">
                 <div class="col-md-12">
-                    <label for="q">Search</label>
+                    <label for="q">@searchLabel</label>
                     <input type="text" id="q" name="q" value="@Model.Query"
-                    placeholder="Search by title or content" />
+                    placeholder="@searchPlaceholder" />
                 </div>
             </div>
             <div class="row align-items-center">
                 <!-- Date Filter -->
                 <div class="col-md-3">
-                    <label for="dateFilter">Date</label>
+                    <label for="dateFilter">@dateFilterLabel</label>
                     <select id="dateFilter" name="at">
-                        <option value="">All Dates</option>
+                        <option value="">@allFilterOption</option>
                         @foreach (string date in Model.Filters.AvailableDates)
                         {
                             <option value="@date" selected="@(Model?.Date == date)">@date</option>
@@ -47,9 +62,9 @@
 
                 <!-- Author Filter -->
                 <div class="col-md-3">
-                    <label for="authorFilter">Author</label>
+                    <label for="authorFilter">@authorFilterLabel</label>
                     <select id="authorFilter" name="by">
-                        <option value="">All Authors</option>
+                        <option value="">@allFilterOption</option>
                         @foreach (ApplicationUser author in Model.Filters.Authors)
                         {
                             <option value="@author.DisplayName" selected="@(Model.Author == @author.DisplayName)">@author.DisplayName</option>
@@ -59,9 +74,9 @@
 
                 <!-- Category Filter -->
                 <div class="col-md-3">
-                    <label for="categoryFilter">Category</label>
+                    <label for="categoryFilter">@categoryFilterLabel</label>
                     <select id="categoryFilter" name="cl">
-                        <option value="">All Categories</option>
+                        <option value="">@allFilterOption</option>
                         @foreach (Category category in Model.Filters.Categories)
                         {
                             <option value="@category.Name" selected="@(Model.Category == category.Name)">@category.Name</option>
@@ -70,7 +85,7 @@
                 </div>
 
                 <div class="col-md-3 d-flex align-items-center">
-                    <button class="btn-primary m-0 mt-3" type="submit">Apply filters</button>
+                    <button class="btn-primary m-0 mt-3" type="submit">@applyFiltersButtonText</button>
                 </div>
             </div>
 

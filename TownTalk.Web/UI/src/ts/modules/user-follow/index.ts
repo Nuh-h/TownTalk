@@ -1,5 +1,22 @@
 import { FollowResponse } from "./interface";
 
+/**
+ * Handles the follow/unfollow functionality for a user profile.
+ *
+ * This class manages the follow button UI, sends follow/unfollow requests to the server,
+ * and updates the profile statistics (followers, following, mutual followers) accordingly.
+ *
+ * @example
+ * ```typescript
+ * const userFollow = new UserFollow('profileId123');
+ * ```
+ *
+ * @remarks
+ * - Expects a button with the class `.js-profile-btn` to be present in the DOM.
+ * - Updates elements with IDs `followers-count`, `following-count`, and `mutual-followers-count`.
+ *
+ * @public
+ */
 export default class UserFollow {
     private profileId: string;
     private followButton: HTMLElement | null;

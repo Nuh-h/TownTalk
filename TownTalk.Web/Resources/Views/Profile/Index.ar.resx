@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="ProfileTitle" xml:space="preserve">
+    <value>الملف الشخصي</value>
+  </data>
+  <data name="ProfileHeader" xml:space="preserve">
+    <value>ملف {0} الشخصي</value>
+  </data>
+  <data name="JoinedOn" xml:space="preserve">
+    <value>انضم في {0}</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>المنشورات</value>
+  </data>
+  <data name="Followers" xml:space="preserve">
+    <value>المتابعون</value>
+  </data>
+  <data name="Following" xml:space="preserve">
+    <value>المتابَعون</value>
+  </data>
+  <data name="MutualFollowers" xml:space="preserve">
+    <value>لديك {0} متابع مشترك</value>
+  </data>
+  <data name="Bio" xml:space="preserve">
+    <value>السيرة الذاتية:</value>
+  </data>
+  <data name="NoBio" xml:space="preserve">
+    <value>لم يكتب هذا المستخدم سيرة ذاتية بعد.</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>الموقع:</value>
+  </data>
+  <data name="NoLocation" xml:space="preserve">
+    <value>الموقع غير متوفر.</value>
+  </data>
+  <data name="LastActive" xml:space="preserve">
+    <value>آخر نشاط:</value>
+  </data>
+  <data name="LastActiveUnknown" xml:space="preserve">
+    <value>تاريخ آخر نشاط غير متوفر.</value>
+  </data>
+  <data name="Unfollow" xml:space="preserve">
+    <value>إلغاء المتابعة</value>
+  </data>
+  <data name="Follow" xml:space="preserve">
+    <value>متابعة</value>
+  </data>
+  <data name="AccountManagement" xml:space="preserve">
+    <value>إدارة الحساب</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>حذف الحساب</value>
+  </data>
+  <data name="UserPosts" xml:space="preserve">
+    <value>منشورات المستخدم</value>
+  </data>
+  <data name="NewPost" xml:space="preserve">
+    <value>منشور جديد</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="NoPostsYet" xml:space="preserve">
+    <value>لا توجد منشورات بعد.</value>
+  </data>
+  <data name="PostedOn" xml:space="preserve"><value>نُشِر في {0}</value></data>
+</root>

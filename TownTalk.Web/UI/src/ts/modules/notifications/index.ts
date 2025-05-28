@@ -3,6 +3,37 @@ import * as dateFns from 'date-fns';
 import * as bootstrap from "bootstrap";
 import $ from 'jquery';
 
+/**
+ * Manages real-time user notifications using SignalR in a web application.
+ *
+ * The `Notifications` class handles the connection to a SignalR hub, listens for incoming notifications,
+ * updates the UI with new notifications, manages notification read/unread states, and provides interaction
+ * logic for viewing and marking notifications as read.
+ *
+ * Features:
+ * - Establishes a SignalR connection to receive notifications in real-time.
+ * - Handles new notifications and displays them in categorized lists (Reaction, Comment, Follow, All).
+ * - Updates notification indicators and manages unread/read states.
+ * - Provides UI event handlers for viewing posts related to notifications.
+ * - Supports marking notifications as read and scrolling to relevant posts.
+ * - Integrates with external functions (e.g., updating post reactions) if available.
+ *
+ * Dependencies:
+ * - jQuery for DOM manipulation and event handling.
+ * - Bootstrap for modal management.
+ * - date-fns for formatting relative time.
+ * - SignalR for real-time communication.
+ *
+ * @remarks
+ * This class assumes the presence of specific DOM elements and selectors for notification lists,
+ * notification bell, modal, and indicator. It also expects a global `updateReactionsForPost` function
+ * for reaction notifications.
+ *
+ * @example
+ * ```typescript
+ * const notifications = new Notifications();
+ * ```
+ */
 class Notifications {
     private displayedNotifications: Set<string>;
     private scrollToId: string | null;

@@ -2,6 +2,27 @@ import $ from 'jquery';
 import * as bootstrap from "bootstrap";
 import { Popover } from 'bootstrap';
 
+/**
+ * Manages the UI and AJAX logic for post reactions (like, love, etc.) in the application.
+ *
+ * This class handles:
+ * - Initializing and managing Bootstrap popovers for reaction buttons.
+ * - Handling user interactions for adding, removing, and updating reactions.
+ * - Sending AJAX requests to create or delete reactions on the server.
+ * - Updating the UI with the latest reaction data after changes.
+ *
+ * Usage:
+ * Instantiate this class to enable reaction functionality on the page.
+ *
+ * @example
+ * const reactions = new Reactions();
+ *
+ * @remarks
+ * - Relies on Bootstrap's Popover component and jQuery for AJAX and DOM manipulation.
+ * - Exposes a global function `updateReactionsForPost(postId)` for external updates.
+ *
+ * @public
+ */
 class Reactions {
 
     reactionButtonSelector = ".reaction-btn";

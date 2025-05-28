@@ -1,23 +1,33 @@
-@model TownTalk.Web.ViewModels.CommentViewModel;
+@using TownTalk.Web.ViewModels;
 @using System.Security.Claims;
+@using Microsoft.AspNetCore.Mvc.Localization;
+
+@inject IViewLocalizer Localizer;
+@model CommentViewModel;
+@{
+    string replyButtonText = Localizer["Reply"].Value;
+    string deleteButtonText = Localizer["Delete"].Value;
+    string postedOnText = Localizer["Posted on"].Value;
+    string addReplyPlaceholder = Localizer["Add a reply"].Value;
+}
 
 <div class="mb-2 comment-item" data-comment-id="@Model.Id">
     <div style="background: #00000059; padding: 1rem; border-radius: 0.3em;">
         <strong>@Model.UserDisplayName</strong>
         <p class="text-muted">
-            <small>Posted on @Model.CreatedAt.ToShortDateString()</small>
+            <small>@postedOnText @Model.CreatedAt.ToShortDateString()</small>
         </p>
         <p>@Model.Content</p>
 
         <button class="btn btn-link btn-sm text-muted mx-0 p-0 reply-button" data-parent-comment-id="@Model.Id"
             data-reply-form-id="@Model.Id">
-            Reply
+            @replyButtonText
         </button>
 
         @if (Model.IsUserOwner)
         {
             <button class="btn btn-link btn-sm text-muted mx-0 p-0 delete-comment"
-                data-comment-id="@Model.Id">Delete</button>
+                data-comment-id="@Model.Id">@deleteButtonText</button>
         }
 
         <!-- Reply form hidden by default -->
@@ -26,9 +36,9 @@
                 <input type="hidden" name="PostId" value="@Model.PostId" />
                 <input type="hidden" name="ParentCommentId" value="@Model.Id" />
                 <div class="input-group mt-2">
-                    <input type="text" class="form-control" name="Content" placeholder="Add a reply..." required />
+                    <input type="text" class="form-control" name="Content" placeholder="@addReplyPlaceholder" required />
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">Reply</button>
+                        <button class="btn btn-primary" type="submit">@replyButtonText</button>
                     </div>
                 </div>
             </form>
@@ -40,7 +50,7 @@
         @if (Model.Replies != null && Model.Replies.Any())
         {
             <div class="ms-4">
-                @foreach (var reply in Model.Replies)
+                @foreach (CommentViewModel reply in Model.Replies)
                 {
                     await Html.RenderPartialAsync(partialViewName: "_Comment.cshtml", model: reply);
                 }

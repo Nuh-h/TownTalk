@@ -6,7 +6,9 @@
 
 #region namespaces
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using TownTalk.Web.Data;
 using TownTalk.Web.Hubs;
 using TownTalk.Web.Models;
@@ -46,7 +48,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 // MVC services (controllers + views) and API documentation
 builder.Services.AddRazorPages();
-builder.Services.AddControllersWithViews();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 builder.Services.AddSignalR();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -65,6 +70,14 @@ using (IServiceScope? scope = app.Services.CreateScope())
     TownTalkDbContext.SeedData(context, userManager);
 }
 
+string[]? supportedCultures = new[] { "en-GB", "ar" };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("ar-SA"),
+    SupportedCultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
+    SupportedUICultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
+});
+
 #endregion
 
 #region Middleware(s)
@@ -81,16 +94,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Redirect HTTP to HTTPS
 app.UseHttpsRedirection();
-
-// Serve static files (images, CSS, JS, etc.)
 app.UseStaticFiles();
-
-// Route requests
 app.UseRouting();
 
-// Enable authentication and authorization
 app.UseAuthentication();
 app.UseAuthorization();
 

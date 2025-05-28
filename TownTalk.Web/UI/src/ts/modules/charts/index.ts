@@ -1,5 +1,20 @@
 import Chart from 'chart.js/auto';
 
+/**
+ * Represents a set of chart utilities for visualizing user-related data such as posts by month and followers growth.
+ *
+ * @remarks
+ * This class fetches user statistics from the backend API and renders charts using Chart.js.
+ * It provides methods to render a bubble chart for posts created by month and a line chart for followers growth over time.
+ *
+ * @example
+ * ```typescript
+ * const charts = new UserCharts('user123');
+ * charts.initializeCharts();
+ * ```
+ *
+ * @public
+ */
 class UserCharts {
     private userId: string;
     private apiUrl: string;
