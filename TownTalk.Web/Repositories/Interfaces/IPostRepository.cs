@@ -92,4 +92,22 @@ public interface IPostRepository
     /// <param name="userId">The user ID.</param>
     /// <returns>A list of posts grouped by month.</returns>
     Task<List<dynamic>> GetPostsByMonth(string userId);
+
+    /// <summary>
+    /// Retrieves reactions grouped by month for a specific user asynchronously.
+    /// </summary>
+    /// <param name="userId">The user ID.</param>
+    /// <returns>A list of reactions grouped by month.</returns>
+    Task<List<dynamic>> GetReactionsByMonth(string userId);
+
+    /// <summary>
+    /// Retrieves comments grouped by month for a specific user asynchronously.
+    /// </summary>
+    /// <param name="userId">The user ID.</param>
+    /// <returns>A list of comments grouped by month.</returns>
+    Task<List<dynamic>> GetCommentsByMonth(string userId);
+    Task<(string? Title, int ReactionCount)> GetMostPopularPostAsync(string userId);
+    Task<int> GetNewPostsThisMonthAsync();
+    Task<int> GetPostCountAsync(string userId);
+    Task<int> GetTotalPostsAsync();
 }

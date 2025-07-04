@@ -46,6 +46,15 @@ $(document).ready(function () {
         new UserFollow(profileId);
     }
 
+    // Admin dashboard charts
+    const adminChartsEl = document.querySelector<HTMLElement>('.js-admin-charts');
+    const adminProfileId = adminChartsEl?.dataset.profileid;
+
+    if (adminProfileId) {
+        const charts = new UserCharts(adminProfileId);
+        charts.initializeAdminCharts();
+    }
+
     // Users list
 
     interface UserData {

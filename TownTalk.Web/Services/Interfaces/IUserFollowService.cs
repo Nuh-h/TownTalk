@@ -64,5 +64,20 @@ public interface IUserFollowService
     /// </summary>
     /// <param name="userId">The ID of the user whose followers growth rate is being retrieved.</param>
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
-    Task<List<dynamic>> GetFollowersGrowth(string userId);
+    Task<List<dynamic>> GetFollowersGrowthAsync(string userId);
+
+    /// <summary>
+    /// Gets the growth of users that a specific user is following over time.
+    /// </summary>
+    /// <param name="userId">The ID of the user whose following growth rate is being retrieved.</param>
+    /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+    Task<List<dynamic>> GetFollowingGrowthAsync(string userId);
+
+    /// <summary>
+    /// Gets the follow trends by month for a specific user.
+    /// </summary>
+    /// <param name="userId">The ID of the user whose follow trends by month are being retrieved.</param>
+    /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+    Task<List<FollowTrendsByMonth>> GetFollowTrendsByMonthAsync(string userId);
+
 }

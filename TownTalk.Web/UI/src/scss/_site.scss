@@ -130,3 +130,9 @@ body {
     padding: 0.2em;
     border-radius: 1em;
 }
+
+.input-group:not(.has-validation)> :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
+    border-radius: var(--bs-border-radius) !important;
+    border-start-end-radius: 0 !important;
+    border-end-end-radius: 0 !important;;
+}

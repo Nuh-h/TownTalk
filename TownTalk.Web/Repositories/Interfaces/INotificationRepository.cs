@@ -50,4 +50,5 @@ public interface INotificationRepository
     /// <param name="notificationId">The ID of the notification to delete.</param>
     /// <returns>A task that represents the asynchronous delete operation.</returns>
     Task DeleteNotificationAsync(int notificationId);
+    Task<int> GetUnreadNotificationsCountAsync(string userId);
 }

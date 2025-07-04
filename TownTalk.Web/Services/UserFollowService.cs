@@ -79,7 +79,7 @@ public class UserFollowService : IUserFollowService
     }
 
     /// <inheritdoc/>
-    public async Task<List<dynamic>> GetFollowersGrowth(string userId)
+    public async Task<List<dynamic>> GetFollowersGrowthAsync(string userId)
     {
         // Load all necessary data first
         var result = await _context.UserFollows
@@ -103,5 +103,56 @@ public class UserFollowService : IUserFollowService
         return groupedResult;
     }
 
+    /// <inheritdoc/>
+    public async Task<List<dynamic>> GetFollowingGrowthAsync(string userId)
+    {
+        var result = await _context.UserFollows
+            .Where(u => u.FollowerId == userId) // Only consider users this user followed
+            .Select(u => new { u.FollowedAt, u.FollowerId })
+            .ToListAsync();
 
+        var groupedResult = result
+            .GroupBy(u => new { u.FollowedAt.Year, u.FollowedAt.Month })
+            .Select(g => new
+            {
+                year = g.Key.Year,
+                month = g.Key.Month,
+                count = g.Count()
+            })
+            .OrderBy(g => g.year)
+            .ThenBy(g => g.month)
+            .ToList<dynamic>();
+
+        return groupedResult;
+    }
+
+    /// <inheritdoc/>
+    public async Task<List<FollowTrendsByMonth>> GetFollowTrendsByMonthAsync(string userId)
+    {
+        List<DateTime>? followers = await _context.UserFollows
+            .Where(u => u.FollowedId == userId)
+            .Select(u => u.FollowedAt)
+            .ToListAsync();
+
+        List<DateTime>? following = await _context.UserFollows
+            .Where(u => u.FollowerId == userId)
+            .Select(u => u.FollowedAt)
+            .ToListAsync();
+
+        var allMonths = followers
+            .Concat(following)
+            .Select(d => new { d.Year, d.Month })
+            .Distinct()
+            .OrderBy(x => x.Year).ThenBy(x => x.Month)
+            .ToList();
+
+        List<FollowTrendsByMonth>? trends = allMonths.Select(m => new FollowTrendsByMonth
+        {
+            Month = $"{m.Year:D4}-{m.Month:D2}",
+            FollowersGained = followers.Count(d => d.Year == m.Year && d.Month == m.Month),
+            FollowingGained = following.Count(d => d.Year == m.Year && d.Month == m.Month)
+        }).ToList();
+
+        return trends;
+    }
 }

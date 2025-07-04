@@ -1,0 +1,33 @@
+@model TownTalk.Web.ViewModels.GeneralStatsViewModel
+
+<div class="details-content js-admin-charts" data-profileId="@User.Claims.FirstOrDefault()?.Value">
+    <h4>Top analytics</h4>
+    <script>
+        window["topStatsData"] = {
+            totalUsers: @Model.TotalUsers,
+            totalPosts: @Model.TotalPosts,
+            totalComments: @Model.TotalComments,
+            totalReactions: @Model.TotalReactions,
+            newUsersThisMonth: @Model.NewUsersThisMonth,
+            newPostsThisMonth: @Model.NewPostsThisMonth,
+            newCommentsThisMonth: @Model.NewCommentsThisMonth
+        }
+    </script>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Stats</h5>
+                <div class="chart-container card p-4">
+                    <canvas id="usersPieChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5>Users</h5>
+                <div class="chart-container card p-4">
+                    <canvas id="engagementPieChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

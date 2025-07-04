@@ -1,7 +1,6 @@
 interface PostByMonth {
     month: string;
     count: number;
-    year: number;
 }
 
 interface FollowersGrowth {
@@ -10,4 +9,17 @@ interface FollowersGrowth {
     count: number;
     date: string;
     cumulative?: number;
+}
+
+interface UserActivityByMonth {
+    month: string;
+    postCount: number;
+    commentCount: number;
+    reactionCount: number;
+}
+
+interface FollowTrendsByMonth {
+    month: string;
+    followersGained: number;
+    followingGained: number;
 }

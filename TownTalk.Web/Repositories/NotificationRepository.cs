@@ -80,4 +80,12 @@ public class NotificationRepository : INotificationRepository
                 .AnyAsync(n => n.UserId == userId && n.PostId == postId && n.SenderId == senderId && n.Type == type && !n.IsRead);
     }
 
+    /// <inheritdoc/>
+    public async Task<int> GetUnreadNotificationsCountAsync(string userId)
+    {
+        return await _context.Notifications
+            .Where(n => n.UserId == userId && !n.IsRead)
+            .CountAsync();
+    }
+
 }

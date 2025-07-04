@@ -107,32 +107,63 @@ public class UserDataSeeder
         }
 
         // Generate random follows
-        List<UserFollow>? follows = new List<UserFollow>();
+        List<UserFollow> follows = new List<UserFollow>();
+
         foreach (ApplicationUser user in createdUsers)
         {
-            List<ApplicationUser>? availableUsersToFollow = createdUsers
-                .Where(u => u.Id != user.Id)
-                .OrderBy(x => _random.Next())
-                .Take(_random.Next(1, 45)) // Follow 1-20 random users
-                .ToList();
+            // 1. Each user receives 5-50 followers from random users (excluding themselves)
+            List<ApplicationUser>? possibleFollowers = createdUsers.Where(u => u.Id != user.Id).OrderBy(x => _random.Next()).ToList();
+            int followerCount = _random.Next(5, Math.Min(51, possibleFollowers.Count + 1));
+            IEnumerable<ApplicationUser>? selectedFollowers = possibleFollowers.Take(followerCount);
 
-            foreach (ApplicationUser userToFollow in availableUsersToFollow)
+            foreach (ApplicationUser follower in selectedFollowers)
             {
-                DateTime followDate = GetRandomDateBetween(
-                    new DateTime(2020, 1, 1),
-                    new DateTime(2025, 12, 31));
-
-                UserFollow? userFollow = new UserFollow
+                // Prevent duplicate follows
+                if (!follows.Any(f => f.FollowerId == follower.Id && f.FollowedId == user.Id))
                 {
-                    FollowerId = user.Id,
-                    FollowedId = userToFollow.Id,
-                    FollowedAt = followDate
-                };
-                follows.Add(userFollow);
+                    DateTime followDate = GetRandomDateBetween(
+                        follower.DateJoined,
+                        user.DateJoined > follower.DateJoined ? user.DateJoined : follower.DateJoined.AddDays(1));
+
+                    follows.Add(new UserFollow
+                    {
+                        FollowerId = follower.Id,
+                        FollowedId = user.Id,
+                        FollowedAt = followDate
+                    });
+                }
             }
         }
+
+        // 2. Each user follows up to 15 random users (excluding themselves)
+        foreach (ApplicationUser user in createdUsers)
+        {
+            List<ApplicationUser>? possibleToFollow = createdUsers.Where(u => u.Id != user.Id).OrderBy(x => _random.Next()).ToList();
+            int followingCount = _random.Next(1, Math.Min(16, possibleToFollow.Count + 1));
+            var selectedToFollow = possibleToFollow.Take(followingCount);
+
+            foreach (ApplicationUser userToFollow in selectedToFollow)
+            {
+                // Prevent duplicate follows
+                if (!follows.Any(f => f.FollowerId == user.Id && f.FollowedId == userToFollow.Id))
+                {
+                    DateTime followDate = GetRandomDateBetween(
+                        user.DateJoined,
+                        userToFollow.DateJoined > user.DateJoined ? userToFollow.DateJoined : user.DateJoined.AddDays(1));
+
+                    follows.Add(new UserFollow
+                    {
+                        FollowerId = user.Id,
+                        FollowedId = userToFollow.Id,
+                        FollowedAt = followDate
+                    });
+                }
+            }
+        }
+
         await _context.UserFollows.AddRangeAsync(follows);
         await _context.SaveChangesAsync();
+
 
         // Seed Categories (shared across all localities)
         if (!_context.Categories.Any())

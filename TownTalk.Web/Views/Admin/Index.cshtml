@@ -1,44 +1,14 @@
 @using Microsoft.AspNetCore.Mvc.Localization
-@model List<ApplicationUser>;
-@inject IViewLocalizer Localizer;
+@using System.Security.Claims
+@using TownTalk.Web.ViewModels
+
+@model AdminDashboardViewModel
+@inject IViewLocalizer Localizer
 
 @{
     string adminTitle = Localizer["AdminTitle"].Value;
     string adminDescription = Localizer["AdminDescription"].Value;
     string toolsHeader = Localizer["ToolsHeader"].Value;
-    string degreeOfConnections = Localizer["DegreeOfConnections"].Value;
-    string user1Label = Localizer["User1Label"].Value;
-    string user2Label = Localizer["User2Label"].Value;
-    string selectUser = Localizer["SelectUser"].Value;
-    string findDegreeOfConnections = Localizer["FindDegreeOfConnections"].Value;
-    string notificationsSummary = Localizer["NotificationsSummary"].Value;
-    string sendNotificationHeader = Localizer["SendNotificationHeader"].Value;
-    string senderLabel = Localizer["SenderLabel"].Value;
-    string receiverLabel = Localizer["ReceiverLabel"].Value;
-    string selectSender = Localizer["SelectSender"].Value;
-    string selectReceiver = Localizer["SelectReceiver"].Value;
-    string notificationTypeLabel = Localizer["NotificationTypeLabel"].Value;
-    string selectNotificationType = Localizer["SelectNotificationType"].Value;
-    string newFollower = Localizer["NewFollower"].Value;
-    string newReaction = Localizer["NewReaction"].Value;
-    string newPost = Localizer["NewPost"].Value;
-    string sendNotification = Localizer["SendNotification"].Value;
-    string recentNotifications = Localizer["RecentNotifications"].Value;
-    string senderColumn = Localizer["SenderColumn"].Value;
-    string receiverColumn = Localizer["ReceiverColumn"].Value;
-    string messageColumn = Localizer["MessageColumn"].Value;
-    string timeColumn = Localizer["TimeColumn"].Value;
-    string statusColumn = Localizer["StatusColumn"].Value;
-    string readStatus = Localizer["ReadStatus"].Value;
-    string deliveredStatus = Localizer["DeliveredStatus"].Value;
-    string analyticsSummary = Localizer["AnalyticsSummary"].Value;
-    string analyticsHeader = Localizer["AnalyticsHeader"].Value;
-    string analyticsPlaceholder = Localizer["AnalyticsPlaceholder"].Value;
-    string reportsSummary = Localizer["ReportsSummary"].Value;
-    string reportsHeader = Localizer["ReportsHeader"].Value;
-    string reportsPlaceholder = Localizer["ReportsPlaceholder"].Value;
-
-    IEnumerable<Notification> notifications = (IEnumerable<Notification>)ViewData["notifications"];
     ViewData["Title"] = adminTitle;
 }
 
@@ -84,130 +54,28 @@
         border-radius: 0 0 5px 5px;
     }
 </style>
-@* <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> *@
 
-<div class="container mt-4">
+<div class="container mt-4 gap-4">
     <h1>@adminTitle</h1>
     <p>@adminDescription</p>
 
     <h2>@toolsHeader</h2>
-    <details>
-        <summary>@degreeOfConnections</summary>
-        <div class="details-content card rounded theme-dark">
-            <form>
-                <div class="form-group">
-                    <label for="userId1" id="userId1Label">@user1Label</label>
-                    <select id="userId1" name="userId1" class="form-control">
-                        <option value="">@selectUser</option>
-                        @foreach (ApplicationUser user in Model)
-                        {
-                            <option value="@user.Id">@user.DisplayName</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="userId2" id="userId2Label">@user2Label</label>
-                    <select id="userId2" name="userId2" class="form-control">
-                        <option value="">@selectUser</option>
-                        @foreach (ApplicationUser user in Model)
-                        {
-                            <option value="@user.Id">@user.DisplayName</option>
-                        }
-                    </select>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-primary js-vis-network">@findDegreeOfConnections</button>
-                </div>
-            </form>
 
-            <div id="mutual-followers"></div>
-            <div id="network"></div>
-        </div>
-    </details>
-
-    <details>
-        <summary>@notificationsSummary</summary>
-        <div class="details-content container">
-            <h4>@sendNotificationHeader</h4>
-            <form method="post" asp-action="SimulateNotification" asp-controller="Admin" class="row align-items-center">
-                <div class="form-group col-md-3">
-                    <label for="senderId" id="senderIdLabel">@senderLabel</label>
-                    <select id="senderId" name="senderId" class="form-control">
-                        <option value="">@selectSender</option>
-                        @foreach (ApplicationUser user in Model)
-                        {
-                            <option value="@user.Id">@user.DisplayName</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="receiverId" id="receiverIdLable">@receiverLabel</label>
-                    <select id="receiverId" name="receiverId" class="form-control">
-                        <option value="">@selectReceiver</option>
-                        @foreach (ApplicationUser user in Model)
-                        {
-                            <option value="@user.Id">@user.DisplayName</option>
-                        }
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="notificationType" id="notificationTypeLabel">@notificationTypeLabel</label>
-                    <select id="notificationType" name="notificationType" class="form-control">
-                        <option value="">@selectNotificationType</option>
-                        <option value="follow">@newFollower</option>
-                        <option value="reaction">@newReaction</option>
-                        <option value="new-post">@newPost</option>
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex align-items-center">
-                    <button class="btn btn-primary">@sendNotification</button>
-                </div>
-            </form>
-            <h4>@recentNotifications</h4>
-            <table id="notificationsTable" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>@senderColumn</th>
-                        <th>@receiverColumn</th>
-                        <th>@messageColumn</th>
-                        <th>@timeColumn</th>
-                        <th>@statusColumn</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        if (notifications?.Count() > 0)
-                        {
-                            foreach (Notification notification in notifications)
-                            {
-                                <tr>
-                                    <td><a href="/Profile/?Id=@(notification.Sender.Id)">@notification.Sender.DisplayName</a></td>
-                                    <td><a href="/Profile/?Id=@(notification.User.Id)">@notification.User.DisplayName</a></td>
-                                    <td>@notification.Message</td>
-                                    <td>@notification.CreatedAt</td>
-                                    <td>@(notification.IsRead ? @readStatus : @deliveredStatus)</td>
-                                </tr>
-                            }
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-    </details>
-
-    <details>
-        <summary>@analyticsHeader</summary>
-        <div class="details-content">
-            <h4>Tool 3: Another Placeholder</h4>
-            <p>This is a placeholder for Tool 3. Add functionality here.</p>
-        </div>
-    </details>
-
-    <details>
-        <summary>@reportsHeader</summary>
-        <div class="details-content">
-            <h4>Tool 4: Yet Another Tool</h4>
-            <p>This is a placeholder for Tool 4. Add functionality here.</p>
-        </div>
-    </details>
+    <div id="siteStatsContainer"></div>
+    <div id="userStatsContainer"></div>
+    <div id="notificationsContainer"></div>
+    <div id="degreeOfConnectionsContainer"></div>
 </div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            // Load each section via AJAX
+            $("#siteStatsContainer").load('@Url.Action("SiteStatsPartial", "Admin")');
+            @* $("#userStatsContainer").load('@Url.Action("UserStatsPartial", "Admin")'); *@
+            $("#notificationsContainer").load('@Url.Action("NotificationsPartial", "Admin")');
+            $("#degreeOfConnectionsContainer").load('@Url.Action("DegreeOfConnectionsPartial", "Admin")');
+        });
+    </script>
+}

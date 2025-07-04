@@ -1,0 +1,73 @@
+@model TownTalk.Web.ViewModels.SimulateNotificationsViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+@{
+    string notificationsSummary = Localizer["NotificationsSummary"].Value;
+}
+<details>
+    <summary>@notificationsSummary</summary>
+    <div class="details-content container card">
+        <h4>@Model.SendNotificationHeader</h4>
+        <form method="post" asp-action="SimulateNotification" asp-controller="Admin" class="row align-items-center"
+            id="notificationForm">
+            <div class="form-group col-md-3">
+                <label for="senderId">@Model.SenderLabel</label>
+                <select id="senderId" name="senderId" class="form-control">
+                    <option value="">@Model.SelectSender</option>
+                    @foreach (var user in Model.Users)
+                    {
+                        <option value="@user.Id">@user.DisplayName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="receiverId">@Model.ReceiverLabel</label>
+                <select id="receiverId" name="receiverId" class="form-control">
+                    <option value="">@Model.SelectReceiver</option>
+                    @foreach (var user in Model.Users)
+                    {
+                        <option value="@user.Id">@user.DisplayName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="notificationType">@Model.NotificationTypeLabel</label>
+                <select id="notificationType" name="notificationType" class="form-control">
+                    <option value="">@Model.SelectNotificationType</option>
+                    <option value="follow">@Model.NewFollower</option>
+                    <option value="reaction">@Model.NewReaction</option>
+                    <option value="new-post">@Model.NewPost</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-center">
+                <button class="btn btn-primary">@Model.SendNotification</button>
+            </div>
+        </form>
+        <h4>@Model.RecentNotifications</h4>
+        <table id="notificationsTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>@Model.SenderColumn</th>
+                    <th>@Model.ReceiverColumn</th>
+                    <th>@Model.MessageColumn</th>
+                    <th>@Model.TimeColumn</th>
+                    <th>@Model.StatusColumn</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Notifications?.Any() == true)
+                {
+                    foreach (var notification in Model.Notifications)
+                    {
+                        <tr>
+                            <td><a href="/Profile/?Id=@notification.Sender.Id">@notification.Sender.DisplayName</a></td>
+                            <td><a href="/Profile/?Id=@notification.User.Id">@notification.User.DisplayName</a></td>
+                            <td>@notification.Message</td>
+                            <td>@notification.CreatedAt</td>
+                            <td>@(notification.IsRead? Model.ReadStatus: Model.DeliveredStatus)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</details>

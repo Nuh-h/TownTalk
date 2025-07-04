@@ -5,25 +5,15 @@ import { DataSet } from 'vis-data/esnext';
 
 /**
  * Fetches and visualizes the network of connections between two selected users.
- *
- * This function retrieves the selected user IDs and labels from the DOM, fetches their connection data
- * from the server, and renders a network graph using the vis.js library. The graph displays the users,
- * their mutual connections, and highlights the shortest path between them if available.
- *
- * The visualization is rendered inside the DOM element with the ID 'network'. Node and edge styles are
- * customized for clarity and emphasis, including special highlighting for mutual connections and the
- * shortest path.
- *
- * @async
- * @function
- * @returns {Promise<void>} A promise that resolves when the network has been rendered.
- * @throws Will log an error to the console if fetching or rendering fails.
+ * Renders the network graph using vis.js and highlights mutual connections and shortest path.
  */
 export async function GetVisNetwork(): Promise<void> {
-    const user1 = $('form select#userId1').val() as string;
-    const user1Label = $('form select#userId1 option:selected').text();
-    const user2 = $('form select#userId2').val() as string;
-    const user2Label = $('form select#userId2 option:selected').text();
+    const $user1Select = $('form select#userId1');
+    const $user2Select = $('form select#userId2');
+    const user1 = $user1Select.val() as string;
+    const user2 = $user2Select.val() as string;
+    const user1Label = $user1Select.find('option:selected').text();
+    const user2Label = $user2Select.find('option:selected').text();
 
     try {
         const data: ApiResponse = await $.get(`/connections?userId1=${user1}&userId2=${user2}`);
@@ -34,21 +24,21 @@ export async function GetVisNetwork(): Promise<void> {
         const edges: Edge[] = [];
         const nodeIds = new Set<string | number>();
 
-        function addNode(id: string | number, label: string, color: Node['color']) {
+        const addNode = (id: string | number, label: string, color: Node['color']) => {
             if (!nodeIds.has(id)) {
                 nodes.push({ id, label, color });
                 nodeIds.add(id);
             }
-        }
+        };
 
-        function addConnections(userId: string | number, connections: Connection[]) {
+        const addConnections = (userId: string | number, connections: Connection[]) => {
             connections.forEach((connection) => {
                 addNode(connection.id, connection.displayName, { background: '#FF6F61', border: '#D32F2F' });
                 edges.push({ from: userId, to: connection.id });
             });
-        }
+        };
 
-        function highlightPath(path: { id: string | number }[], edges: Edge[]) {
+        const highlightPath = (path: { id: string | number }[], edges: Edge[]) => {
             for (let i = 0; i < path.length - 1; i++) {
                 const fromNode = path[i].id;
                 const toNode = path[i + 1].id;
@@ -60,7 +50,7 @@ export async function GetVisNetwork(): Promise<void> {
                     edge.width = 4;
                 }
             }
-        }
+        };
 
         addNode(user1, user1Label, { background: '#FF0000', border: '#D32F2F' });
         addNode(user2, user2Label, { background: '#00FF00', border: '#388E3C' });

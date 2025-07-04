@@ -150,4 +150,10 @@ public class NotificationService : INotificationService
         }
     }
 
+    /// <inheritdoc/>
+    public async Task<int> GetUnreadNotificationsCountAsync(string userId)
+    {
+        return await _notificationRepository.GetUnreadNotificationsCountAsync(userId);
+    }
+
 }

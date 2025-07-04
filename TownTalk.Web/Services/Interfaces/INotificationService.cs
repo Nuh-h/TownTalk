@@ -91,4 +91,11 @@ public interface INotificationService
     /// <param name="type">The type of the update message.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task PushUpdateToActiveUsersAsync(string message, string type);
+
+    /// <summary>
+    /// Gets the count of unread notifications for a specific user.
+    /// </summary>
+    /// <param name="userId">The ID of the user whose unread notifications count is to be retrieved.</param>
+    /// <returns>A <see cref="Task{Int32}"/> representing the asynchronous operation, with the count of unread notifications as the result.</returns>
+    Task<int> GetUnreadNotificationsCountAsync(string userId);
 }

@@ -19,6 +19,38 @@ public class PostRepository : IPostRepository
     }
 
     /// <inheritdoc/>
+    public async Task<int> GetTotalPostsAsync()
+    {
+        return await _context.Posts.CountAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<int> GetPostCountAsync(string userId)
+    {
+        return await _context.Posts.CountAsync(p => p.UserId == userId);
+    }
+
+    /// <inheritdoc/>
+    public async Task<int> GetNewPostsThisMonthAsync()
+    {
+        DateTime now = DateTime.UtcNow;
+        return await _context.Posts
+            .CountAsync(p => p.CreatedAt.Year == now.Year && p.CreatedAt.Month == now.Month);
+    }
+
+    /// <inheritdoc/>
+    public async Task<(string? Title, int ReactionCount)> GetMostPopularPostAsync(string userId)
+    {
+        var post = await _context.Posts
+            .Where(p => p.UserId == userId)
+            .OrderByDescending(p => p.Reactions.Count)
+            .Select(p => new { p.Title, ReactionCount = p.Reactions.Count })
+            .FirstOrDefaultAsync();
+
+        return post == null ? (null, 0) : (post.Title, post.ReactionCount);
+    }
+
+    /// <inheritdoc/>
     public async Task<List<Post>> GetAllPostsAsync()
     {
         PerformanceLogger performanceLogger = new PerformanceLogger();
@@ -176,6 +208,36 @@ public class PostRepository : IPostRepository
         performanceLogger.Stop("Grouping posts by month for user");
 
         return groupedResult;
+    }
+
+    /// <inheritdoc/>
+    public async Task<List<dynamic>> GetCommentsByMonth(string userId)
+    {
+        var result = await _context.Comments
+            .Where(c => c.UserId == userId)
+            .Select(c => new { c.CreatedAt })
+            .ToListAsync();
+
+        return result
+            .GroupBy(c => new { c.CreatedAt.Year, c.CreatedAt.Month })
+            .Select(g => new { year = g.Key.Year, month = g.Key.Month, count = g.Count() })
+            .OrderBy(g => g.year).ThenBy(g => g.month)
+            .ToList<dynamic>();
+    }
+
+    /// <inheritdoc/>
+    public async Task<List<dynamic>> GetReactionsByMonth(string userId)
+    {
+        var result = await _context.Reactions
+            .Where(r => r.UserId == userId)
+            .Select(r => new { r.CreatedAt })
+            .ToListAsync();
+
+        return result
+            .GroupBy(r => new { r.CreatedAt.Year, r.CreatedAt.Month })
+            .Select(g => new { year = g.Key.Year, month = g.Key.Month, count = g.Count() })
+            .OrderBy(g => g.year).ThenBy(g => g.month)
+            .ToList<dynamic>();
     }
 
     /// <inheritdoc/>

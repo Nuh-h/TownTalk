@@ -1,0 +1,52 @@
+@model TownTalk.Web.ViewModels.UserStatsViewModel
+
+<div class="card shadow-sm my-4">
+    <div class="card-header text-white">
+        <h5 class="mb-0">Stats for @Model.DisplayName</h5>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush m-0 mb-3 p-0">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Posts
+                        <span class="badge bg-info">@Model.Posts</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Comments
+                        <span class="badge bg-warning">@Model.Comments</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Reactions Received
+                        <span class="badge bg-danger">@Model.ReactionsReceived</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Followers
+                        <span class="badge bg-success">@Model.Followers</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Following
+                        <span class="badge bg-secondary">@Model.Following</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Unread Notifications
+                        <span class="badge bg-dark">@Model.UnreadNotifications</span>
+                    </li>
+                </ul>
+                <div class="mr-2">
+                    <strong>Most popular post:</strong>
+                    <div>
+                        @Model.MostPopularPostTitle
+                        <span class="text-muted">(@Model.MostPopularPostReactions reactions)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex flex-column align-items-center">
+                <div
+                    data-user-stats='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(new { posts = Model.Posts, comments = Model.Comments, reactionsReceived = Model.ReactionsReceived }))'>
+                    <canvas id="user-stats-chart" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

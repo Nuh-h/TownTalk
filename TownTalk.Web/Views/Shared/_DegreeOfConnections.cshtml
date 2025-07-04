@@ -1,0 +1,35 @@
+@model TownTalk.Web.ViewModels.DegreeOfConnectionsViewModel
+
+<details class="row mt-4 d-block">
+    <summary>@Model.DegreeOfConnectionsLabel</summary>
+    <div class="details-content rounded theme-dark card p-4 w-full">
+        <form id="degreeForm">
+            <div class="form-group">
+                <label for="userId1" id="userId1Label">@Model.User1Label</label>
+                <select id="userId1" name="userId1" class="form-control">
+                    <option value="">@Model.SelectUserLabel</option>
+                    @foreach (var user in Model.Users)
+                    {
+                        <option value="@user.Id">@user.DisplayName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="userId2" id="userId2Label">@Model.User2Label</label>
+                <select id="userId2" name="userId2" class="form-control">
+                    <option value="">@Model.SelectUserLabel</option>
+                    @foreach (var user in Model.Users)
+                    {
+                        <option value="@user.Id">@user.DisplayName</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <button type="button"
+                    class="btn btn-primary js-vis-network">@Model.FindDegreeOfConnectionsLabel</button>
+            </div>
+        </form>
+        <div id="mutual-followers"></div>
+        <div id="network"></div>
+    </div>
+</details>
